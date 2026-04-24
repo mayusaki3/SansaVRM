@@ -1,0 +1,9 @@
+[workspace]
+resolver = "2"
+members = [
+  "crates/sansavrm-core",
+  "crates/sansavrm-validator",
+  "crates/sansavrm-gltf",
+  "crates/sansavrm-vrm",
+  "crates/sansavrm-urdf"
+]
