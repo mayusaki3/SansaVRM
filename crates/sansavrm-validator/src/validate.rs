@@ -55,6 +55,34 @@ pub fn validate_model(model: &Model) -> CoreResult<()> {
         }
     }
 
+    // TODO(trace): Validator実装仕様 / 接続整合性検証
+    // --- Connection 整合チェック ---
+    for connection in &model.connections {
+        let from_exists = model
+            .slots
+            .iter()
+            .any(|slot| slot.slot_id == connection.from_slot_id);
+
+        let to_exists = model
+            .slots
+            .iter()
+            .any(|slot| slot.slot_id == connection.to_slot_id);
+
+        if !from_exists {
+            errors.push(SansaVrmError::InvalidInput(format!(
+                "Connection references unknown from_slot_id {}",
+                connection.from_slot_id
+            )));
+        }
+
+        if !to_exists {
+            errors.push(SansaVrmError::InvalidInput(format!(
+                "Connection references unknown to_slot_id {}",
+                connection.to_slot_id
+            )));
+        }
+    }
+
     if errors.is_empty() {
         CoreResult::ok(())
     } else {
