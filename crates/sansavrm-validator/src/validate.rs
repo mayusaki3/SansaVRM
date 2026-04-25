@@ -118,6 +118,61 @@ pub fn validate_model(model: &Model) -> CoreResult<()> {
         }
     }
 
+    // TODO(trace): Validator実装仕様 / State参照整合検証
+    // --- State Action 参照チェック ---
+    for state in &model.states {
+        for action in &state.actions {
+            match action {
+                sansavrm_core::StateAction::ModuleEnable { module_id }
+                | sansavrm_core::StateAction::ModuleDisable { module_id } => {
+                    if !model.modules.iter().any(|m| &m.module_id == module_id) {
+                        errors.push(SansaVrmError::InvalidInput(format!(
+                            "State {} references unknown module {}",
+                            state.state_id, module_id
+                        )));
+                    }
+                }
+
+                sansavrm_core::StateAction::SlotBind { slot_id, target_slot_id }
+                | sansavrm_core::StateAction::SlotUnbind { slot_id, target_slot_id } => {
+                    let slot_exists = model.slots.iter().any(|s| &s.slot_id == slot_id);
+                    let target_exists = model.slots.iter().any(|s| &s.slot_id == target_slot_id);
+
+                    if !slot_exists {
+                        errors.push(SansaVrmError::InvalidInput(format!(
+                            "State {} references unknown slot {}",
+                            state.state_id, slot_id
+                        )));
+                    }
+
+                    if !target_exists {
+                        errors.push(SansaVrmError::InvalidInput(format!(
+                            "State {} references unknown target_slot {}",
+                            state.state_id, target_slot_id
+                        )));
+                    }
+                }
+
+                sansavrm_core::StateAction::PropertyOverride { property_id: _, value: _ } => {
+                    // 今は未検証（後で property 実装時に追加）
+                }
+
+                sansavrm_core::StateAction::VisibilityChange { target_id, .. } => {
+                    let exists =
+                        model.modules.iter().any(|m| &m.module_id == target_id)
+                            || model.slots.iter().any(|s| &s.slot_id == target_id);
+
+                    if !exists {
+                        errors.push(SansaVrmError::InvalidInput(format!(
+                            "State {} references unknown visibility target {}",
+                            state.state_id, target_id
+                        )));
+                    }
+                }
+            }
+        }
+    }
+
     if errors.is_empty() {
         CoreResult::ok(())
     } else {
