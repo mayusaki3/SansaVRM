@@ -10,6 +10,7 @@ use sansavrm_core::{CoreResult, Model, SansaVrmError};
 pub fn validate_model(model: &Model) -> CoreResult<()> {
     let mut errors = Vec::new();
 
+    // TODO(trace): Validator実装仕様 / ID一意性検証
     // --- ID一意性チェック ---
     let mut ids = HashSet::new();
 
