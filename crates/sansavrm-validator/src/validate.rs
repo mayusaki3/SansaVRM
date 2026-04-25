@@ -40,6 +40,21 @@ pub fn validate_model(model: &Model) -> CoreResult<()> {
         }
     }
 
+    // TODO(trace): Validator実装仕様 / 参照整合性検証
+    // --- 参照整合チェック ---
+    for slot in &model.slots {
+        if !model
+            .modules
+            .iter()
+            .any(|module| module.module_id == slot.owner_module_id)
+        {
+            errors.push(SansaVrmError::InvalidInput(format!(
+                "Slot {} references unknown module {}",
+                slot.slot_id, slot.owner_module_id
+            )));
+        }
+    }
+
     if errors.is_empty() {
         CoreResult::ok(())
     } else {
