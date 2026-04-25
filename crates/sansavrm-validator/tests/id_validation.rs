@@ -4,7 +4,7 @@ use sansavrm_core::{Model, Module};
 use sansavrm_validator::validate_model;
 
 #[test]
-fn validator_id_001_duplicate_module_id_should_fail() {
+fn validator_id_001_duplicate_model_id_should_fail() {
     let mut model = Model::new();
 
     // 故意に重複
