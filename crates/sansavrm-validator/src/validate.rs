@@ -83,6 +83,41 @@ pub fn validate_model(model: &Model) -> CoreResult<()> {
         }
     }
 
+    // TODO(trace): Validator実装仕様 / 接続制約検証
+    // --- ConnectionRule 最小制約チェック ---
+    for slot in &model.slots {
+        if let Some(rule) = &slot.connection_rules {
+            let connection_count = model
+                .connections
+                .iter()
+                .filter(|connection| {
+                    connection.from_slot_id == slot.slot_id || connection.to_slot_id == slot.slot_id
+                })
+                .count();
+
+            if connection_count < rule.min_connections {
+                errors.push(SansaVrmError::InvalidInput(format!(
+                    "Slot {} has fewer connections than min_connections {}",
+                    slot.slot_id, rule.min_connections
+                )));
+            }
+
+            if connection_count > rule.max_connections {
+                errors.push(SansaVrmError::InvalidInput(format!(
+                    "Slot {} exceeds max_connections {}",
+                    slot.slot_id, rule.max_connections
+                )));
+            }
+
+            if rule.exclusive && connection_count > 1 {
+                errors.push(SansaVrmError::InvalidInput(format!(
+                    "Slot {} is exclusive but has multiple connections",
+                    slot.slot_id
+                )));
+            }
+        }
+    }
+
     if errors.is_empty() {
         CoreResult::ok(())
     } else {
