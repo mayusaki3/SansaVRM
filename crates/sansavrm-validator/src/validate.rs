@@ -173,6 +173,19 @@ pub fn validate_model(model: &Model) -> CoreResult<()> {
         }
     }
 
+    // --- Property value_type 整合チェック ---
+    for module in &model.modules {
+        for property in &module.properties {
+            validate_property_value(property, &mut errors);
+        }
+    }
+
+    for slot in &model.slots {
+        for property in &slot.properties {
+            validate_property_value(property, &mut errors);
+        }
+    }
+
     if errors.is_empty() {
         CoreResult::ok(())
     } else {
@@ -182,6 +195,42 @@ pub fn validate_model(model: &Model) -> CoreResult<()> {
             errors,
             warnings: vec![],
             infos: vec![],
+        }
+    }
+}
+
+/// Property の値整合性検証
+///
+/// TODO(trace): Validator実装仕様 / Property整合性検証
+fn validate_property_value(
+    property: &sansavrm_core::Property,
+    errors: &mut Vec<SansaVrmError>,
+) {
+    match property.value_type {
+        sansavrm_core::PropertyValueType::String => {}
+
+        sansavrm_core::PropertyValueType::Number => {
+            if property.value.parse::<f64>().is_err() {
+                errors.push(SansaVrmError::InvalidInput(format!(
+                    "Property {} expects number but got {}",
+                    property.property_id, property.value
+                )));
+            }
+        }
+
+        sansavrm_core::PropertyValueType::Boolean => {
+            if property.value.parse::<bool>().is_err() {
+                errors.push(SansaVrmError::InvalidInput(format!(
+                    "Property {} expects boolean but got {}",
+                    property.property_id, property.value
+                )));
+            }
+        }
+
+        sansavrm_core::PropertyValueType::Object
+        | sansavrm_core::PropertyValueType::Array => {
+            // 現段階では JSON値検証未実装。
+            // serde_json 導入後に Object / Array の構造検証を追加する。
         }
     }
 }
