@@ -10,38 +10,59 @@ use sansavrm_core::{CoreResult, Model, SansaVrmError};
 pub fn validate_model(model: &Model) -> CoreResult<()> {
     let mut errors = Vec::new();
 
-    // TODO(trace): Validator実装仕様 / ID一意性検証
-    // --- ID一意性チェック ---
+    validate_unique_ids(model, &mut errors);
+    validate_slot_owner_refs(model, &mut errors);
+    validate_connections(model, &mut errors);
+    validate_connection_rules(model, &mut errors);
+    validate_state_actions(model, &mut errors);
+    validate_properties(model, &mut errors);
+
+    if errors.is_empty() {
+        CoreResult::ok(())
+    } else {
+        CoreResult {
+            success: false,
+            data: None,
+            errors,
+            warnings: vec![],
+            infos: vec![],
+        }
+    }
+}
+
+/// ID 一意性検証
+///
+/// TODO(trace): Validator実装仕様 / ID一意性検証
+fn validate_unique_ids(model: &Model, errors: &mut Vec<SansaVrmError>) {
     let mut ids = HashSet::new();
 
-    // model_id
     if !ids.insert(model.model_id.clone()) {
         errors.push(SansaVrmError::DuplicateId(model.model_id.clone()));
     }
 
-    // module_id
     for module in &model.modules {
         if !ids.insert(module.module_id.clone()) {
             errors.push(SansaVrmError::DuplicateId(module.module_id.clone()));
         }
     }
 
-    // slot_id
     for slot in &model.slots {
         if !ids.insert(slot.slot_id.clone()) {
             errors.push(SansaVrmError::DuplicateId(slot.slot_id.clone()));
         }
     }
 
-    // state_id
     for state in &model.states {
         if !ids.insert(state.state_id.clone()) {
             errors.push(SansaVrmError::DuplicateId(state.state_id.clone()));
         }
     }
+}
 
-    // TODO(trace): Validator実装仕様 / 参照整合性検証
-    // --- 参照整合チェック ---
+/// Slot の owner_module_id 参照整合性検証
+///
+/// TODO(trace): Validator実装仕様 / 参照整合性検証
+fn validate_slot_owner_refs(model: &Model, errors: &mut Vec<SansaVrmError>) {
     for slot in &model.slots {
         if !model
             .modules
@@ -54,9 +75,12 @@ pub fn validate_model(model: &Model) -> CoreResult<()> {
             )));
         }
     }
+}
 
-    // TODO(trace): Validator実装仕様 / 接続整合性検証
-    // --- Connection 整合チェック ---
+/// Connection の参照整合性検証
+///
+/// TODO(trace): Validator実装仕様 / 接続整合性検証
+fn validate_connections(model: &Model, errors: &mut Vec<SansaVrmError>) {
     for connection in &model.connections {
         let from_exists = model
             .slots
@@ -82,9 +106,12 @@ pub fn validate_model(model: &Model) -> CoreResult<()> {
             )));
         }
     }
+}
 
-    // TODO(trace): Validator実装仕様 / 接続制約検証
-    // --- ConnectionRule 最小制約チェック ---
+/// ConnectionRule の最小制約検証
+///
+/// TODO(trace): Validator実装仕様 / 接続制約検証
+fn validate_connection_rules(model: &Model, errors: &mut Vec<SansaVrmError>) {
     for slot in &model.slots {
         if let Some(rule) = &slot.connection_rules {
             let connection_count = model
@@ -117,9 +144,12 @@ pub fn validate_model(model: &Model) -> CoreResult<()> {
             }
         }
     }
+}
 
-    // TODO(trace): Validator実装仕様 / State参照整合検証
-    // --- State Action 参照チェック ---
+/// StateAction の参照整合性検証
+///
+/// TODO(trace): Validator実装仕様 / State参照整合検証
+fn validate_state_actions(model: &Model, errors: &mut Vec<SansaVrmError>) {
     for state in &model.states {
         for action in &state.actions {
             match action {
@@ -154,13 +184,12 @@ pub fn validate_model(model: &Model) -> CoreResult<()> {
                 }
 
                 sansavrm_core::StateAction::PropertyOverride { property_id: _, value: _ } => {
-                    // 今は未検証（後で property 実装時に追加）
+                    // 今は未検証。Property参照モデル確定後に追加する。
                 }
 
                 sansavrm_core::StateAction::VisibilityChange { target_id, .. } => {
-                    let exists =
-                        model.modules.iter().any(|m| &m.module_id == target_id)
-                            || model.slots.iter().any(|s| &s.slot_id == target_id);
+                    let exists = model.modules.iter().any(|m| &m.module_id == target_id)
+                        || model.slots.iter().any(|s| &s.slot_id == target_id);
 
                     if !exists {
                         errors.push(SansaVrmError::InvalidInput(format!(
@@ -172,29 +201,21 @@ pub fn validate_model(model: &Model) -> CoreResult<()> {
             }
         }
     }
+}
 
-    // --- Property value_type 整合チェック ---
+/// Model 内の Property 検証
+///
+/// TODO(trace): Validator実装仕様 / Property整合性検証
+fn validate_properties(model: &Model, errors: &mut Vec<SansaVrmError>) {
     for module in &model.modules {
         for property in &module.properties {
-            validate_property_value(property, &mut errors);
+            validate_property_value(property, errors);
         }
     }
 
     for slot in &model.slots {
         for property in &slot.properties {
-            validate_property_value(property, &mut errors);
-        }
-    }
-
-    if errors.is_empty() {
-        CoreResult::ok(())
-    } else {
-        CoreResult {
-            success: false,
-            data: None,
-            errors,
-            warnings: vec![],
-            infos: vec![],
+            validate_property_value(property, errors);
         }
     }
 }
