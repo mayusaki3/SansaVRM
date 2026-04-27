@@ -11,7 +11,7 @@
 
 - SansaVRM Format の構造妥当性を自動検証可能とする
 - 必須項目、型、列挙値、配列構造を機械的に検証可能とする
-- `02_メタモデル仕様.md` および `03_glTF拡張仕様.md` の形式仕様を固定する
+- [メタモデル仕様.](./02_メタモデル仕様.md) および [glTF拡張仕様](./03_glTF拡張仕様.md) の形式仕様を固定する
 - Core API、変換処理、Runtime 入出力の前提となるデータ契約を明確化する
 
 ---
@@ -104,17 +104,17 @@ SansaVRM 拡張群の妥当性を検証する。
 本仕様で使用する `$id` は以下を基本とする。
 
 ```text
-https://sansavrm.local/schema/04/root.schema.json
-https://sansavrm.local/schema/04/defs.schema.json
-https://sansavrm.local/schema/04/model.schema.json
-https://sansavrm.local/schema/04/modules.schema.json
-https://sansavrm.local/schema/04/slots.schema.json
-https://sansavrm.local/schema/04/states.schema.json
-https://sansavrm.local/schema/04/rights.schema.json
-https://sansavrm.local/schema/04/revenue.schema.json
-https://sansavrm.local/schema/04/compatibility.schema.json
-https://sansavrm.local/schema/04/diagnostics.schema.json
-https://sansavrm.local/schema/04/extension-layer.schema.json
+https://sansavrm.local/schema/v1/root.schema.json
+https://sansavrm.local/schema/v1/defs.schema.json
+https://sansavrm.local/schema/v1/model.schema.json
+https://sansavrm.local/schema/v1/modules.schema.json
+https://sansavrm.local/schema/v1/slots.schema.json
+https://sansavrm.local/schema/v1/states.schema.json
+https://sansavrm.local/schema/v1/rights.schema.json
+https://sansavrm.local/schema/v1/revenue.schema.json
+https://sansavrm.local/schema/v1/compatibility.schema.json
+https://sansavrm.local/schema/v1/diagnostics.schema.json
+https://sansavrm.local/schema/v1/extension-layer.schema.json
 ```
 
 実運用では、上記は配布 URL またはローカル参照 URI に置き換えてよい。
@@ -555,7 +555,7 @@ SansaVRM 拡張群を検証する。
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sansavrm.local/schema/04/root.schema.json",
+  "$id": "https://sansavrm.local/schema/v1/root.schema.json",
   "type": "object",
   "properties": {
     "extensions": {
@@ -599,7 +599,7 @@ SansaVRM 拡張群を検証する。
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sansavrm.local/schema/04/model.schema.json",
+  "$id": "https://sansavrm.local/schema/v1/model.schema.json",
   "type": "object",
   "properties": {
     "model_id": { "$ref": "defs.schema.json#/$defs/Id" },
@@ -644,7 +644,7 @@ SansaVRM 拡張群を検証する。
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sansavrm.local/schema/04/modules.schema.json",
+  "$id": "https://sansavrm.local/schema/v1/modules.schema.json",
   "type": "object",
   "properties": {
     "modules": {
@@ -698,7 +698,7 @@ SansaVRM 拡張群を検証する。
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sansavrm.local/schema/04/slots.schema.json",
+  "$id": "https://sansavrm.local/schema/v1/slots.schema.json",
   "type": "object",
   "properties": {
     "slots": {
@@ -747,7 +747,7 @@ SansaVRM 拡張群を検証する。
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sansavrm.local/schema/04/states.schema.json",
+  "$id": "https://sansavrm.local/schema/v1/states.schema.json",
   "type": "object",
   "properties": {
     "states": {
@@ -785,7 +785,7 @@ SansaVRM 拡張群を検証する。
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sansavrm.local/schema/04/rights.schema.json",
+  "$id": "https://sansavrm.local/schema/v1/rights.schema.json",
   "type": "object",
   "properties": {
     "rights": {
@@ -854,7 +854,7 @@ SansaVRM 拡張群を検証する。
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sansavrm.local/schema/04/revenue.schema.json",
+  "$id": "https://sansavrm.local/schema/v1/revenue.schema.json",
   "type": "object",
   "properties": {
     "revenue": {
@@ -932,7 +932,7 @@ SansaVRM 拡張群を検証する。
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sansavrm.local/schema/04/compatibility.schema.json",
+  "$id": "https://sansavrm.local/schema/v1/compatibility.schema.json",
   "type": "object",
   "properties": {
     "compatibility": {
@@ -993,7 +993,7 @@ SansaVRM 拡張群を検証する。
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sansavrm.local/schema/04/diagnostics.schema.json",
+  "$id": "https://sansavrm.local/schema/v1/diagnostics.schema.json",
   "type": "object",
   "properties": {
     "diagnostics": {
@@ -1025,7 +1025,7 @@ SansaVRM 拡張群を検証する。
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sansavrm.local/schema/04/extension-layer.schema.json",
+  "$id": "https://sansavrm.local/schema/v1/extension-layer.schema.json",
   "type": "object",
   "properties": {
     "extension_layers": {
