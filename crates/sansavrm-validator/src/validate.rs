@@ -2,7 +2,11 @@
 
 use std::collections::HashSet;
 
-use sansavrm_core::{CoreResult, Model, SansaVrmError};
+use sansavrm_core::{
+    CoreResult, DiagnosticCode, DiagnosticSeverity, Model, SansaVrmError, ValidationDiagnostic,
+};
+
+use crate::ValidatorResult;
 
 /// Model の基本検証
 ///
@@ -27,6 +31,20 @@ pub fn validate_model(model: &Model) -> CoreResult<()> {
             warnings: vec![],
             infos: vec![],
         }
+    }
+}
+
+/// Model の diagnostics 付き基本検証
+///
+/// TODO(trace): Validator実装仕様 / diagnostics出力
+pub fn validate_model_with_diagnostics(model: &Model) -> ValidatorResult {
+    let mut diagnostics = Vec::new();
+
+    validate_unique_ids_with_diagnostics(model, &mut diagnostics);
+
+    ValidatorResult {
+        success: diagnostics.is_empty(),
+        diagnostics,
     }
 }
 
@@ -55,6 +73,58 @@ fn validate_unique_ids(model: &Model, errors: &mut Vec<SansaVrmError>) {
     for state in &model.states {
         if !ids.insert(state.state_id.clone()) {
             errors.push(SansaVrmError::DuplicateId(state.state_id.clone()));
+        }
+    }
+}
+
+/// ID 一意性 diagnostics 検証
+///
+/// TODO(trace): Validator実装仕様 / diagnostics出力
+fn validate_unique_ids_with_diagnostics(
+    model: &Model,
+    diagnostics: &mut Vec<ValidationDiagnostic>,
+) {
+    let mut ids = HashSet::new();
+
+    if !ids.insert(model.model_id.clone()) {
+        diagnostics.push(ValidationDiagnostic {
+            code: DiagnosticCode::DuplicateId,
+            severity: DiagnosticSeverity::Error,
+            message: format!("Duplicate ID: {}", model.model_id),
+            target: Some(model.model_id.clone()),
+        });
+    }
+
+    for module in &model.modules {
+        if !ids.insert(module.module_id.clone()) {
+            diagnostics.push(ValidationDiagnostic {
+                code: DiagnosticCode::DuplicateId,
+                severity: DiagnosticSeverity::Error,
+                message: format!("Duplicate ID: {}", module.module_id),
+                target: Some(module.module_id.clone()),
+            });
+        }
+    }
+
+    for slot in &model.slots {
+        if !ids.insert(slot.slot_id.clone()) {
+            diagnostics.push(ValidationDiagnostic {
+                code: DiagnosticCode::DuplicateId,
+                severity: DiagnosticSeverity::Error,
+                message: format!("Duplicate ID: {}", slot.slot_id),
+                target: Some(slot.slot_id.clone()),
+            });
+        }
+    }
+
+    for state in &model.states {
+        if !ids.insert(state.state_id.clone()) {
+            diagnostics.push(ValidationDiagnostic {
+                code: DiagnosticCode::DuplicateId,
+                severity: DiagnosticSeverity::Error,
+                message: format!("Duplicate ID: {}", state.state_id),
+                target: Some(state.state_id.clone()),
+            });
         }
     }
 }
