@@ -41,6 +41,7 @@ pub fn validate_model_with_diagnostics(model: &Model) -> ValidatorResult {
     let mut diagnostics = Vec::new();
 
     validate_unique_ids_with_diagnostics(model, &mut diagnostics);
+    validate_slot_owner_refs_with_diagnostics(model, &mut diagnostics);
 
     ValidatorResult {
         success: diagnostics.is_empty(),
@@ -143,6 +144,32 @@ fn validate_slot_owner_refs(model: &Model, errors: &mut Vec<SansaVrmError>) {
                 "Slot {} references unknown module {}",
                 slot.slot_id, slot.owner_module_id
             )));
+        }
+    }
+}
+
+/// Slot の owner_module_id 参照整合性 diagnostics 検証
+///
+/// TODO(trace): Validator実装仕様 / diagnostics出力
+fn validate_slot_owner_refs_with_diagnostics(
+    model: &Model,
+    diagnostics: &mut Vec<ValidationDiagnostic>,
+) {
+    for slot in &model.slots {
+        if !model
+            .modules
+            .iter()
+            .any(|module| module.module_id == slot.owner_module_id)
+        {
+            diagnostics.push(ValidationDiagnostic {
+                code: DiagnosticCode::RefNotFound,
+                severity: DiagnosticSeverity::Error,
+                message: format!(
+                    "Slot {} references unknown module {}",
+                    slot.slot_id, slot.owner_module_id
+                ),
+                target: Some(slot.slot_id.clone()),
+            });
         }
     }
 }
