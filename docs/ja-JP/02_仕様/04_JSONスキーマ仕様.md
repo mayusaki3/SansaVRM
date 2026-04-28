@@ -251,10 +251,37 @@ ID や識別子は空文字列を許容しない。
           "type": "string",
           "enum": ["string", "number", "boolean", "object", "array"]
         },
+        "property_type": {
+          "type": "string",
+          "enum": [
+            "physics",
+            "collision",
+            "visual",
+            "control",
+            "actuator",
+            "sensor",
+            "metadata",
+            "custom"
+          ]
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "module",
+            "slot",
+            "physics",
+            "control",
+            "actuator",
+            "sensor",
+            "interface",
+            "constraint",
+            "custom"
+          ]
+        },
         "constraints": { "$ref": "#/$defs/PropertyConstraints" },
         "metadata": { "$ref": "#/$defs/PropertyMetadata" }
       },
-      "required": ["property_id", "key", "value", "value_type"],
+      "required": ["property_id", "key", "value", "value_type", "property_type", "role"],
       "additionalProperties": false,
       "allOf": [
         {
@@ -1143,6 +1170,8 @@ SansaVRM 拡張群を検証する。
 - 条件式 DSL の意味評価
 - glTF 標準構造との実インデックス整合
 - rights / revenue / compatibility の owner 実在確認
+- `property_type` / `role` / `key` の意味論的整合
+- MuJoCo 変換時の Property 分類妥当性
 
 ---
 
