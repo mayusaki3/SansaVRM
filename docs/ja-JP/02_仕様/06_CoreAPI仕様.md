@@ -37,7 +37,7 @@ Rust を含む各言語実装の基準とする。
 - Module：構成要素
 - Slot：接続点
 - State：状態定義
-- Connection：Slot間接続
+- Connection：Model に属する接続実体。from_id / to_id により Module または Slot を接続する。
 - Context：実行時補助情報
 
 ---
@@ -225,7 +225,7 @@ update_slot(model, slot_id, patch) -> Result<Model>
 ### 9.1 connect
 
 ```text
-connect(model, from_slot_id, to_slot_id, options) -> Result<Model>
+connect(model, from_id, to_id, connection_type, options) -> Result<Model>
 ```
 
 #### 処理
@@ -245,7 +245,7 @@ connect(model, from_slot_id, to_slot_id, options) -> Result<Model>
 ### 9.2 disconnect
 
 ```text
-disconnect(model, from_slot_id, to_slot_id) -> Result<Model>
+disconnect(model, connection_id) -> Result<Model>
 ```
 
 ---
@@ -254,6 +254,22 @@ disconnect(model, from_slot_id, to_slot_id) -> Result<Model>
 
 ```text
 list_connections(model) -> Connection[]
+```
+
+---
+
+### 9.4 enable_connection
+
+```text
+enable_connection(model, connection_id) -> Result<Model>
+```
+
+---
+
+### 9.5 disable_connection
+
+```text
+disable_connection(model, connection_id) -> Result<Model>
 ```
 
 ---
@@ -310,9 +326,37 @@ apply_state(model, state_id) -> Result<Model>
 
 ---
 
-## 11. 評価API
+## 11. Property操作API
 
-### 11.1 evaluate
+### 11.1 add_property
+
+```text
+add_property(model, owner_id, property_def) -> Result<Model>
+```
+
+### 11.2 update_property
+
+```text
+update_property(model, property_id, patch) -> Result<Model>
+```
+
+### 11.3 remove_property
+
+```text
+remove_property(model, property_id) -> Result<Model>
+```
+
+### 11.4 list_properties
+
+```text
+list_properties(model, owner_id) -> Property[]
+```
+
+---
+
+## 12. 評価API
+
+### 12.1 evaluate
 
 ```text
 evaluate(model, context) -> Result<EvaluationResult>
@@ -327,9 +371,9 @@ evaluate(model, context) -> Result<EvaluationResult>
 
 ---
 
-## 12. Validator統合
+## 13. Validator統合
 
-### 12.1 validate
+### 13.1 validate
 
 ```text
 validate(model, options) -> Result<ValidationResult>
@@ -342,15 +386,15 @@ validate(model, options) -> Result<ValidationResult>
 
 ---
 
-## 13. I/O API
+## 14. I/O API
 
-### 13.1 import_gltf
+### 14.1 import_gltf
 
 ```text
 import_gltf(document) -> Result<Model>
 ```
 
-### 13.2 export_gltf
+### 14.2 export_gltf
 
 ```text
 export_gltf(model) -> Result<GLTF>
@@ -358,15 +402,38 @@ export_gltf(model) -> Result<GLTF>
 
 ---
 
-### 13.3 import_vrm
+### 14.3 import_vrm
 
 ```text
 import_vrm(document) -> Result<Model>
 ```
 
+### 14.4 export_vrm
+
+- export_vrm は VRM仕様に準拠した glTF を生成する
+
+```text
+export_vrm(model, version, options) -> Result<VRM>
+```
+
+#### 入力
+
+- model
+- version
+  - "0.x"
+  - "1.0"
+- options
+
+#### 処理
+
+- version に応じた VRM 仕様へ変換する
+- "1.0" を既定値とする
+- "0.x" は互換出力として扱う
+- 指定 version で表現できない情報は diagnostics に warning として記録する
+
 ---
 
-### 13.4 import_urdf
+### 14.5 import_urdf
 
 ```text
 import_urdf(document) -> Result<Model>
@@ -374,21 +441,45 @@ import_urdf(document) -> Result<Model>
 
 ---
 
-## 14. トランザクション
+### 14.6 export_urdf
 
-### 14.1 begin
+- export_urdf は URDF XML を生成する
+
+```text
+export_urdf(model) -> Result<URDF>
+```
+
+---
+
+### 14.7 import_mujoco
+
+```text
+import_mujoco(document) -> Result<Model>
+```
+
+### 14.8 export_mujoco
+
+```text
+export_mujoco(model) -> Result<MJCF>
+```
+
+---
+
+## 15. トランザクション
+
+### 15.1 begin
 
 ```text
 begin(model) -> Transaction
 ```
 
-### 14.2 commit
+### 15.2 commit
 
 ```text
 commit(transaction) -> Result<Model>
 ```
 
-### 14.3 rollback
+### 15.3 rollback
 
 ```text
 rollback(transaction) -> Model
@@ -396,7 +487,7 @@ rollback(transaction) -> Model
 
 ---
 
-## 15. エラーハンドリング
+## 16. エラーハンドリング
 
 - すべてのAPIは Result を返す
 - error は処理停止
@@ -405,7 +496,7 @@ rollback(transaction) -> Model
 
 ---
 
-## 16. スレッド安全性
+## 17. スレッド安全性
 
 - 読み取りは並列可能
 - 書き込みは排他制御
@@ -413,7 +504,7 @@ rollback(transaction) -> Model
 
 ---
 
-## 17. 非スコープ
+## 18. 非スコープ
 
 - Renderer
 - UI
@@ -422,7 +513,7 @@ rollback(transaction) -> Model
 
 ---
 
-## 18. 将来拡張
+## 19. 将来拡張
 
 - 非同期API
 - 分散モデル同期
