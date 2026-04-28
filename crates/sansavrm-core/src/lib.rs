@@ -19,6 +19,7 @@ pub mod property;
 pub mod result;
 pub mod slot;
 pub mod state;
+pub mod connection_api;
 
 pub use diagnostics::*;
 pub use error::*;
@@ -29,3 +30,4 @@ pub use property::*;
 pub use result::*;
 pub use slot::*;
 pub use state::*;
+pub use connection_api::*;
