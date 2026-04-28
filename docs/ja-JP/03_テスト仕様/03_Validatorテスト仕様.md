@@ -188,46 +188,40 @@
 
 ---
 
-## 6. テストケース例
+## 6. テストケース
 
 ---
 
 ### VALIDATOR-REF-001
 
-```md id="val_case_001"
-テストID：VALIDATOR-REF-001
-分類：参照整合性
-内容：存在しない module_id を参照
-期待結果：fail
-エラーコード：REF_NOT_FOUND
-severity：error
-```
+- テストID：VALIDATOR-REF-001
+- 分類：参照整合性
+- 内容：存在しない module_id を参照
+- 期待結果：fail
+- エラーコード：REF_NOT_FOUND
+- severity：error
 
 ---
 
 ### VALIDATOR-CONN-002
 
-```md id="val_case_002"
-テストID：VALIDATOR-CONN-002
-分類：接続整合性
-内容：max_connections 超過
-期待結果：fail
-エラーコード：MAX_CONNECTION_EXCEEDED
-severity：error
-```
+- テストID：VALIDATOR-CONN-002
+- 分類：接続整合性
+- 内容：max_connections 超過
+- 期待結果：fail
+- エラーコード：MAX_CONNECTION_EXCEEDED
+- severity：error
 
 ---
 
 ### VALIDATOR-STATE-003
 
-```md id="val_case_003"
-テストID：VALIDATOR-STATE-003
-分類：StateAction
-内容：無効な property_override
-期待結果：fail
-エラーコード：PROPERTY_OVERRIDE_TYPE_MISMATCH
-severity：error
-```
+- テストID：VALIDATOR-STATE-003
+- 分類：StateAction
+- 内容：無効な property_override
+- 期待結果：fail
+- エラーコード：PROPERTY_OVERRIDE_TYPE_MISMATCH
+- severity：error
 
 ---
 
