@@ -4,12 +4,35 @@ use serde::{Deserialize, Serialize};
 
 use crate::{DiagnosticItem, Module, SansaId, Slot, State};
 
-/// Slot 間接続。
+/// Connection 種別。
+///
+/// TODO(trace): メタモデル仕様 / Connection
+/// TODO(trace): JSONスキーマ仕様 / connections.connection_type
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub enum ConnectionType {
+    Attach,
+    Joint,
+    Logical,
+}
+
+/// Model に属する接続実体。
+///
+/// 役割:
+/// - Module または Slot 間の接続関係を表現する。
+///
+/// 注意点:
+/// - `from_id` / `to_id` は Module ID または Slot ID を参照する。
+/// - `current_connections` には `connection_id` を保持する。
+///
+/// TODO(trace): メタモデル仕様 / Connection
+/// TODO(trace): CoreAPI仕様 / Connection操作API
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Connection {
-    pub from_slot_id: String,
-    pub to_slot_id: String,
-    pub connection_type: String,
+    pub connection_id: String,
+    pub from_id: String,
+    pub to_id: String,
+    pub connection_type: ConnectionType,
+    pub enabled: bool,
 }
 
 /// SansaVRM Model。

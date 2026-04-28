@@ -76,6 +76,12 @@ fn validate_unique_ids(model: &Model, errors: &mut Vec<SansaVrmError>) {
             errors.push(SansaVrmError::DuplicateId(state.state_id.clone()));
         }
     }
+
+    for connection in &model.connections {
+        if !ids.insert(connection.connection_id.clone()) {
+            errors.push(SansaVrmError::DuplicateId(connection.connection_id.clone()));
+        }
+    }
 }
 
 /// ID 一意性 diagnostics 検証
@@ -179,27 +185,27 @@ fn validate_slot_owner_refs_with_diagnostics(
 /// TODO(trace): Validator実装仕様 / 接続整合性検証
 fn validate_connections(model: &Model, errors: &mut Vec<SansaVrmError>) {
     for connection in &model.connections {
-        let from_exists = model
-            .slots
-            .iter()
-            .any(|slot| slot.slot_id == connection.from_slot_id);
+        let from_exists =
+            model.modules.iter().any(|module| module.module_id == connection.from_id)
+            || model.slots.iter().any(|slot| slot.slot_id == connection.from_id);
 
-        let to_exists = model
-            .slots
-            .iter()
-            .any(|slot| slot.slot_id == connection.to_slot_id);
+        let to_exists =
+            model.modules.iter().any(|module| module.module_id == connection.to_id)
+            || model.slots.iter().any(|slot| slot.slot_id == connection.to_id);
 
         if !from_exists {
             errors.push(SansaVrmError::InvalidInput(format!(
-                "Connection references unknown from_slot_id {}",
-                connection.from_slot_id
+                "Connection {} references unknown from_id {}",
+                connection.connection_id,
+                connection.from_id
             )));
         }
 
         if !to_exists {
             errors.push(SansaVrmError::InvalidInput(format!(
-                "Connection references unknown to_slot_id {}",
-                connection.to_slot_id
+                "Connection {} references unknown to_id {}",
+                connection.connection_id,
+                connection.to_id
             )));
         }
     }
@@ -215,7 +221,7 @@ fn validate_connection_rules(model: &Model, errors: &mut Vec<SansaVrmError>) {
                 .connections
                 .iter()
                 .filter(|connection| {
-                    connection.from_slot_id == slot.slot_id || connection.to_slot_id == slot.slot_id
+                    connection.from_id == slot.slot_id || connection.to_id == slot.slot_id
                 })
                 .count();
 

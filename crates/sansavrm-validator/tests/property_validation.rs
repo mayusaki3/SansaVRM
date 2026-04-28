@@ -1,7 +1,7 @@
 // crates/sansavrm-validator/tests/property_validation.rs
 
 use sansavrm_core::{
-    Model, Module, ModuleType, Property, PropertyValueType,
+    Model, Module, ModuleType, Property, PropertyRole, PropertyType, PropertyValueType,
 };
 use sansavrm_validator::validate_model;
 
@@ -25,6 +25,8 @@ fn validator_property_001_string_value_should_pass() {
         key: "name".into(),
         value: "SansaVRM".into(),
         value_type: PropertyValueType::String,
+        property_type: PropertyType::Metadata,
+        role: PropertyRole::Module,
     });
 
     let result = validate_model(&model);
@@ -39,6 +41,8 @@ fn validator_property_002_number_value_should_pass() {
         key: "weight".into(),
         value: "12.5".into(),
         value_type: PropertyValueType::Number,
+        property_type: PropertyType::Metadata,
+        role: PropertyRole::Module,
     });
 
     let result = validate_model(&model);
@@ -53,6 +57,8 @@ fn validator_property_003_invalid_number_should_fail() {
         key: "weight".into(),
         value: "not_number".into(),
         value_type: PropertyValueType::Number,
+        property_type: PropertyType::Metadata,
+        role: PropertyRole::Module,
     });
 
     let result = validate_model(&model);
@@ -67,6 +73,8 @@ fn validator_property_004_boolean_value_should_pass() {
         key: "enabled".into(),
         value: "true".into(),
         value_type: PropertyValueType::Boolean,
+        property_type: PropertyType::Metadata,
+        role: PropertyRole::Module,
     });
 
     let result = validate_model(&model);
@@ -81,6 +89,8 @@ fn validator_property_005_invalid_boolean_should_fail() {
         key: "enabled".into(),
         value: "yes".into(),
         value_type: PropertyValueType::Boolean,
+        property_type: PropertyType::Metadata,
+        role: PropertyRole::Module,
     });
 
     let result = validate_model(&model);

@@ -12,6 +12,14 @@ pub enum SlotType {
     State,
     Rights,
     Revenue,
+    Physics,
+    Control,
+    Sensor,
+    Actuator,
+    Compatibility,
+    SemanticTag,
+    Morph,
+    Animation,
     Custom,
 }
 

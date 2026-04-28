@@ -1,6 +1,6 @@
 // crates/sansavrm-validator/tests/connection_validation.rs
 
-use sansavrm_core::{Connection, Model, Module, ModuleType, Slot, SlotType};
+use sansavrm_core::{Connection, ConnectionType, Model, Module, ModuleType, Slot, SlotType};
 use sansavrm_validator::validate_model;
 
 fn build_model_with_two_slots() -> Model {
@@ -41,9 +41,11 @@ fn validator_conn_001_connection_with_existing_slots_should_pass() {
     let mut model = build_model_with_two_slots();
 
     model.connections.push(Connection {
-        from_slot_id: "slot_001".into(),
-        to_slot_id: "slot_002".into(),
-        connection_type: "structure".into(),
+        connection_id: "connection_001".into(),
+        from_id: "slot_001".into(),
+        to_id: "slot_002".into(),
+        connection_type: ConnectionType::Attach,
+        enabled: true,
     });
 
     let result = validate_model(&model);
@@ -52,13 +54,15 @@ fn validator_conn_001_connection_with_existing_slots_should_pass() {
 }
 
 #[test]
-fn validator_conn_002_connection_with_unknown_from_slot_should_fail() {
+fn validator_conn_002_connection_with_unknown_from_id_should_fail() {
     let mut model = build_model_with_two_slots();
 
     model.connections.push(Connection {
-        from_slot_id: "unknown_slot".into(),
-        to_slot_id: "slot_002".into(),
-        connection_type: "structure".into(),
+        connection_id: "connection_001".into(),
+        from_id: "unknown_slot".into(),
+        to_id: "slot_002".into(),
+        connection_type: ConnectionType::Attach,
+        enabled: true,
     });
 
     let result = validate_model(&model);
@@ -68,13 +72,15 @@ fn validator_conn_002_connection_with_unknown_from_slot_should_fail() {
 }
 
 #[test]
-fn validator_conn_003_connection_with_unknown_to_slot_should_fail() {
+fn validator_conn_003_connection_with_unknown_to_id_should_fail() {
     let mut model = build_model_with_two_slots();
 
     model.connections.push(Connection {
-        from_slot_id: "slot_001".into(),
-        to_slot_id: "unknown_slot".into(),
-        connection_type: "structure".into(),
+        connection_id: "connection_001".into(),
+        from_id: "slot_001".into(),
+        to_id: "unknown_slot".into(),
+        connection_type: ConnectionType::Attach,
+        enabled: true,
     });
 
     let result = validate_model(&model);
