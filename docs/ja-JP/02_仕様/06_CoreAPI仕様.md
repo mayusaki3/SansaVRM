@@ -8,10 +8,10 @@
 
 Core API は以下の責務を持つ。
 
-- メタモデル（02）に基づくデータ操作
-- glTF拡張（03）との入出力連携
-- JSONスキーマ（04）準拠データの生成・更新
-- Validator（05）との統合検証
+- [メタモデル仕様](./02_メタモデル仕様.md) に基づくデータ操作
+- [glTF拡張仕様](./03_glTF拡張仕様.md) との入出力連携
+- [JSONスキーマ仕様](./04_JSONスキーマ仕様.md) 準拠データの生成・更新
+- [Validator実装仕様](./05_Validator実装仕様.md) との統合検証
 - Runtime に対する状態操作インターフェースの提供
 
 本仕様は、実装言語に依存しない抽象 API を定義し、
@@ -305,6 +305,8 @@ apply_state(model, state_id) -> Result<Model>
 - actions 実行
 - Model 更新
 - actions に応じて connections / properties / visibility が変更される
+- Connection の有効 / 無効切替
+- Control / Actuator / Sensor 状態への反映
 
 ---
 
@@ -336,7 +338,7 @@ validate(model, options) -> Result<ValidationResult>
 #### 処理
 
 - JSON Schema（必要に応じて）
-- Validator（05）
+- Validator
 
 ---
 
