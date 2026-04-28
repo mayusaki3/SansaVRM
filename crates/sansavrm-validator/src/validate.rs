@@ -286,6 +286,20 @@ fn validate_state_actions(model: &Model, errors: &mut Vec<SansaVrmError>) {
                     }
                 }
 
+                sansavrm_core::StateAction::ConnectionEnable { connection_id }
+                | sansavrm_core::StateAction::ConnectionDisable { connection_id } => {
+                    if !model
+                        .connections
+                        .iter()
+                        .any(|connection| &connection.connection_id == connection_id)
+                    {
+                        errors.push(SansaVrmError::InvalidInput(format!(
+                            "State {} references unknown connection {}",
+                            state.state_id, connection_id
+                        )));
+                    }
+                }
+
                 sansavrm_core::StateAction::PropertyOverride { property_id: _, value: _ } => {
                     // 今は未検証。Property参照モデル確定後に追加する。
                 }

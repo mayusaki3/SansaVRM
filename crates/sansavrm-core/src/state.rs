@@ -21,6 +21,8 @@ pub enum StateAction {
     ModuleDisable { module_id: String },
     SlotBind { slot_id: String, target_slot_id: String },
     SlotUnbind { slot_id: String, target_slot_id: String },
+    ConnectionEnable { connection_id: String },
+    ConnectionDisable { connection_id: String },
     PropertyOverride { property_id: String, value: String },
     VisibilityChange { target_id: String, visible: bool },
 }

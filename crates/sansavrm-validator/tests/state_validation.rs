@@ -1,8 +1,10 @@
 // crates/sansavrm-validator/tests/state_validation.rs
 
 use sansavrm_core::{
-    Model, Module, ModuleType, Slot, SlotType, State, StateAction, StateCategory,
+    Connection, ConnectionType, Model, Module, ModuleType, Slot, SlotType, State, StateAction,
+    StateCategory,
 };
+
 use sansavrm_validator::validate_model;
 
 fn base_model() -> Model {
@@ -23,6 +25,14 @@ fn base_model() -> Model {
         current_connections: vec![],
         connection_rules: None,
         properties: vec![],
+    });
+
+    model.connections.push(Connection {
+        connection_id: "connection_001".into(),
+        from_id: "slot_001".into(),
+        to_id: "module_001".into(),
+        connection_type: ConnectionType::Attach,
+        enabled: true,
     });
 
     model
@@ -93,6 +103,42 @@ fn validator_state_004_visibility_unknown_target_should_fail() {
         actions: vec![StateAction::VisibilityChange {
             target_id: "unknown".into(),
             visible: true,
+        }],
+        priority: 0,
+        enabled: true,
+    });
+
+    let result = validate_model(&model);
+    assert!(!result.success);
+}
+
+#[test]
+fn validator_state_005_valid_connection_enable_should_pass() {
+    let mut model = base_model();
+
+    model.states.push(State {
+        state_id: "state_001".into(),
+        category: StateCategory::Expression,
+        actions: vec![StateAction::ConnectionEnable {
+            connection_id: "connection_001".into(),
+        }],
+        priority: 0,
+        enabled: true,
+    });
+
+    let result = validate_model(&model);
+    assert!(result.success);
+}
+
+#[test]
+fn validator_state_006_unknown_connection_disable_should_fail() {
+    let mut model = base_model();
+
+    model.states.push(State {
+        state_id: "state_001".into(),
+        category: StateCategory::Expression,
+        actions: vec![StateAction::ConnectionDisable {
+            connection_id: "unknown_connection".into(),
         }],
         priority: 0,
         enabled: true,
