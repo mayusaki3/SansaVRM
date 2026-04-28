@@ -27,6 +27,7 @@
 - Compatibility 検証
 - Rights / Revenue 検証
 - diagnostics 生成
+- diagnostics の順序安定性
 
 ---
 
@@ -60,8 +61,8 @@
 
 対象：
 
-- connections
-- current_connections
+- connections（主）
+- current_connections（補助整合確認）
 
 検証内容：
 
@@ -109,6 +110,34 @@
 - type
 - severity
 - message
+
+---
+
+### 3.8 Property分類整合性検証
+
+対象：
+
+- property_type
+- role
+
+検証内容：
+
+- property_type と key の整合
+- property_type と role の整合
+
+---
+
+### 3.9 MuJoCo変換前提整合性
+
+対象：
+
+- property_type
+- role
+- connection_type
+
+検証内容：
+
+- joint以外のConnectionが混在しないこと（MuJoCo対象）
 
 ---
 

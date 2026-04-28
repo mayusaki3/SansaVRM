@@ -45,6 +45,8 @@
 - string / number / boolean / object / array
 - enum
 - null許容
+- property_type の enum 検証
+- role の enum 検証
 
 ---
 
@@ -56,6 +58,7 @@
 - additionalProperties
 - oneOf / anyOf / allOf
 - if / then / else
+- Property の required（property_type / role）検証
 
 ---
 
@@ -165,6 +168,24 @@
 内容：無効な $ref
 期待結果：fail
 ```
+
+---
+
+### SCHEMA-PROPERTY-005
+
+テストID：SCHEMA-PROPERTY-005
+分類：型検証
+内容：property_type に無効値を指定
+期待結果：fail
+
+---
+
+### SCHEMA-PROPERTY-006
+
+テストID：SCHEMA-PROPERTY-006
+分類：制約検証
+内容：role が欠落
+期待結果：fail
 
 ---
 
