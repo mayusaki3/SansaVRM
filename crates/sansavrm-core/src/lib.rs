@@ -21,6 +21,7 @@ pub mod slot;
 pub mod state;
 pub mod connection_api;
 pub mod property_api;
+pub mod io_api;
 
 pub use diagnostics::*;
 pub use error::*;
@@ -33,3 +34,4 @@ pub use slot::*;
 pub use state::*;
 pub use connection_api::*;
 pub use property_api::*;
+pub use io_api::*;
