@@ -26,6 +26,7 @@ pub mod state_api;
 pub mod model_api;
 pub mod module_api;
 pub mod slot_api;
+pub mod transaction_api;
 
 pub use diagnostics::*;
 pub use error::*;
@@ -43,3 +44,4 @@ pub use state_api::*;
 pub use model_api::*;
 pub use module_api::*;
 pub use slot_api::*;
+pub use transaction_api::*;
