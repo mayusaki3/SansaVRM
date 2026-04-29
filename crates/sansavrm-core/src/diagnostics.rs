@@ -38,6 +38,7 @@ pub enum DiagnosticCode {
     ConnectionRuleViolation,
     StateActionInvalid,
     PropertyTypeMismatch,
+    PropertyValueInvalid,
 }
 
 /// SansaVRM diagnostics item。

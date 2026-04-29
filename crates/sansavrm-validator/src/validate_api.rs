@@ -3,6 +3,7 @@
 use sansavrm_core::{CoreResult, Model};
 
 use crate::validate_model;
+use crate::{validate_model_with_diagnostics, ValidatorResult};
 
 /// Validator 実行オプション。
 ///
@@ -39,4 +40,14 @@ impl Default for ValidateOptions {
 /// TODO(trace): CoreAPI仕様 / validate
 pub fn validate(model: &Model, _options: ValidateOptions) -> CoreResult<()> {
     validate_model(model)
+}
+
+/// Model を diagnostics 付きで検証する。
+///
+/// 役割:
+/// - diagnostics を取得するための公開API。
+///
+/// TODO(trace): Validator実装仕様 / diagnostics出力
+pub fn validate_diagnostics(model: &Model, _options: ValidateOptions) -> ValidatorResult {
+    validate_model_with_diagnostics(model)
 }

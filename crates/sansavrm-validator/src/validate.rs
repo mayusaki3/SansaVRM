@@ -42,6 +42,9 @@ pub fn validate_model_with_diagnostics(model: &Model) -> ValidatorResult {
 
     validate_unique_ids_with_diagnostics(model, &mut diagnostics);
     validate_slot_owner_refs_with_diagnostics(model, &mut diagnostics);
+    validate_connections_with_diagnostics(model, &mut diagnostics);
+    validate_properties_with_diagnostics(model, &mut diagnostics);
+    sort_diagnostics(&mut diagnostics);
 
     ValidatorResult {
         success: diagnostics.is_empty(),
@@ -211,6 +214,48 @@ fn validate_connections(model: &Model, errors: &mut Vec<SansaVrmError>) {
     }
 }
 
+/// Connection の参照整合性 diagnostics 検証
+///
+/// TODO(trace): Validator実装仕様 / diagnostics出力
+fn validate_connections_with_diagnostics(
+    model: &Model,
+    diagnostics: &mut Vec<ValidationDiagnostic>,
+) {
+    for connection in &model.connections {
+        let from_exists =
+            model.modules.iter().any(|module| module.module_id == connection.from_id)
+                || model.slots.iter().any(|slot| slot.slot_id == connection.from_id);
+
+        let to_exists =
+            model.modules.iter().any(|module| module.module_id == connection.to_id)
+                || model.slots.iter().any(|slot| slot.slot_id == connection.to_id);
+
+        if !from_exists {
+            diagnostics.push(ValidationDiagnostic {
+                code: DiagnosticCode::RefNotFound,
+                severity: DiagnosticSeverity::Error,
+                message: format!(
+                    "Connection {} references unknown from_id {}",
+                    connection.connection_id, connection.from_id
+                ),
+                target: Some(connection.connection_id.clone()),
+            });
+        }
+
+        if !to_exists {
+            diagnostics.push(ValidationDiagnostic {
+                code: DiagnosticCode::RefNotFound,
+                severity: DiagnosticSeverity::Error,
+                message: format!(
+                    "Connection {} references unknown to_id {}",
+                    connection.connection_id, connection.to_id
+                ),
+                target: Some(connection.connection_id.clone()),
+            });
+        }
+    }
+}
+
 /// ConnectionRule の最小制約検証
 ///
 /// TODO(trace): Validator実装仕様 / 接続制約検証
@@ -337,6 +382,71 @@ fn validate_properties(model: &Model, errors: &mut Vec<SansaVrmError>) {
     }
 }
 
+/// Model 内の Property diagnostics 検証
+///
+/// TODO(trace): Validator実装仕様 / diagnostics出力
+fn validate_properties_with_diagnostics(
+    model: &Model,
+    diagnostics: &mut Vec<ValidationDiagnostic>,
+) {
+    for module in &model.modules {
+        for property in &module.properties {
+            validate_property_value_with_diagnostics(property, diagnostics);
+        }
+    }
+
+    for slot in &model.slots {
+        for property in &slot.properties {
+            validate_property_value_with_diagnostics(property, diagnostics);
+        }
+    }
+}
+
+/// Property の値 diagnostics 検証
+///
+/// TODO(trace): Validator実装仕様 / diagnostics出力
+fn validate_property_value_with_diagnostics(
+    property: &sansavrm_core::Property,
+    diagnostics: &mut Vec<ValidationDiagnostic>,
+) {
+    match property.value_type {
+        sansavrm_core::PropertyValueType::String => {}
+
+        sansavrm_core::PropertyValueType::Number => {
+            if property.value.parse::<f64>().is_err() {
+                diagnostics.push(ValidationDiagnostic {
+                    code: DiagnosticCode::PropertyValueInvalid,
+                    severity: DiagnosticSeverity::Error,
+                    message: format!(
+                        "Property {} expects number but got {}",
+                        property.property_id, property.value
+                    ),
+                    target: Some(property.property_id.clone()),
+                });
+            }
+        }
+
+        sansavrm_core::PropertyValueType::Boolean => {
+            if property.value.parse::<bool>().is_err() {
+                diagnostics.push(ValidationDiagnostic {
+                    code: DiagnosticCode::PropertyValueInvalid,
+                    severity: DiagnosticSeverity::Error,
+                    message: format!(
+                        "Property {} expects boolean but got {}",
+                        property.property_id, property.value
+                    ),
+                    target: Some(property.property_id.clone()),
+                });
+            }
+        }
+
+        sansavrm_core::PropertyValueType::Object
+        | sansavrm_core::PropertyValueType::Array => {
+            // serde_json 導入後に Object / Array の構造検証を追加する。
+        }
+    }
+}
+
 /// Property の値整合性検証
 ///
 /// TODO(trace): Validator実装仕様 / Property整合性検証
@@ -371,4 +481,27 @@ fn validate_property_value(
             // serde_json 導入後に Object / Array の構造検証を追加する。
         }
     }
+}
+
+/// diagnostics の出力順を安定化する。
+///
+/// 役割:
+/// - CI差分やテスト結果の再現性を確保する。
+///
+/// TODO(trace): Validator実装仕様 / diagnostics順序安定性
+fn sort_diagnostics(diagnostics: &mut [ValidationDiagnostic]) {
+    diagnostics.sort_by(|a, b| {
+        diagnostic_sort_key(a).cmp(&diagnostic_sort_key(b))
+    });
+}
+
+/// diagnostics ソートキーを生成する。
+fn diagnostic_sort_key(diagnostic: &ValidationDiagnostic) -> String {
+    format!(
+        "{:?}|{:?}|{}|{}",
+        diagnostic.severity,
+        diagnostic.code,
+        diagnostic.target.clone().unwrap_or_default(),
+        diagnostic.message
+    )
 }
