@@ -56,8 +56,18 @@ pub fn import_urdf(document: UrdfDocument) -> CoreResult<Model> {
 /// SansaVRM Model を URDF へ export する。
 ///
 /// TODO(trace): 変換仕様 / URDF Export
-pub fn export_urdf(_model: &Model) -> CoreResult<UrdfDocument> {
-    CoreResult::fail(SansaVrmError::InvalidInput(
-        "urdf export is not implemented yet".into(),
-    ))
+pub fn export_urdf(model: &Model) -> CoreResult<UrdfDocument> {
+    let mut document = format!(r#"<robot name="{}">"#, model.model_id);
+
+    for module in &model.modules {
+        document.push_str(&format!(
+            r#"
+    <link name="{}"/>"#,
+            module.module_id
+        ));
+    }
+
+    document.push_str("\n</robot>");
+
+    CoreResult::ok(document)
 }

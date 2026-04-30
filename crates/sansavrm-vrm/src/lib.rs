@@ -1,6 +1,6 @@
 //! SansaVRM VRM adapter.
 
-use sansavrm_core::{CoreResult, IoOptions, Model, SansaVrmError, VrmDocument, VrmVersion};
+use sansavrm_core::{CoreResult, IoOptions, Model, VrmDocument, VrmVersion};
 
 /// VRM を SansaVRM Model へ import する。
 ///
