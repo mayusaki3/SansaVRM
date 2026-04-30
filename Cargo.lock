@@ -194,6 +194,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "sansavrm-mujoco"
+version = "0.1.0"
+dependencies = [
+ "sansavrm-core",
+ "sansavrm-validator",
+]
+
+[[package]]
 name = "sansavrm-urdf"
 version = "0.1.0"
 dependencies = [
