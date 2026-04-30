@@ -189,10 +189,16 @@ dependencies = [
 [[package]]
 name = "sansavrm-gltf"
 version = "0.1.0"
+dependencies = [
+ "sansavrm-core",
+]
 
 [[package]]
 name = "sansavrm-urdf"
 version = "0.1.0"
+dependencies = [
+ "sansavrm-core",
+]
 
 [[package]]
 name = "sansavrm-validator"
@@ -204,6 +210,9 @@ dependencies = [
 [[package]]
 name = "sansavrm-vrm"
 version = "0.1.0"
+dependencies = [
+ "sansavrm-core",
+]
 
 [[package]]
 name = "semver"
