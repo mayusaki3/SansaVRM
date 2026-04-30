@@ -191,6 +191,8 @@ name = "sansavrm-gltf"
 version = "0.1.0"
 dependencies = [
  "sansavrm-core",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]
