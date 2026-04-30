@@ -27,6 +27,7 @@
 - Compatibility 検証
 - Rights / Revenue 検証
 - diagnostics 生成
+- diagnostics の順序安定性
 
 ---
 
@@ -60,8 +61,8 @@
 
 対象：
 
-- connections
-- current_connections
+- connections（主）
+- current_connections（補助整合確認）
 
 検証内容：
 
@@ -112,6 +113,34 @@
 
 ---
 
+### 3.8 Property分類整合性検証
+
+対象：
+
+- property_type
+- role
+
+検証内容：
+
+- property_type と key の整合
+- property_type と role の整合
+
+---
+
+### 3.9 MuJoCo変換前提整合性
+
+対象：
+
+- property_type
+- role
+- connection_type
+
+検証内容：
+
+- joint以外のConnectionが混在しないこと（MuJoCo対象）
+
+---
+
 ## 4. テスト方針
 
 ---
@@ -159,46 +188,40 @@
 
 ---
 
-## 6. テストケース例
+## 6. テストケース
 
 ---
 
 ### VALIDATOR-REF-001
 
-```md id="val_case_001"
-テストID：VALIDATOR-REF-001
-分類：参照整合性
-内容：存在しない module_id を参照
-期待結果：fail
-エラーコード：REF_NOT_FOUND
-severity：error
-```
+- テストID：VALIDATOR-REF-001
+- 分類：参照整合性
+- 内容：存在しない module_id を参照
+- 期待結果：fail
+- エラーコード：REF_NOT_FOUND
+- severity：error
 
 ---
 
 ### VALIDATOR-CONN-002
 
-```md id="val_case_002"
-テストID：VALIDATOR-CONN-002
-分類：接続整合性
-内容：max_connections 超過
-期待結果：fail
-エラーコード：MAX_CONNECTION_EXCEEDED
-severity：error
-```
+- テストID：VALIDATOR-CONN-002
+- 分類：接続整合性
+- 内容：max_connections 超過
+- 期待結果：fail
+- エラーコード：MAX_CONNECTION_EXCEEDED
+- severity：error
 
 ---
 
 ### VALIDATOR-STATE-003
 
-```md id="val_case_003"
-テストID：VALIDATOR-STATE-003
-分類：StateAction
-内容：無効な property_override
-期待結果：fail
-エラーコード：PROPERTY_OVERRIDE_TYPE_MISMATCH
-severity：error
-```
+- テストID：VALIDATOR-STATE-003
+- 分類：StateAction
+- 内容：無効な property_override
+- 期待結果：fail
+- エラーコード：PROPERTY_OVERRIDE_TYPE_MISMATCH
+- severity：error
 
 ---
 

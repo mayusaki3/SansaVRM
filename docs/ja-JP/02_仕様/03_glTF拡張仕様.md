@@ -203,9 +203,12 @@ ID は以下のいずれかを許容する。
   "diagnostics_ref": "diagnostics/model/main",
   "connections": [
     {
-      "from_slot_id": "module/hat_a.slot/root",
-      "to_slot_id": "module/body.slot/head_mount",
-      "connection_type": "equipment"
+      "connection_id": "connection/hat_a_to_head",
+      "from_id": "module/hat_a.slot/root",
+      "to_id": "module/body.slot/head_mount",
+      "connection_type": "attach",
+      "enabled": true,
+      "conditions": null
     }
   ]
 }
@@ -334,7 +337,7 @@ glTF 標準要素との対応を保持する。
 
 モデル全体の正規接続関係は SansaVRM_model.connections を正本とする。
 SansaVRM_slots.current_connections は各 Slot から見た局所参照であり、
-SansaVRM_model.connections と整合しなければならない。
+接続中の connection_id を保持する。
 
 ### 9.2 slot_type
 
@@ -346,6 +349,14 @@ SansaVRM_model.connections と整合しなければならない。
 - Rights
 - Revenue
 - Custom
+- Physics
+- Control
+- Sensor
+- Actuator
+- Compatibility
+- SemanticTag
+- Morph
+- Animation
 
 ### 9.3 connection_rules
 
@@ -409,6 +420,9 @@ SansaVRM_model.connections と整合しなければならない。
 - Configuration
 - Equipment
 - Visibility
+- Control
+- Physics
+- Actuator
 
 ### 10.3 conditions
 
@@ -447,6 +461,8 @@ action は以下を基本とする。
 - `expression_change`
 - `property_override`
 - `visibility_change`
+- `connection_enable`
+- `connection_disable`
 
 ### 10.5 action パラメータ
 
@@ -472,6 +488,10 @@ action は以下を基本とする。
 
 - `target_id`
 - `visible`
+
+#### connection_enable / connection_disable
+
+- `connection_id`
 
 ---
 

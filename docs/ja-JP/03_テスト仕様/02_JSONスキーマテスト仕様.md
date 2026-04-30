@@ -45,6 +45,8 @@
 - string / number / boolean / object / array
 - enum
 - null許容
+- property_type の enum 検証
+- role の enum 検証
 
 ---
 
@@ -56,6 +58,7 @@
 - additionalProperties
 - oneOf / anyOf / allOf
 - if / then / else
+- Property の required（property_type / role）検証
 
 ---
 
@@ -120,51 +123,61 @@
 
 ---
 
-## 6. テストケース例
+## 6. テストケース
 
 ---
 
 ### SCHEMA-STRUCT-001
 
-```md id="schema_case_001"
-テストID：SCHEMA-STRUCT-001
-分類：構造検証
-内容：実際のJSONを1つ載せること
-期待結果：pass
-```
+- テストID：SCHEMA-STRUCT-001
+- 分類：構造検証
+- 内容：実際のJSONを1つ載せること
+- 期待結果：pass
 
 ---
 
 ### SCHEMA-TYPE-002
 
-```md id="schema_case_002"
-テストID：SCHEMA-TYPE-002
-分類：型検証
-内容：string に number を指定
-期待結果：fail
-```
+- テストID：SCHEMA-TYPE-002
+- 分類：型検証
+- 内容：string に number を指定
+- 期待結果：fail
 
 ---
 
 ### SCHEMA-CONSTRAINT-003
 
-```md id="schema_case_003"
-テストID：SCHEMA-CONSTRAINT-003
-分類：制約検証
-内容：additionalProperties 禁止違反
-期待結果：fail
-```
+- テストID：SCHEMA-CONSTRAINT-003
+- 分類：制約検証
+- 内容：additionalProperties 禁止違反
+- 期待結果：fail
 
 ---
 
 ### SCHEMA-REF-004
 
-```md id="schema_case_004"
-テストID：SCHEMA-REF-004
-分類：参照検証
-内容：無効な $ref
-期待結果：fail
-```
+- テストID：SCHEMA-REF-004
+- 分類：参照検証
+- 内容：無効な $ref
+- 期待結果：fail
+
+---
+
+### SCHEMA-PROPERTY-005
+
+- テストID：SCHEMA-PROPERTY-005
+- 分類：型検証
+- 内容：property_type に無効値を指定
+- 期待結果：fail
+
+---
+
+### SCHEMA-PROPERTY-006
+
+- テストID：SCHEMA-PROPERTY-006
+- 分類：制約検証
+- 内容：role が欠落
+- 期待結果：fail
 
 ---
 

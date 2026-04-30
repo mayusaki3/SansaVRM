@@ -11,7 +11,7 @@
 
 - SansaVRM Format の構造妥当性を自動検証可能とする
 - 必須項目、型、列挙値、配列構造を機械的に検証可能とする
-- `02_メタモデル仕様.md` および `03_glTF拡張仕様.md` の形式仕様を固定する
+- [メタモデル仕様](./02_メタモデル仕様.md) および [glTF拡張仕様](./03_glTF拡張仕様.md) の形式仕様を固定する
 - Core API、変換処理、Runtime 入出力の前提となるデータ契約を明確化する
 
 ---
@@ -104,17 +104,17 @@ SansaVRM 拡張群の妥当性を検証する。
 本仕様で使用する `$id` は以下を基本とする。
 
 ```text
-https://sansavrm.local/schema/04/root.schema.json
-https://sansavrm.local/schema/04/defs.schema.json
-https://sansavrm.local/schema/04/model.schema.json
-https://sansavrm.local/schema/04/modules.schema.json
-https://sansavrm.local/schema/04/slots.schema.json
-https://sansavrm.local/schema/04/states.schema.json
-https://sansavrm.local/schema/04/rights.schema.json
-https://sansavrm.local/schema/04/revenue.schema.json
-https://sansavrm.local/schema/04/compatibility.schema.json
-https://sansavrm.local/schema/04/diagnostics.schema.json
-https://sansavrm.local/schema/04/extension-layer.schema.json
+https://sansavrm.local/schema/sansavrm/v1/root.schema.json
+https://sansavrm.local/schema/sansavrm/v1/defs.schema.json
+https://sansavrm.local/schema/sansavrm/v1/model.schema.json
+https://sansavrm.local/schema/sansavrm/v1/modules.schema.json
+https://sansavrm.local/schema/sansavrm/v1/slots.schema.json
+https://sansavrm.local/schema/sansavrm/v1/states.schema.json
+https://sansavrm.local/schema/sansavrm/v1/rights.schema.json
+https://sansavrm.local/schema/sansavrm/v1/revenue.schema.json
+https://sansavrm.local/schema/sansavrm/v1/compatibility.schema.json
+https://sansavrm.local/schema/sansavrm/v1/diagnostics.schema.json
+https://sansavrm.local/schema/sansavrm/v1/extension-layer.schema.json
 ```
 
 実運用では、上記は配布 URL またはローカル参照 URI に置き換えてよい。
@@ -251,10 +251,37 @@ ID や識別子は空文字列を許容しない。
           "type": "string",
           "enum": ["string", "number", "boolean", "object", "array"]
         },
+        "property_type": {
+          "type": "string",
+          "enum": [
+            "physics",
+            "collision",
+            "visual",
+            "control",
+            "actuator",
+            "sensor",
+            "metadata",
+            "custom"
+          ]
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "module",
+            "slot",
+            "physics",
+            "control",
+            "actuator",
+            "sensor",
+            "interface",
+            "constraint",
+            "custom"
+          ]
+        },
         "constraints": { "$ref": "#/$defs/PropertyConstraints" },
         "metadata": { "$ref": "#/$defs/PropertyMetadata" }
       },
-      "required": ["property_id", "key", "value", "value_type"],
+      "required": ["property_id", "key", "value", "value_type", "property_type", "role"],
       "additionalProperties": false,
       "allOf": [
         {
@@ -367,7 +394,9 @@ ID や識別子は空文字列を許容しない。
             "slot_unbind",
             "expression_change",
             "property_override",
-            "visibility_change"
+            "visibility_change",
+            "connection_enable",
+            "connection_disable"
           ]
         },
         "module_id": { "$ref": "#/$defs/Id" },
@@ -377,7 +406,8 @@ ID や識別子は空文字列を許容しない。
         "property_id": { "$ref": "#/$defs/Id" },
         "value": {},
         "target_id": { "$ref": "#/$defs/Id" },
-        "visible": { "type": "boolean" }
+        "visible": { "type": "boolean" },
+        "connection_id": { "$ref": "#/$defs/Id" }
       },
       "required": ["action"],
       "additionalProperties": false,
@@ -430,6 +460,20 @@ ID や識別子は空文字列を許容しない。
             "required": ["action"]
           },
           "then": { "required": ["target_id", "visible"] }
+        },
+        {
+          "if": {
+            "properties": { "action": { "const": "connection_enable" } },
+            "required": ["action"]
+          },
+          "then": { "required": ["connection_id"] }
+        },
+        {
+          "if": {
+            "properties": { "action": { "const": "connection_disable" } },
+            "required": ["action"]
+          },
+          "then": { "required": ["connection_id"] }
         }
       ]
     }
@@ -555,7 +599,7 @@ SansaVRM 拡張群を検証する。
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sansavrm.local/schema/04/root.schema.json",
+  "$id": "https://sansavrm.local/schema/sansavrm/v1/root.schema.json",
   "type": "object",
   "properties": {
     "extensions": {
@@ -599,7 +643,7 @@ SansaVRM 拡張群を検証する。
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sansavrm.local/schema/04/model.schema.json",
+  "$id": "https://sansavrm.local/schema/sansavrm/v1/model.schema.json",
   "type": "object",
   "properties": {
     "model_id": { "$ref": "defs.schema.json#/$defs/Id" },
@@ -623,11 +667,28 @@ SansaVRM 拡張群を検証する。
       "items": {
         "type": "object",
         "properties": {
-          "from_slot_id": { "$ref": "defs.schema.json#/$defs/Id" },
-          "to_slot_id": { "$ref": "defs.schema.json#/$defs/Id" },
-          "connection_type": { "type": "string", "minLength": 1 }
+          "connection_id": { "$ref": "defs.schema.json#/$defs/Id" },
+          "from_id": { "$ref": "defs.schema.json#/$defs/Id" },
+          "to_id": { "$ref": "defs.schema.json#/$defs/Id" },
+          "connection_type": {
+            "type": "string",
+            "enum": ["attach", "joint", "logical"]
+          },
+          "enabled": { "type": "boolean" },
+          "conditions": {
+            "anyOf": [
+              { "$ref": "defs.schema.json#/$defs/Conditions" },
+              { "type": "null" }
+            ]
+          }
         },
-        "required": ["from_slot_id", "to_slot_id", "connection_type"],
+        "required": [
+          "connection_id",
+          "from_id",
+          "to_id",
+          "connection_type",
+          "enabled"
+        ],
         "additionalProperties": false
       }
     }
@@ -644,7 +705,7 @@ SansaVRM 拡張群を検証する。
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sansavrm.local/schema/04/modules.schema.json",
+  "$id": "https://sansavrm.local/schema/sansavrm/v1/modules.schema.json",
   "type": "object",
   "properties": {
     "modules": {
@@ -698,7 +759,7 @@ SansaVRM 拡張群を検証する。
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sansavrm.local/schema/04/slots.schema.json",
+  "$id": "https://sansavrm.local/schema/sansavrm/v1/slots.schema.json",
   "type": "object",
   "properties": {
     "slots": {
@@ -709,7 +770,22 @@ SansaVRM 拡張群を検証する。
           "slot_id": { "$ref": "defs.schema.json#/$defs/Id" },
           "slot_type": {
             "type": "string",
-            "enum": ["Structure", "Equipment", "State", "Rights", "Revenue", "Custom"]
+            "enum": [
+              "Structure",
+              "Equipment",
+              "State",
+              "Rights",
+              "Revenue",
+              "Physics",
+              "Control",
+              "Sensor",
+              "Actuator",
+              "Compatibility",
+              "SemanticTag",
+              "Morph",
+              "Animation",
+              "Custom"
+            ]
           },
           "owner_module_id": { "$ref": "defs.schema.json#/$defs/Id" },
           "target_slot_types": {
@@ -747,7 +823,7 @@ SansaVRM 拡張群を検証する。
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sansavrm.local/schema/04/states.schema.json",
+  "$id": "https://sansavrm.local/schema/sansavrm/v1/states.schema.json",
   "type": "object",
   "properties": {
     "states": {
@@ -758,7 +834,15 @@ SansaVRM 拡張群を検証する。
           "state_id": { "$ref": "defs.schema.json#/$defs/Id" },
           "category": {
             "type": "string",
-            "enum": ["Expression", "Configuration", "Equipment", "Visibility"]
+            "enum": [
+              "Expression",
+              "Configuration",
+              "Equipment",
+              "Visibility",
+              "Control",
+              "Physics",
+              "Actuator"
+            ]
           },
           "conditions": { "$ref": "defs.schema.json#/$defs/Conditions" },
           "actions": {
@@ -785,7 +869,7 @@ SansaVRM 拡張群を検証する。
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sansavrm.local/schema/04/rights.schema.json",
+  "$id": "https://sansavrm.local/schema/sansavrm/v1/rights.schema.json",
   "type": "object",
   "properties": {
     "rights": {
@@ -854,7 +938,7 @@ SansaVRM 拡張群を検証する。
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sansavrm.local/schema/04/revenue.schema.json",
+  "$id": "https://sansavrm.local/schema/sansavrm/v1/revenue.schema.json",
   "type": "object",
   "properties": {
     "revenue": {
@@ -932,7 +1016,7 @@ SansaVRM 拡張群を検証する。
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sansavrm.local/schema/04/compatibility.schema.json",
+  "$id": "https://sansavrm.local/schema/sansavrm/v1/compatibility.schema.json",
   "type": "object",
   "properties": {
     "compatibility": {
@@ -993,7 +1077,7 @@ SansaVRM 拡張群を検証する。
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sansavrm.local/schema/04/diagnostics.schema.json",
+  "$id": "https://sansavrm.local/schema/sansavrm/v1/diagnostics.schema.json",
   "type": "object",
   "properties": {
     "diagnostics": {
@@ -1025,7 +1109,7 @@ SansaVRM 拡張群を検証する。
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sansavrm.local/schema/04/extension-layer.schema.json",
+  "$id": "https://sansavrm.local/schema/sansavrm/v1/extension-layer.schema.json",
   "type": "object",
   "properties": {
     "extension_layers": {
@@ -1086,6 +1170,8 @@ SansaVRM 拡張群を検証する。
 - 条件式 DSL の意味評価
 - glTF 標準構造との実インデックス整合
 - rights / revenue / compatibility の owner 実在確認
+- `property_type` / `role` / `key` の意味論的整合
+- MuJoCo 変換時の Property 分類妥当性
 
 ---
 
