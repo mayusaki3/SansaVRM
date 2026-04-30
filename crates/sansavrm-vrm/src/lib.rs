@@ -15,13 +15,16 @@ pub fn import_vrm(document: VrmDocument) -> CoreResult<Model> {
 
 /// SansaVRM Model を VRM へ export する。
 ///
+/// 注意:
+/// - 初期実装では VRM を glTF JSON として出力し、glTF export に委譲する。
+/// - `version` は API として受け取るが、VRM 0.x / 1.0 固有 extension の出力は後続実装。
+/// - `options` は後続実装で使用する。
+///
 /// TODO(trace): 変換仕様 / VRM Export
 pub fn export_vrm(
-    _model: &Model,
+    model: &Model,
     _version: VrmVersion,
     _options: IoOptions,
 ) -> CoreResult<VrmDocument> {
-    CoreResult::fail(SansaVrmError::InvalidInput(
-        "vrm export is not implemented yet".into(),
-    ))
+    sansavrm_gltf::export_gltf(model)
 }

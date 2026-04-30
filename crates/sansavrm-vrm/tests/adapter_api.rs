@@ -1,4 +1,4 @@
-use sansavrm_core::{IoOptions, Model, VrmVersion};
+use sansavrm_core::{IoOptions, Model, Module, ModuleType, VrmVersion};
 use sansavrm_vrm::{export_vrm, import_vrm};
 
 #[test]
@@ -31,10 +31,23 @@ fn vrm_adapter_001_import_minimal_vrm_should_create_model() {
 }
 
 #[test]
-fn vrm_adapter_002_export_vrm_1_0_returns_not_implemented() {
-    let model = Model::new();
+fn vrm_adapter_002_export_vrm_1_0_should_create_gltf_json() {
+    let mut model = Model::new();
+
+    model.modules.push(Module {
+        module_id: "Root".into(),
+        module_type: ModuleType::Module,
+        slots: vec![],
+        properties: vec![],
+    });
+
     let result = export_vrm(&model, VrmVersion::V1_0, IoOptions::default());
-    assert!(!result.success);
+
+    assert!(result.success);
+
+    let document = result.data.expect("document should be returned");
+    assert!(document.contains("\"version\": \"2.0\""));
+    assert!(document.contains("\"name\": \"Root\""));
 }
 
 #[test]
@@ -43,4 +56,24 @@ fn vrm_adapter_003_import_invalid_json_should_fail() {
 
     assert!(!result.success);
     assert_eq!(result.errors.len(), 1);
+}
+
+#[test]
+fn vrm_adapter_004_export_vrm_0x_should_create_gltf_json() {
+    let mut model = Model::new();
+
+    model.modules.push(Module {
+        module_id: "Root".into(),
+        module_type: ModuleType::Module,
+        slots: vec![],
+        properties: vec![],
+    });
+
+    let result = export_vrm(&model, VrmVersion::V0x, IoOptions::default());
+
+    assert!(result.success);
+
+    let document = result.data.expect("document should be returned");
+    assert!(document.contains("\"version\": \"2.0\""));
+    assert!(document.contains("\"name\": \"Root\""));
 }
