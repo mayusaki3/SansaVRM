@@ -222,6 +222,7 @@ name = "sansavrm-vrm"
 version = "0.1.0"
 dependencies = [
  "sansavrm-core",
+ "sansavrm-gltf",
 ]
 
 [[package]]
