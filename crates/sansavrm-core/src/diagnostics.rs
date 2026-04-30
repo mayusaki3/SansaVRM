@@ -40,6 +40,7 @@ pub enum DiagnosticCode {
     PropertyTypeMismatch,
     PropertyValueInvalid,
     PropertyClassificationMismatch,
+    MujocoConstraintViolation,
 }
 
 /// SansaVRM diagnostics item。
