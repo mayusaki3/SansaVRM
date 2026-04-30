@@ -1,7 +1,7 @@
 //! SansaVRM glTF adapter.
 
 use sansavrm_core::{CoreResult, GltfDocument, Model, Module, ModuleType, SansaVrmError};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// glTF asset。
 #[derive(Debug, Deserialize)]
@@ -21,6 +21,25 @@ struct GltfRoot {
     asset: GltfAsset,
     #[serde(default)]
     nodes: Vec<GltfNode>,
+}
+
+/// glTF export 用 asset。
+#[derive(Debug, Serialize)]
+struct GltfAssetOut {
+    version: String,
+}
+
+/// glTF export 用 node。
+#[derive(Debug, Serialize)]
+struct GltfNodeOut {
+    name: String,
+}
+
+/// glTF export 用 root。
+#[derive(Debug, Serialize)]
+struct GltfRootOut {
+    asset: GltfAssetOut,
+    nodes: Vec<GltfNodeOut>,
 }
 
 /// glTF を SansaVRM Model へ import する。
@@ -64,8 +83,25 @@ pub fn import_gltf(document: GltfDocument) -> CoreResult<Model> {
 /// SansaVRM Model を glTF へ export する。
 ///
 /// TODO(trace): 変換仕様 / glTF Export
-pub fn export_gltf(_model: &Model) -> CoreResult<GltfDocument> {
-    CoreResult::fail(SansaVrmError::InvalidInput(
-        "gltf export is not implemented yet".into(),
-    ))
+pub fn export_gltf(model: &Model) -> CoreResult<GltfDocument> {
+    let gltf = GltfRootOut {
+        asset: GltfAssetOut {
+            version: "2.0".into(),
+        },
+        nodes: model
+            .modules
+            .iter()
+            .map(|module| GltfNodeOut {
+                name: module.module_id.clone(),
+            })
+            .collect(),
+    };
+
+    match serde_json::to_string_pretty(&gltf) {
+        Ok(document) => CoreResult::ok(document),
+        Err(error) => CoreResult::fail(SansaVrmError::InvalidInput(format!(
+            "Failed to export glTF JSON: {}",
+            error
+        ))),
+    }
 }
