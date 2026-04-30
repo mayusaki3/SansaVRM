@@ -39,6 +39,7 @@ pub enum DiagnosticCode {
     StateActionInvalid,
     PropertyTypeMismatch,
     PropertyValueInvalid,
+    PropertyClassificationMismatch,
 }
 
 /// SansaVRM diagnostics item。

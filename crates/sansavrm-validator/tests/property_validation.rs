@@ -97,3 +97,35 @@ fn validator_property_005_invalid_boolean_should_fail() {
 
     assert!(!result.success);
 }
+
+#[test]
+fn validator_property_006_physics_property_with_physics_role_should_pass() {
+    let model = model_with_module_property(Property {
+        property_id: "property_001".into(),
+        key: "mass".into(),
+        value: "12.5".into(),
+        value_type: PropertyValueType::Number,
+        property_type: PropertyType::Physics,
+        role: PropertyRole::Physics,
+    });
+
+    let result = validate_model(&model);
+
+    assert!(result.success);
+}
+
+#[test]
+fn validator_property_007_sensor_property_with_module_role_should_fail() {
+    let model = model_with_module_property(Property {
+        property_id: "property_001".into(),
+        key: "position".into(),
+        value: "0.0".into(),
+        value_type: PropertyValueType::String,
+        property_type: PropertyType::Sensor,
+        role: PropertyRole::Module,
+    });
+
+    let result = validate_model(&model);
+
+    assert!(!result.success);
+}

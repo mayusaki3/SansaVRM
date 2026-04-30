@@ -445,6 +445,8 @@ fn validate_property_value_with_diagnostics(
             // serde_json 導入後に Object / Array の構造検証を追加する。
         }
     }
+
+    validate_property_classification_with_diagnostics(property, diagnostics);
 }
 
 /// Property の値整合性検証
@@ -480,6 +482,65 @@ fn validate_property_value(
             // 現段階では JSON値検証未実装。
             // serde_json 導入後に Object / Array の構造検証を追加する。
         }
+    }
+
+    validate_property_classification(property, errors);
+}
+
+/// Property の分類整合性検証
+///
+/// TODO(trace): Validator実装仕様 / Property分類整合性検証
+fn validate_property_classification(
+    property: &sansavrm_core::Property,
+    errors: &mut Vec<SansaVrmError>,
+) {
+    if !property_classification_is_valid(property) {
+        errors.push(SansaVrmError::InvalidInput(format!(
+            "Property {} has incompatible property_type / role / key",
+            property.property_id
+        )));
+    }
+}
+
+/// Property の分類整合性 diagnostics 検証
+///
+/// TODO(trace): Validator実装仕様 / diagnostics出力
+fn validate_property_classification_with_diagnostics(
+    property: &sansavrm_core::Property,
+    diagnostics: &mut Vec<ValidationDiagnostic>,
+) {
+    if !property_classification_is_valid(property) {
+        diagnostics.push(ValidationDiagnostic {
+            code: DiagnosticCode::PropertyClassificationMismatch,
+            severity: DiagnosticSeverity::Error,
+            message: format!(
+                "Property {} has incompatible property_type / role / key",
+                property.property_id
+            ),
+            target: Some(property.property_id.clone()),
+        });
+    }
+}
+
+/// Property の分類整合性を判定する。
+///
+/// 役割:
+/// - 初期実装では property_type と role の組み合わせを最小検証する。
+///
+/// 注意点:
+/// - key に基づく詳細判定は後続実装で追加する。
+fn property_classification_is_valid(property: &sansavrm_core::Property) -> bool {
+    use sansavrm_core::{PropertyRole, PropertyType};
+
+    match property.property_type {
+        PropertyType::Physics => matches!(property.role, PropertyRole::Physics | PropertyRole::Module),
+        PropertyType::Collision => matches!(property.role, PropertyRole::Physics | PropertyRole::Module),
+        PropertyType::Visual => matches!(property.role, PropertyRole::Module),
+        PropertyType::Control => matches!(property.role, PropertyRole::Control | PropertyRole::Module),
+        PropertyType::Actuator => matches!(property.role, PropertyRole::Actuator | PropertyRole::Control),
+        PropertyType::Sensor => matches!(property.role, PropertyRole::Sensor),
+        PropertyType::Metadata => matches!(property.role, PropertyRole::Module | PropertyRole::Slot | PropertyRole::Custom),
+        PropertyType::Custom => true,
     }
 }
 
