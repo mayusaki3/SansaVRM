@@ -1,0 +1,9 @@
+[package]
+name = "sansavrm-urdf"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+sansavrm-core = { path = "../sansavrm-core" }
+quick-xml = { version = "0.31", features = ["serialize"] }
+serde = { version = "1", features = ["derive"] }

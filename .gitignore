@@ -1,41 +1,73 @@
-# Prerequisites
-*.d
+# =========================
+# Rust
+# =========================
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+# Build artifacts
+/target
 
-# Precompiled Headers
-*.gch
-*.pch
+# Rust analyzer / incremental
+**/*.rs.bk
 
-# Linker files
-*.ilk
+# Cargo
+# ライブラリのため Cargo.lock は管理しない
+Cargo.lock
 
-# Debugger Files
-*.pdb
+# =========================
+# OS
+# =========================
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
 
-# Fortran module files
-*.mod
-*.smod
+# macOS
+.DS_Store
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+# =========================
+# Editor / IDE
+# =========================
 
-# Executables
-*.exe
-*.out
-*.app
+# VSCode
+.vscode/
 
-# debug information files
-*.dwo
+# JetBrains
+.idea/
+
+# =========================
+# Logs / Temp
+# =========================
+
+*.log
+*.tmp
+*.temp
+
+# =========================
+# Node（将来 AJV 等使用想定）
+# =========================
+
+node_modules/
+npm-debug.log*
+
+# =========================
+# Python（将来ツール用）
+# =========================
+
+__pycache__/
+*.pyc
+*.pyo
+
+# =========================
+# Coverage / Reports
+# =========================
+
+coverage/
+*.lcov
+
+# =========================
+# Misc
+# =========================
+
+*.bak
+*.swp
+*.old

@@ -1,0 +1,7 @@
+[package]
+name = "sansavrm-validator"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+sansavrm-core = { path = "../sansavrm-core" }
