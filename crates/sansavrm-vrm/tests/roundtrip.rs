@@ -41,6 +41,7 @@ fn vrm_roundtrip_001_import_export_import_vrm_1_0_should_keep_nodes() {
     assert_eq!(reimported_model.modules.len(), 2);
     assert_eq!(reimported_model.modules[0].module_id, "Root");
     assert_eq!(reimported_model.modules[1].module_id, "Head");
+    assert_eq!(reimported_model.vrm_version, Some(VrmVersion::V1_0));
 }
 
 #[test]
@@ -81,4 +82,5 @@ fn vrm_roundtrip_002_import_export_import_vrm_0x_should_keep_nodes() {
     assert_eq!(reimported_model.modules.len(), 2);
     assert_eq!(reimported_model.modules[0].module_id, "Root");
     assert_eq!(reimported_model.modules[1].module_id, "Body");
+    assert_eq!(reimported_model.vrm_version, Some(VrmVersion::V0x));
 }

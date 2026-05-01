@@ -1,7 +1,7 @@
 //! SansaVRM VRM adapter.
 
 use sansavrm_core::{CoreResult, IoOptions, Model, VrmDocument, VrmVersion};
-use serde_json::Value;
+use serde_json::{json, Value};
 
 /// VRM を SansaVRM Model へ import する。
 ///
@@ -28,17 +28,70 @@ pub fn import_vrm(document: VrmDocument) -> CoreResult<Model> {
 /// SansaVRM Model を VRM へ export する。
 ///
 /// 注意:
-/// - 初期実装では VRM を glTF JSON として出力し、glTF export に委譲する。
-/// - `version` は API として受け取るが、VRM 0.x / 1.0 固有 extension の出力は後続実装。
+/// - 初期実装では glTF export 結果に VRM version extension を追加する。
+/// - `version` は出力対象の VRM 系列を明示する。
 /// - `options` は後続実装で使用する。
 ///
 /// TODO(trace): 変換仕様 / VRM Export
 pub fn export_vrm(
     model: &Model,
-    _version: VrmVersion,
+    version: VrmVersion,
     _options: IoOptions,
 ) -> CoreResult<VrmDocument> {
-    sansavrm_gltf::export_gltf(model)
+    let result = sansavrm_gltf::export_gltf(model);
+
+    if !result.success {
+        return result;
+    }
+
+    let document = result.data.expect("document should be returned");
+    let mut value = match serde_json::from_str::<Value>(&document) {
+        Ok(value) => value,
+        Err(error) => {
+            return CoreResult::fail(sansavrm_core::SansaVrmError::InvalidInput(format!(
+                "Failed to parse exported glTF JSON: {}",
+                error
+            )));
+        }
+    };
+
+    apply_vrm_extension(&mut value, version);
+
+    match serde_json::to_string_pretty(&value) {
+        Ok(document) => CoreResult::ok(document),
+        Err(error) => CoreResult::fail(sansavrm_core::SansaVrmError::InvalidInput(format!(
+            "Failed to export VRM JSON: {}",
+            error
+        ))),
+    }
+}
+
+/// Apply VRM version extension to glTF JSON document.
+///
+/// SansaVRM exports:
+/// - VRM 1.0 as "extensions.VRMC_vrm"
+/// - VRM 0.x as "extensions.VRM"
+///
+/// Note:
+/// - This function writes only the minimal version marker.
+/// - Full VRM metadata, humanoid, expressions, and constraints are added in later steps.
+fn apply_vrm_extension(value: &mut Value, version: VrmVersion) {
+    if value.get("extensions").is_none() {
+        value["extensions"] = json!({});
+    }
+
+    match version {
+        VrmVersion::V1_0 => {
+            value["extensions"]["VRMC_vrm"] = json!({
+                "specVersion": "1.0"
+            });
+        }
+        VrmVersion::V0x => {
+            value["extensions"]["VRM"] = json!({
+                "specVersion": "0.0"
+            });
+        }
+    }
 }
 
 /// Detect VRM version from glTF JSON document.

@@ -48,6 +48,8 @@ fn vrm_adapter_002_export_vrm_1_0_should_create_gltf_json() {
     let document = result.data.expect("document should be returned");
     assert!(document.contains("\"version\": \"2.0\""));
     assert!(document.contains("\"name\": \"Root\""));
+    assert!(document.contains("\"VRMC_vrm\""));
+    assert!(document.contains("\"specVersion\": \"1.0\""));
 }
 
 #[test]
@@ -76,6 +78,8 @@ fn vrm_adapter_004_export_vrm_0x_should_create_gltf_json() {
     let document = result.data.expect("document should be returned");
     assert!(document.contains("\"version\": \"2.0\""));
     assert!(document.contains("\"name\": \"Root\""));
+    assert!(document.contains("\"VRM\""));
+    assert!(document.contains("\"specVersion\": \"0.0\""));
 }
 
 #[test]
