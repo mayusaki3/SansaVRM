@@ -18,6 +18,24 @@ fn model_with_module_property(property: Property) -> Model {
     model
 }
 
+fn add_humanoid_bone(model: &mut Model, bone_name: &str, module_id: &str) {
+    model.modules.push(Module {
+        module_id: module_id.into(),
+        module_type: ModuleType::Module,
+        slots: vec![],
+        properties: vec![],
+    });
+
+    model.properties.push(Property {
+        property_id: format!("p_{}", bone_name),
+        key: format!("vrm.humanoid.human_bones.{}.node", bone_name),
+        value: module_id.into(),
+        value_type: PropertyValueType::String,
+        property_type: PropertyType::Metadata,
+        role: PropertyRole::Module,
+    });
+}
+
 #[test]
 fn validator_property_001_string_value_should_pass() {
     let model = model_with_module_property(Property {
@@ -206,8 +224,46 @@ fn validator_property_011_vrm_humanoid_invalid_reference_should_fail() {
 fn validator_property_012_vrm_humanoid_valid_should_pass() {
     let mut model = Model::new();
 
+    for bone_name in [
+        "hips",
+        "spine",
+        "chest",
+        "neck",
+        "head",
+        "leftUpperLeg",
+        "leftLowerLeg",
+        "leftFoot",
+        "rightUpperLeg",
+        "rightLowerLeg",
+        "rightFoot",
+        "leftUpperArm",
+        "leftLowerArm",
+        "leftHand",
+        "rightUpperArm",
+        "rightLowerArm",
+        "rightHand",
+    ] {
+        add_humanoid_bone(&mut model, bone_name, bone_name);
+    }
+
+    let result = validate_model(&model);
+
+    assert!(result.success);
+}
+
+#[test]
+fn validator_property_013_vrm_humanoid_missing_spine_should_fail() {
+    let mut model = Model::new();
+
     model.modules.push(Module {
         module_id: "Hips".into(),
+        module_type: ModuleType::Module,
+        slots: vec![],
+        properties: vec![],
+    });
+
+    model.modules.push(Module {
+        module_id: "Head".into(),
         module_type: ModuleType::Module,
         slots: vec![],
         properties: vec![],
@@ -222,13 +278,6 @@ fn validator_property_012_vrm_humanoid_valid_should_pass() {
         role: PropertyRole::Module,
     });
 
-    model.modules.push(Module {
-        module_id: "Head".into(),
-        module_type: ModuleType::Module,
-        slots: vec![],
-        properties: vec![],
-    });
-
     model.properties.push(Property {
         property_id: "p_head".into(),
         key: "vrm.humanoid.human_bones.head.node".into(),
@@ -240,5 +289,5 @@ fn validator_property_012_vrm_humanoid_valid_should_pass() {
 
     let result = validate_model(&model);
 
-    assert!(result.success);
+    assert!(!result.success);
 }

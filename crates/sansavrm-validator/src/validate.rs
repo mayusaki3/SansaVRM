@@ -581,7 +581,25 @@ fn validate_vrm_humanoid(model: &Model, errors: &mut Vec<SansaVrmError>) {
         return;
     }
 
-    let required_bones = ["hips", "head"];
+    let required_bones = [
+        "hips",
+        "spine",
+        "chest",
+        "neck",
+        "head",
+        "leftUpperLeg",
+        "leftLowerLeg",
+        "leftFoot",
+        "rightUpperLeg",
+        "rightLowerLeg",
+        "rightFoot",
+        "leftUpperArm",
+        "leftLowerArm",
+        "leftHand",
+        "rightUpperArm",
+        "rightLowerArm",
+        "rightHand",
+    ];
 
     for bone_name in required_bones {
         let key = vrm_humanoid_bone_node_key(bone_name);
