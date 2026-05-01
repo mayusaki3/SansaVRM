@@ -5,7 +5,7 @@ use sansavrm_core::{
 use sansavrm_vrm::{export_vrm, import_vrm};
 
 #[test]
-fn vrm_adapter_001_import_minimal_vrm_should_create_model() {
+fn vrm1_tc_001_import_minimal_should_create_model() {
     let document = r#"
 {
   "asset": {
@@ -64,7 +64,7 @@ fn vrm_adapter_001_import_minimal_vrm_should_create_model() {
 }
 
 #[test]
-fn vrm_adapter_002_export_vrm_1_0_should_create_gltf_json() {
+fn vrm1_tc_002_export_should_create_gltf_json() {
     let mut model = Model::new();
 
     model.modules.push(Module {
@@ -98,7 +98,7 @@ fn vrm_adapter_002_export_vrm_1_0_should_create_gltf_json() {
 }
 
 #[test]
-fn vrm_adapter_006_import_vrm_1_0_humanoid_bones_should_create_properties() {
+fn vrm1_tc_003_import_humanoid_should_create_properties() {
     let document = r#"
 {
   "asset": {
@@ -136,7 +136,7 @@ fn vrm_adapter_006_import_vrm_1_0_humanoid_bones_should_create_properties() {
 }
 
 #[test]
-fn vrm_adapter_007_export_vrm_1_0_humanoid_bones_should_create_human_bones() {
+fn vrm1_tc_004_export_humanoid_should_create_human_bones() {
     let mut model = Model::new();
 
     model.modules.push(Module {
@@ -175,7 +175,7 @@ fn vrm_adapter_007_export_vrm_1_0_humanoid_bones_should_create_human_bones() {
 }
 
 #[test]
-fn vrm_adapter_008_import_vrm_1_0_humanoid_should_ignore_unknown_bone() {
+fn vrm1_tc_005_import_ignore_unknown_bone() {
     let document = r#"
 {
   "asset": {
@@ -221,7 +221,7 @@ fn vrm_adapter_008_import_vrm_1_0_humanoid_should_ignore_unknown_bone() {
 }
 
 #[test]
-fn vrm_adapter_009_export_vrm_1_0_humanoid_should_ignore_unknown_bone_property() {
+fn vrm1_tc_006_export_ignore_unknown_bone() {
     let mut model = Model::new();
 
     model.modules.push(Module {

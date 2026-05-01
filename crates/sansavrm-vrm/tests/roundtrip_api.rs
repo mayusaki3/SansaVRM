@@ -2,7 +2,7 @@ use sansavrm_core::{IoOptions, VrmVersion};
 use sansavrm_vrm::{export_vrm, import_vrm};
 
 #[test]
-fn vrm_adapter_010_roundtrip_vrm_1_0_humanoid_should_preserve_bones() {
+fn vrm_rt_tc_001_vrm1_roundtrip_preserve_humanoid() {
     let document = r#"
 {
   "asset": {
@@ -51,5 +51,56 @@ fn vrm_adapter_010_roundtrip_vrm_1_0_humanoid_should_preserve_bones() {
     assert!(re_model.properties.iter().any(|p| {
         p.key == "vrm.humanoid.human_bones.head.node"
             && p.value == "Head"
+    }));
+}
+
+#[test]
+fn vrm_rt_tc_002_vrm0_roundtrip_preserve_humanoid() {
+    let document = r#"
+{
+  "asset": {
+    "version": "2.0"
+  },
+  "nodes": [
+    { "name": "Hips" },
+    { "name": "Head" }
+  ],
+  "extensions": {
+    "VRM": {
+      "specVersion": "0.0",
+      "humanoid": {
+        "humanBones": [
+          { "bone": "hips", "node": 0 },
+          { "bone": "head", "node": 1 }
+        ]
+      }
+    }
+  }
+}
+"#;
+
+    let import_result = import_vrm(document.into());
+    assert!(import_result.success);
+
+    let model = import_result.data.expect("model should be returned");
+
+    let export_result = export_vrm(&model, VrmVersion::V0x, IoOptions::default());
+    assert!(export_result.success);
+
+    let exported = export_result.data.expect("document should be returned");
+
+    let reimport_result = import_vrm(exported.into());
+    assert!(reimport_result.success);
+
+    let re_model = reimport_result.data.expect("model should be returned");
+
+    assert!(re_model.properties.iter().any(|property| {
+        property.key == "vrm.humanoid.human_bones.hips.node"
+            && property.value == "Hips"
+    }));
+
+    assert!(re_model.properties.iter().any(|property| {
+        property.key == "vrm.humanoid.human_bones.head.node"
+            && property.value == "Head"
     }));
 }
