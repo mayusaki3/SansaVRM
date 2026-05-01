@@ -9,6 +9,26 @@ use serde_json::{json, Value};
 const VRM_HUMANOID_BONE_PREFIX: &str = "vrm.humanoid.human_bones.";
 const VRM_HUMANOID_BONE_NODE_SUFFIX: &str = ".node";
 
+const VRM_HUMANOID_BONES: &[&str] = &[
+    "hips",
+    "spine",
+    "chest",
+    "neck",
+    "head",
+    "leftUpperLeg",
+    "leftLowerLeg",
+    "leftFoot",
+    "rightUpperLeg",
+    "rightLowerLeg",
+    "rightFoot",
+    "leftUpperArm",
+    "leftLowerArm",
+    "leftHand",
+    "rightUpperArm",
+    "rightLowerArm",
+    "rightHand",
+];
+
 /// VRM を SansaVRM Model へ import する。
 ///
 /// 注意:
@@ -163,6 +183,9 @@ fn import_vrm_humanoid(model: &mut Model, document: &str, version: Option<VrmVer
     };
 
     for (bone_name, bone_value) in human_bones {
+        if !VRM_HUMANOID_BONES.contains(&bone_name.as_str()) {
+            continue;
+        }
         let Some(node_index) = bone_value.get("node").and_then(Value::as_u64) else {
             continue;
         };
@@ -316,6 +339,14 @@ fn apply_vrm_humanoid(value: &mut Value, model: &Model, version: VrmVersion) {
     }
 
     for property in &model.properties {
+        let Some(bone_name) = parse_vrm_humanoid_bone_property_key(&property.key) else {
+            continue;
+        };
+
+        if !VRM_HUMANOID_BONES.contains(&bone_name) {
+            continue;
+        };
+
         let Some(bone_name) = parse_vrm_humanoid_bone_property_key(&property.key) else {
             continue;
         };
