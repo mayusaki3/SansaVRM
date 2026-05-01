@@ -207,6 +207,22 @@ fn validator_property_012_vrm_humanoid_valid_should_pass() {
     let mut model = Model::new();
 
     model.modules.push(Module {
+        module_id: "Hips".into(),
+        module_type: ModuleType::Module,
+        slots: vec![],
+        properties: vec![],
+    });
+
+    model.properties.push(Property {
+        property_id: "p_hips".into(),
+        key: "vrm.humanoid.human_bones.hips.node".into(),
+        value: "Hips".into(),
+        value_type: PropertyValueType::String,
+        property_type: PropertyType::Metadata,
+        role: PropertyRole::Module,
+    });
+
+    model.modules.push(Module {
         module_id: "Head".into(),
         module_type: ModuleType::Module,
         slots: vec![],
@@ -214,7 +230,7 @@ fn validator_property_012_vrm_humanoid_valid_should_pass() {
     });
 
     model.properties.push(Property {
-        property_id: "p1".into(),
+        property_id: "p_head".into(),
         key: "vrm.humanoid.human_bones.head.node".into(),
         value: "Head".into(),
         value_type: PropertyValueType::String,

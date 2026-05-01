@@ -260,10 +260,7 @@ fn apply_vrm_meta(value: &mut Value, model: &Model, version: VrmVersion) {
 /// SansaVRM: humanoid property生成
 /// TODO(trace): 変換仕様 / VRM Humanoid Property
 fn vrm_humanoid_bone_property(bone_name: &str, module_id: &str) -> Property {
-    let key = format!(
-        "{}{}{}",
-        VRM_HUMANOID_BONE_PREFIX, bone_name, VRM_HUMANOID_BONE_NODE_SUFFIX
-    );
+    let key = vrm_humanoid_bone_node_key(bone_name);
 
     Property {
         property_id: format!("property_{}", key.replace('.', "_")),
@@ -341,4 +338,13 @@ fn apply_vrm_humanoid(value: &mut Value, model: &Model, version: VrmVersion) {
 fn parse_vrm_humanoid_bone_property_key(key: &str) -> Option<&str> {
     key.strip_prefix(VRM_HUMANOID_BONE_PREFIX)?
         .strip_suffix(VRM_HUMANOID_BONE_NODE_SUFFIX)
+}
+
+/// SansaVRM: VRM humanoid humanBone key を Property key に変換する。
+/// TODO(trace): 変換仕様 / VRM Humanoid Property
+fn vrm_humanoid_bone_node_key(bone_name: &str) -> String {
+    format!(
+        "{}{}{}",
+        VRM_HUMANOID_BONE_PREFIX, bone_name, VRM_HUMANOID_BONE_NODE_SUFFIX
+    )
 }

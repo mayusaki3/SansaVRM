@@ -8,6 +8,21 @@ use sansavrm_core::{
 
 use crate::ValidatorResult;
 
+const VRM_HUMANOID_BONE_PREFIX: &str = "vrm.humanoid.human_bones.";
+const VRM_HUMANOID_BONE_NODE_SUFFIX: &str = ".node";
+
+fn is_vrm_humanoid_bone_node_key(key: &str) -> bool {
+    key.starts_with(VRM_HUMANOID_BONE_PREFIX)
+        && key.ends_with(VRM_HUMANOID_BONE_NODE_SUFFIX)
+}
+
+fn vrm_humanoid_bone_node_key(bone_name: &str) -> String {
+    format!(
+        "{}{}{}",
+        VRM_HUMANOID_BONE_PREFIX, bone_name, VRM_HUMANOID_BONE_NODE_SUFFIX
+    )
+}
+
 /// Model の基本検証
 ///
 /// TODO(trace): Validator実装仕様 / 基本検証
@@ -559,37 +574,39 @@ fn validate_vrm_humanoid(model: &Model, errors: &mut Vec<SansaVrmError>) {
     let humanoid_properties = model
         .properties
         .iter()
-        .filter(|property| property.key.starts_with("vrm.humanoid.human_bones."))
+        .filter(|property| is_vrm_humanoid_bone_node_key(&property.key))
         .collect::<Vec<_>>();
 
     if humanoid_properties.is_empty() {
         return;
     }
 
-    let mut has_head = false;
+    let required_bones = ["hips", "head"];
 
-    for property in humanoid_properties {
-        if property.key == "vrm.humanoid.human_bones.head.node" {
-            has_head = true;
+    for bone_name in required_bones {
+        let key = vrm_humanoid_bone_node_key(bone_name);
 
-            let exists = model
-                .modules
-                .iter()
-                .any(|module| module.module_id == property.value);
-
-            if !exists {
-                errors.push(SansaVrmError::InvalidInput(format!(
-                    "VRM humanoid head references unknown module {}",
-                    property.value
-                )));
-            }
+        if !humanoid_properties.iter().any(|property| property.key == key) {
+            errors.push(SansaVrmError::InvalidInput(format!(
+                "VRM humanoid {} bone is missing",
+                bone_name
+            )));
         }
     }
 
-    if !has_head {
-        errors.push(SansaVrmError::InvalidInput(
-            "VRM humanoid head bone is missing".into(),
-        ));
+    for property in humanoid_properties {
+        let exists = model
+            .modules
+            .iter()
+            .any(|module| module.module_id == property.value);
+
+        if !exists {
+            errors.push(SansaVrmError::InvalidInput(format!(
+                "VRM humanoid bone {} references unknown module {}",
+                property.key,
+                property.value
+            )));
+        }
     }
 }
 
