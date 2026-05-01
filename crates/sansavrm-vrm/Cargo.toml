@@ -6,3 +6,4 @@ edition = "2024"
 [dependencies]
 sansavrm-core = { path = "../sansavrm-core" }
 sansavrm-gltf = { path = "../sansavrm-gltf" }
+serde_json = "1"

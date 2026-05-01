@@ -1,5 +1,7 @@
 // crates/sansavrm-core/src/io_api.rs
 
+use serde::{Deserialize, Serialize};
+
 use crate::{CoreResult, Model, SansaVrmError};
 
 /// glTF 文書型。
@@ -21,7 +23,7 @@ pub type MjcfDocument = String;
 /// VRM export 対象バージョン。
 ///
 /// TODO(trace): CoreAPI仕様 / export_vrm
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum VrmVersion {
     V0x,
     V1_0,

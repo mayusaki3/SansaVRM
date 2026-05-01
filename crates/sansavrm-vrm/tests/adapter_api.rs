@@ -77,3 +77,29 @@ fn vrm_adapter_004_export_vrm_0x_should_create_gltf_json() {
     assert!(document.contains("\"version\": \"2.0\""));
     assert!(document.contains("\"name\": \"Root\""));
 }
+
+#[test]
+fn vrm_adapter_005_import_vrm_0x_should_set_version() {
+    let document = r#"
+{
+  "asset": {
+    "version": "2.0"
+  },
+  "nodes": [
+    { "name": "Root" }
+  ],
+  "extensions": {
+    "VRM": {
+      "specVersion": "0.0"
+    }
+  }
+}
+"#;
+
+    let result = import_vrm(document.into());
+
+    assert!(result.success);
+
+    let model = result.data.expect("model should be returned");
+    assert_eq!(model.vrm_version, Some(VrmVersion::V0x));
+}
