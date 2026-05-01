@@ -6,6 +6,9 @@ use sansavrm_core::{
 };
 use serde_json::{json, Value};
 
+const VRM_HUMANOID_BONE_PREFIX: &str = "vrm.humanoid.human_bones.";
+const VRM_HUMANOID_BONE_NODE_SUFFIX: &str = ".node";
+
 /// VRM を SansaVRM Model へ import する。
 ///
 /// 注意:
@@ -25,7 +28,8 @@ pub fn import_vrm(document: VrmDocument) -> CoreResult<Model> {
     let mut model = result.data.expect("model should be returned");
     model.vrm_version = version.clone();
 
-    import_vrm_meta(&mut model, &document, version);
+    import_vrm_meta(&mut model, &document, version.clone());
+    import_vrm_humanoid(&mut model, &document, version);
 
     CoreResult::ok(model)
 }
@@ -61,7 +65,8 @@ pub fn export_vrm(
     };
 
     apply_vrm_extension(&mut value, version.clone());
-    apply_vrm_meta(&mut value, model, version);
+    apply_vrm_meta(&mut value, model, version.clone());
+    apply_vrm_humanoid(&mut value, model, version);
 
     match serde_json::to_string_pretty(&value) {
         Ok(document) => CoreResult::ok(document),
@@ -135,6 +140,41 @@ fn import_vrm_meta(model: &mut Model, document: &str, version: Option<VrmVersion
             }
         }
         None => {}
+    }
+}
+
+/// SansaVRM: VRM humanoid Import
+/// TODO(trace): 変換仕様 / VRM Humanoid Import
+fn import_vrm_humanoid(model: &mut Model, document: &str, version: Option<VrmVersion>) {
+    if version != Some(VrmVersion::V1_0) {
+        return;
+    }
+
+    let Ok(value) = serde_json::from_str::<Value>(document) else {
+        return;
+    };
+
+    let Some(human_bones) = value.pointer("/extensions/VRMC_vrm/humanoid/humanBones") else {
+        return;
+    };
+
+    let Some(human_bones) = human_bones.as_object() else {
+        return;
+    };
+
+    for (bone_name, bone_value) in human_bones {
+        let Some(node_index) = bone_value.get("node").and_then(Value::as_u64) else {
+            continue;
+        };
+
+        let Some(module) = model.modules.get(node_index as usize) else {
+            continue;
+        };
+
+        model.properties.push(vrm_humanoid_bone_property(
+            bone_name,
+            &module.module_id,
+        ));
     }
 }
 
@@ -217,6 +257,24 @@ fn apply_vrm_meta(value: &mut Value, model: &Model, version: VrmVersion) {
     }
 }
 
+/// SansaVRM: humanoid property生成
+/// TODO(trace): 変換仕様 / VRM Humanoid Property
+fn vrm_humanoid_bone_property(bone_name: &str, module_id: &str) -> Property {
+    let key = format!(
+        "{}{}{}",
+        VRM_HUMANOID_BONE_PREFIX, bone_name, VRM_HUMANOID_BONE_NODE_SUFFIX
+    );
+
+    Property {
+        property_id: format!("property_{}", key.replace('.', "_")),
+        key,
+        value: module_id.into(),
+        value_type: PropertyValueType::String,
+        property_type: PropertyType::Metadata,
+        role: PropertyRole::Module,
+    }
+}
+
 /// Get a SansaVRM Model-level property value by key.
 fn get_model_property<'a>(model: &'a Model, key: &str) -> Option<&'a str> {
     model
@@ -251,4 +309,36 @@ fn detect_vrm_version(document: &str) -> Option<VrmVersion> {
     }
 
     None
+}
+
+/// SansaVRM: VRM humanoid Export
+/// TODO(trace): 変換仕様 / VRM Humanoid Export
+fn apply_vrm_humanoid(value: &mut Value, model: &Model, version: VrmVersion) {
+    if version != VrmVersion::V1_0 {
+        return;
+    }
+
+    for property in &model.properties {
+        let Some(bone_name) = parse_vrm_humanoid_bone_property_key(&property.key) else {
+            continue;
+        };
+
+        let Some(node_index) = model
+            .modules
+            .iter()
+            .position(|module| module.module_id == property.value)
+        else {
+            continue;
+        };
+
+        value["extensions"]["VRMC_vrm"]["humanoid"]["humanBones"][bone_name]["node"] =
+            json!(node_index);
+    }
+}
+
+/// SansaVRM: key解析
+/// TODO(trace): 変換仕様 / VRM Humanoid Property
+fn parse_vrm_humanoid_bone_property_key(key: &str) -> Option<&str> {
+    key.strip_prefix(VRM_HUMANOID_BONE_PREFIX)?
+        .strip_suffix(VRM_HUMANOID_BONE_NODE_SUFFIX)
 }

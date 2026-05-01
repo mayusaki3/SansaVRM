@@ -190,3 +190,80 @@ fn vrm_adapter_005_import_vrm_0x_should_set_version() {
                 && property.value == "Redistribution_Prohibited"
         }));
 }
+
+#[test]
+fn vrm_adapter_006_import_vrm_1_0_humanoid_bones_should_create_properties() {
+    let document = r#"
+{
+  "asset": {
+    "version": "2.0"
+  },
+  "nodes": [
+    { "name": "Root" },
+    { "name": "Head" }
+  ],
+  "extensions": {
+    "VRMC_vrm": {
+      "specVersion": "1.0",
+      "humanoid": {
+        "humanBones": {
+          "head": {
+            "node": 1
+          }
+        }
+      }
+    }
+  }
+}
+"#;
+
+    let result = import_vrm(document.into());
+
+    assert!(result.success);
+
+    let model = result.data.expect("model should be returned");
+
+    assert!(model.properties.iter().any(|property| {
+        property.key == "vrm.humanoid.human_bones.head.node"
+            && property.value == "Head"
+    }));
+}
+
+#[test]
+fn vrm_adapter_007_export_vrm_1_0_humanoid_bones_should_create_human_bones() {
+    let mut model = Model::new();
+
+    model.modules.push(Module {
+        module_id: "Root".into(),
+        module_type: ModuleType::Module,
+        slots: vec![],
+        properties: vec![],
+    });
+
+    model.modules.push(Module {
+        module_id: "Head".into(),
+        module_type: ModuleType::Module,
+        slots: vec![],
+        properties: vec![],
+    });
+
+    model.properties.push(Property {
+        property_id: "property_vrm_humanoid_human_bones_head_node".into(),
+        key: "vrm.humanoid.human_bones.head.node".into(),
+        value: "Head".into(),
+        value_type: PropertyValueType::String,
+        property_type: PropertyType::Metadata,
+        role: PropertyRole::Module,
+    });
+
+    let result = export_vrm(&model, VrmVersion::V1_0, IoOptions::default());
+
+    assert!(result.success);
+
+    let document = result.data.expect("document should be returned");
+
+    assert!(document.contains("\"humanoid\""));
+    assert!(document.contains("\"humanBones\""));
+    assert!(document.contains("\"head\""));
+    assert!(document.contains("\"node\": 1"));
+}
