@@ -369,6 +369,10 @@ fn validate_state_actions(model: &Model, errors: &mut Vec<SansaVrmError>) {
 ///
 /// TODO(trace): Validator実装仕様 / Property整合性検証
 fn validate_properties(model: &Model, errors: &mut Vec<SansaVrmError>) {
+    for property in &model.properties {
+        validate_property_value(property, errors);
+    }
+
     for module in &model.modules {
         for property in &module.properties {
             validate_property_value(property, errors);
@@ -389,6 +393,10 @@ fn validate_properties_with_diagnostics(
     model: &Model,
     diagnostics: &mut Vec<ValidationDiagnostic>,
 ) {
+    for property in &model.properties {
+        validate_property_value_with_diagnostics(property, diagnostics);
+    }
+
     for module in &model.modules {
         for property in &module.properties {
             validate_property_value_with_diagnostics(property, diagnostics);

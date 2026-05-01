@@ -129,3 +129,39 @@ fn validator_property_007_sensor_property_with_module_role_should_fail() {
 
     assert!(!result.success);
 }
+
+#[test]
+fn validator_property_008_model_level_invalid_number_should_fail() {
+    let mut model = Model::new();
+
+    model.properties.push(Property {
+        property_id: "property_model_invalid_number".into(),
+        key: "vrm.humanoid.human_bones.head.node".into(),
+        value: "Head".into(),
+        value_type: PropertyValueType::Number,
+        property_type: PropertyType::Metadata,
+        role: PropertyRole::Module,
+    });
+
+    let result = validate_model(&model);
+
+    assert!(!result.success);
+}
+
+#[test]
+fn validator_property_009_model_level_vrm_humanoid_property_should_pass() {
+    let mut model = Model::new();
+
+    model.properties.push(Property {
+        property_id: "property_vrm_humanoid_human_bones_head_node".into(),
+        key: "vrm.humanoid.human_bones.head.node".into(),
+        value: "Head".into(),
+        value_type: PropertyValueType::String,
+        property_type: PropertyType::Metadata,
+        role: PropertyRole::Module,
+    });
+
+    let result = validate_model(&model);
+
+    assert!(result.success);
+}
