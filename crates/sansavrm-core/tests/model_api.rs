@@ -14,6 +14,7 @@ fn core_model_api_001_create_model_without_id_should_generate_id() {
     assert!(model.slots.is_empty());
     assert!(model.states.is_empty());
     assert!(model.connections.is_empty());
+    assert!(model.properties.is_empty());
 }
 
 #[test]
@@ -52,7 +53,9 @@ fn core_model_api_004_load_model_should_parse_json() {
   "slots": [],
   "states": [],
   "connections": [],
-  "diagnostics": []
+  "diagnostics": [],
+  "vrm_version": null,
+  "properties": []
 }
 "#;
 

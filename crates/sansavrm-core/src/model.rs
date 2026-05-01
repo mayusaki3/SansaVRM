@@ -2,7 +2,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::{DiagnosticItem, Module, SansaId, Slot, State, VrmVersion};
+use crate::{DiagnosticItem, Module, Property, SansaId, Slot, State, VrmVersion};
 
 /// Connection 種別。
 ///
@@ -50,6 +50,7 @@ pub struct Model {
     pub connections: Vec<Connection>,
     pub diagnostics: Vec<DiagnosticItem>,
     pub vrm_version: Option<VrmVersion>,
+    pub properties: Vec<Property>,
 }
 
 impl Model {
@@ -68,6 +69,7 @@ impl Model {
             connections: Vec::new(),
             diagnostics: Vec::new(),
             vrm_version: None,
+            properties: Vec::new(),
         }
     }
 
@@ -87,6 +89,7 @@ impl Model {
             connections: Vec::new(),
             diagnostics: Vec::new(),
             vrm_version: None,
+            properties: Vec::new(),
         }
     }
 }
@@ -112,6 +115,7 @@ mod tests {
         assert!(model.connections.is_empty());
         assert!(model.diagnostics.is_empty());
         assert!(model.vrm_version.is_none());
+        assert!(model.properties.is_empty());
     }
 
     #[test]
