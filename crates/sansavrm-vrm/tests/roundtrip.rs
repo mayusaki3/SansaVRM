@@ -4,7 +4,7 @@ use sansavrm_core::{IoOptions, VrmVersion};
 use sansavrm_vrm::{export_vrm, import_vrm};
 
 #[test]
-fn vrm_roundtrip_001_import_export_import_vrm_1_0_should_keep_nodes() {
+fn vrm_rt_core_tc_001_vrm1_import_export_import_should_keep_nodes() {
     let input = r#"
 {
   "asset": {
@@ -45,7 +45,7 @@ fn vrm_roundtrip_001_import_export_import_vrm_1_0_should_keep_nodes() {
 }
 
 #[test]
-fn vrm_roundtrip_002_import_export_import_vrm_0x_should_keep_nodes() {
+fn vrm_rt_core_tc_002_vrm0_import_export_import_should_keep_nodes() {
     let input = r#"
 {
   "asset": {

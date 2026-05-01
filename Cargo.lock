@@ -214,6 +214,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "sansavrm-test-utils"
+version = "0.1.0"
+dependencies = [
+ "serde_json",
+]
+
+[[package]]
 name = "sansavrm-urdf"
 version = "0.1.0"
 dependencies = [
@@ -235,6 +242,7 @@ version = "0.1.0"
 dependencies = [
  "sansavrm-core",
  "sansavrm-gltf",
+ "sansavrm-test-utils",
  "serde_json",
 ]
 
