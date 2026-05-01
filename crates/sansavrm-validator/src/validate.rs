@@ -20,6 +20,7 @@ pub fn validate_model(model: &Model) -> CoreResult<()> {
     validate_connection_rules(model, &mut errors);
     validate_state_actions(model, &mut errors);
     validate_properties(model, &mut errors);
+    validate_vrm_humanoid(model, &mut errors);
 
     if errors.is_empty() {
         CoreResult::ok(())
@@ -549,6 +550,46 @@ fn property_classification_is_valid(property: &sansavrm_core::Property) -> bool 
         PropertyType::Sensor => matches!(property.role, PropertyRole::Sensor),
         PropertyType::Metadata => matches!(property.role, PropertyRole::Module | PropertyRole::Slot | PropertyRole::Custom),
         PropertyType::Custom => true,
+    }
+}
+
+/// VRM humanoid 最小検証
+/// TODO(trace): Validator実装仕様 / VRM Humanoid Validation
+fn validate_vrm_humanoid(model: &Model, errors: &mut Vec<SansaVrmError>) {
+    let humanoid_properties = model
+        .properties
+        .iter()
+        .filter(|property| property.key.starts_with("vrm.humanoid.human_bones."))
+        .collect::<Vec<_>>();
+
+    if humanoid_properties.is_empty() {
+        return;
+    }
+
+    let mut has_head = false;
+
+    for property in humanoid_properties {
+        if property.key == "vrm.humanoid.human_bones.head.node" {
+            has_head = true;
+
+            let exists = model
+                .modules
+                .iter()
+                .any(|module| module.module_id == property.value);
+
+            if !exists {
+                errors.push(SansaVrmError::InvalidInput(format!(
+                    "VRM humanoid head references unknown module {}",
+                    property.value
+                )));
+            }
+        }
+    }
+
+    if !has_head {
+        errors.push(SansaVrmError::InvalidInput(
+            "VRM humanoid head bone is missing".into(),
+        ));
     }
 }
 
