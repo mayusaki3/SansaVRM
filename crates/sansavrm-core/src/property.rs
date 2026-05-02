@@ -12,6 +12,97 @@ pub enum PropertyValueType {
     Array,
 }
 
+/// SansaVRM Property の型付き値。
+///
+/// 役割:
+/// - 既存の String value / value_type 構成から、型安全な PropertyValue へ段階移行するための中間表現。
+///
+/// 注意:
+/// - 現段階では Property 本体の value:String は維持する。
+/// - 完全移行前に adapter / validator / tests を順次対応する。
+///
+/// TODO(trace): CoreAPI仕様 / Property typed value
+#[derive(Debug, Clone, PartialEq)]
+pub enum PropertyValue {
+    String(String),
+    Number(f64),
+    Bool(bool),
+}
+
+impl PropertyValue {
+    /// SansaVRM PropertyValue を既存 Property.value 用の String に変換する。
+    ///
+    /// 戻り値:
+    /// - `String`: 既存 Property.value に格納可能な文字列表現
+    pub fn to_legacy_string(&self) -> String {
+        match self {
+            PropertyValue::String(value) => value.clone(),
+            PropertyValue::Number(value) => value.to_string(),
+            PropertyValue::Bool(value) => value.to_string(),
+        }
+    }
+
+    /// SansaVRM PropertyValue に対応する既存 PropertyValueType を返す。
+    ///
+    /// 戻り値:
+    /// - `PropertyValueType`: 既存 validator が利用する値型
+    pub fn value_type(&self) -> PropertyValueType {
+        match self {
+            PropertyValue::String(_) => PropertyValueType::String,
+            PropertyValue::Number(_) => PropertyValueType::Number,
+            PropertyValue::Bool(_) => PropertyValueType::Boolean,
+        }
+    }
+
+    /// SansaVRM PropertyValue を文字列として参照する。
+    ///
+    /// 戻り値:
+    /// - `Some(&str)`: String値の場合
+    /// - `None`: Number / Bool の場合
+    pub fn as_string(&self) -> Option<&str> {
+        match self {
+            PropertyValue::String(value) => Some(value.as_str()),
+            _ => None,
+        }
+    }
+}
+
+impl Property {
+    /// SansaVRM Property を型付き値から作成する。
+    ///
+    /// 役割:
+    /// - 既存の `value: String` / `value_type: PropertyValueType` を維持しながら、
+    ///   呼び出し側では `PropertyValue` を使えるようにする。
+    ///
+    /// 引数:
+    /// - `property_id`: Property ID
+    /// - `key`: Property key
+    /// - `value`: 型付き Property value
+    /// - `property_type`: Property分類
+    /// - `role`: Property役割
+    ///
+    /// 戻り値:
+    /// - `Property`: 既存構造互換の Property
+    ///
+    /// TODO(trace): CoreAPI仕様 / Property typed value
+    pub fn from_typed_value(
+        property_id: impl Into<String>,
+        key: impl Into<String>,
+        value: PropertyValue,
+        property_type: PropertyType,
+        role: PropertyRole,
+    ) -> Self {
+        Self {
+            property_id: property_id.into(),
+            key: key.into(),
+            value: value.to_legacy_string(),
+            value_type: value.value_type(),
+            property_type,
+            role,
+        }
+    }
+}
+
 /// Property の分類。
 ///
 /// 役割:

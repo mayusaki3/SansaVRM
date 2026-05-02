@@ -1,5 +1,5 @@
 use sansavrm_core::{
-    Model, Property, PropertyRole, PropertyType, PropertyValueType, VrmVersion,
+    Model, Property, PropertyRole, PropertyType, PropertyValue, VrmVersion,
 };
 use serde_json::{json, Value};
 
@@ -119,12 +119,11 @@ pub(crate) fn apply_vrm1_meta(value: &mut Value, model: &Model) {
 fn vrm_humanoid_bone_property(bone_name: &str, module_id: &str) -> Property {
     let key = vrm_humanoid_bone_node_key(bone_name);
 
-    Property {
-        property_id: format!("property_{}", key.replace('.', "_")),
+    Property::from_typed_value(
+        format!("property_{}", key.replace('.', "_")),
         key,
-        value: module_id.into(),
-        value_type: PropertyValueType::String,
-        property_type: PropertyType::Metadata,
-        role: PropertyRole::Module,
-    }
+        PropertyValue::String(module_id.into()),
+        PropertyType::Metadata,
+        PropertyRole::Module,
+    )
 }

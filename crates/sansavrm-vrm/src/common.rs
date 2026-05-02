@@ -1,5 +1,5 @@
 use sansavrm_core::{
-    Model, Property, PropertyRole, PropertyType, PropertyValueType, VrmVersion
+    Model, Property, PropertyRole, PropertyType, PropertyValue, VrmVersion,
 };
 use serde_json::Value;
 
@@ -97,14 +97,13 @@ pub(crate) fn import_array_property(
 
 /// Create a SansaVRM Property for VRM meta.
 pub(crate) fn vrm_meta_property(key: &str, value: &str) -> Property {
-    Property {
-        property_id: format!("property_{}", key.replace('.', "_")),
-        key: key.into(),
-        value: value.into(),
-        value_type: PropertyValueType::String,
-        property_type: PropertyType::Metadata,
-        role: PropertyRole::Module,
-    }
+    Property::from_typed_value(
+        format!("property_{}", key.replace('.', "_")),
+        key,
+        PropertyValue::String(value.into()),
+        PropertyType::Metadata,
+        PropertyRole::Module,
+    )
 }
 
 /// Detect VRM version from glTF JSON document.

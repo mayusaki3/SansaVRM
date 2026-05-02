@@ -29,14 +29,13 @@ fn base_model() -> Model {
 }
 
 fn metadata_property(property_id: &str, key: &str, value: &str) -> Property {
-    Property {
-        property_id: property_id.into(),
-        key: key.into(),
-        value: value.into(),
-        value_type: PropertyValueType::String,
-        property_type: PropertyType::Metadata,
-        role: PropertyRole::Module,
-    }
+    Property::from_typed_value(
+        property_id,
+        key,
+        sansavrm_core::PropertyValue::String(value.into()),
+        PropertyType::Metadata,
+        PropertyRole::Module,
+    )
 }
 
 #[test]
@@ -160,4 +159,77 @@ fn core_property_api_007_list_properties_should_return_owner_properties() {
     let properties = result.data.expect("properties should be returned");
     assert_eq!(properties.len(), 1);
     assert_eq!(properties[0].property_id, "property_001");
+}
+
+#[test]
+fn core_property_api_008_property_value_string_should_convert_to_legacy_string() {
+    let value = sansavrm_core::PropertyValue::String("SansaVRM".into());
+
+    assert_eq!(value.to_legacy_string(), "SansaVRM");
+    assert_eq!(value.value_type(), PropertyValueType::String);
+    assert_eq!(value.as_string(), Some("SansaVRM"));
+}
+
+#[test]
+fn core_property_api_009_property_value_number_should_convert_to_legacy_string() {
+    let value = sansavrm_core::PropertyValue::Number(12.5);
+
+    assert_eq!(value.to_legacy_string(), "12.5");
+    assert_eq!(value.value_type(), PropertyValueType::Number);
+    assert_eq!(value.as_string(), None);
+}
+
+#[test]
+fn core_property_api_010_property_value_bool_should_convert_to_legacy_string() {
+    let value = sansavrm_core::PropertyValue::Bool(true);
+
+    assert_eq!(value.to_legacy_string(), "true");
+    assert_eq!(value.value_type(), PropertyValueType::Boolean);
+    assert_eq!(value.as_string(), None);
+}
+
+#[test]
+fn core_property_api_011_property_from_typed_string_should_create_legacy_property() {
+    let property = Property::from_typed_value(
+        "property_001",
+        "name",
+        sansavrm_core::PropertyValue::String("SansaVRM".into()),
+        PropertyType::Metadata,
+        PropertyRole::Module,
+    );
+
+    assert_eq!(property.property_id, "property_001");
+    assert_eq!(property.key, "name");
+    assert_eq!(property.value, "SansaVRM");
+    assert_eq!(property.value_type, PropertyValueType::String);
+    assert_eq!(property.property_type, PropertyType::Metadata);
+    assert_eq!(property.role, PropertyRole::Module);
+}
+
+#[test]
+fn core_property_api_012_property_from_typed_number_should_create_legacy_property() {
+    let property = Property::from_typed_value(
+        "property_001",
+        "weight",
+        sansavrm_core::PropertyValue::Number(12.5),
+        PropertyType::Metadata,
+        PropertyRole::Module,
+    );
+
+    assert_eq!(property.value, "12.5");
+    assert_eq!(property.value_type, PropertyValueType::Number);
+}
+
+#[test]
+fn core_property_api_013_property_from_typed_bool_should_create_legacy_property() {
+    let property = Property::from_typed_value(
+        "property_001",
+        "enabled",
+        sansavrm_core::PropertyValue::Bool(true),
+        PropertyType::Metadata,
+        PropertyRole::Module,
+    );
+
+    assert_eq!(property.value, "true");
+    assert_eq!(property.value_type, PropertyValueType::Boolean);
 }

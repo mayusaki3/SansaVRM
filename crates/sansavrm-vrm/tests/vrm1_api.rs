@@ -1,6 +1,6 @@
 use sansavrm_core::{
     IoOptions, Model, Module, ModuleType, Property, PropertyRole, PropertyType,
-    PropertyValueType, VrmVersion,
+    VrmVersion,
 };
 use sansavrm_vrm::{export_vrm, import_vrm};
 
@@ -74,14 +74,13 @@ fn vrm1_tc_002_export_should_create_gltf_json() {
         properties: vec![],
     });
 
-    model.properties.push(Property {
-        property_id: "property_vrm_meta_name".into(),
-        key: "vrm.meta.name".into(),
-        value: "Exported VRM".into(),
-        value_type: PropertyValueType::String,
-        property_type: PropertyType::Metadata,
-        role: PropertyRole::Module,
-    });
+    model.properties.push(Property::from_typed_value(
+        "property_vrm_meta_name",
+        "vrm.meta.name",
+        sansavrm_core::PropertyValue::String("Exported VRM".into()),
+        PropertyType::Metadata,
+        PropertyRole::Module,
+    ));
 
     let result = export_vrm(&model, VrmVersion::V1_0, IoOptions::default());
 
@@ -153,14 +152,13 @@ fn vrm1_tc_004_export_humanoid_should_create_human_bones() {
         properties: vec![],
     });
 
-    model.properties.push(Property {
-        property_id: "property_vrm_humanoid_human_bones_head_node".into(),
-        key: "vrm.humanoid.human_bones.head.node".into(),
-        value: "Head".into(),
-        value_type: PropertyValueType::String,
-        property_type: PropertyType::Metadata,
-        role: PropertyRole::Module,
-    });
+    model.properties.push(Property::from_typed_value(
+        "property_vrm_humanoid_human_bones_head_node",
+        "vrm.humanoid.human_bones.head.node",
+        sansavrm_core::PropertyValue::String("Head".into()),
+        PropertyType::Metadata,
+        PropertyRole::Module,
+    ));
 
     let result = export_vrm(&model, VrmVersion::V1_0, IoOptions::default());
 
@@ -238,23 +236,21 @@ fn vrm1_tc_006_export_ignore_unknown_bone() {
         properties: vec![],
     });
 
-    model.properties.push(Property {
-        property_id: "p_head".into(),
-        key: "vrm.humanoid.human_bones.head.node".into(),
-        value: "Head".into(),
-        value_type: PropertyValueType::String,
-        property_type: PropertyType::Metadata,
-        role: PropertyRole::Module,
-    });
+    model.properties.push(Property::from_typed_value(
+        "p_head",
+        "vrm.humanoid.human_bones.head.node",
+        sansavrm_core::PropertyValue::String("Head".into()),
+        PropertyType::Metadata,
+        PropertyRole::Module,
+    ));
 
-    model.properties.push(Property {
-        property_id: "p_custom_tail".into(),
-        key: "vrm.humanoid.human_bones.customTail.node".into(),
-        value: "UnknownPart".into(),
-        value_type: PropertyValueType::String,
-        property_type: PropertyType::Metadata,
-        role: PropertyRole::Module,
-    });
+    model.properties.push(Property::from_typed_value(
+        "p_custom_tail",
+        "vrm.humanoid.human_bones.customTail.node",
+        sansavrm_core::PropertyValue::String("UnknownPart".into()),
+        PropertyType::Metadata,
+        PropertyRole::Module,
+    ));
 
     let result = export_vrm(&model, VrmVersion::V1_0, IoOptions::default());
 
