@@ -1,6 +1,8 @@
 // crates/sansavrm-core/tests/model_api.rs
 
-use sansavrm_core::{create_model, export_model, load_model, CreateModelInput};
+use sansavrm_core::{create_model, export_model, load_model, CreateModelInput,
+    Model, Property, PropertyRole, PropertyType,
+};
 
 #[test]
 fn core_model_api_001_create_model_without_id_should_generate_id() {
@@ -73,4 +75,24 @@ fn core_model_api_005_load_model_invalid_json_should_fail() {
 
     assert!(!result.success);
     assert_eq!(result.errors.len(), 1);
+}
+
+#[test]
+fn core_model_api_006_model_json_roundtrip_should_preserve_property_value_types() {
+    let mut model = Model::new();
+
+    model.properties.push(Property::from_typed_value(
+        "property_001",
+        "mass",
+        sansavrm_core::PropertyValue::Number(12.5),
+        PropertyType::Metadata,
+        PropertyRole::Module,
+    ));
+
+    let json = serde_json::to_string(&model).expect("serialize");
+
+    let restored: Model = serde_json::from_str(&json).expect("deserialize");
+
+    assert_eq!(restored.properties[0].value,
+        sansavrm_core::PropertyValue::Number(12.5));
 }

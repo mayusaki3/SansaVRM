@@ -209,3 +209,43 @@ fn core_property_api_010_property_from_typed_bool_should_create_legacy_property(
 
     assert_eq!(property.value, sansavrm_core::PropertyValue::Bool(true));
 }
+
+#[test]
+fn core_property_api_011_property_value_json_should_use_tagged_format() {
+    let property = Property::from_typed_value(
+        "property_001",
+        "mass",
+        sansavrm_core::PropertyValue::Number(12.5),
+        PropertyType::Metadata,
+        PropertyRole::Module,
+    );
+
+    let json = serde_json::to_value(&property).expect("property should serialize");
+
+    assert_eq!(json["value"]["type"], "Number");
+    assert_eq!(json["value"]["data"], 12.5);
+}
+
+#[test]
+fn core_property_api_012_property_value_json_should_deserialize_tagged_format() {
+    let json = r#"
+{
+  "property_id": "property_001",
+  "key": "mass",
+  "value": {
+    "type": "Number",
+    "data": 12.5
+  },
+  "property_type": "Metadata",
+  "role": "Module"
+}
+"#;
+
+    let property: Property = serde_json::from_str(json).expect("property should deserialize");
+
+    assert_eq!(property.property_id, "property_001");
+    assert_eq!(property.key, "mass");
+    assert_eq!(property.value, sansavrm_core::PropertyValue::Number(12.5));
+    assert_eq!(property.property_type, PropertyType::Metadata);
+    assert_eq!(property.role, PropertyRole::Module);
+}

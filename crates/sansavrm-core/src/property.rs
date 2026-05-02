@@ -5,14 +5,15 @@ use serde::{Deserialize, Serialize};
 /// SansaVRM Property の型付き値。
 ///
 /// 役割:
-/// - 既存の String value / value_type 構成から、型安全な PropertyValue へ段階移行するための中間表現。
+/// - SansaVRM Property の値を型安全に表現する。
 ///
 /// 注意:
-/// - 現段階では Property 本体の value:String は維持する。
-/// - 完全移行前に adapter / validator / tests を順次対応する。
+/// - String / Number / Bool を enum として保持する。
+/// - JSON互換形式は別途 serde 方針で定義する。
 ///
 /// TODO(trace): CoreAPI仕様 / Property typed value
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "type", content = "data")]
 pub enum PropertyValue {
     String(String),
     Number(f64),
