@@ -3,7 +3,7 @@
 use std::collections::HashSet;
 
 use sansavrm_core::{
-    CoreResult, DiagnosticCode, DiagnosticSeverity, Model, SansaVrmError, ValidationDiagnostic,
+    CoreResult, DiagnosticCode, DiagnosticSeverity, Model, PropertyValue, SansaVrmError, ValidationDiagnostic,
 };
 
 use crate::ValidatorResult;
@@ -419,41 +419,10 @@ fn validate_property_value_with_diagnostics(
     property: &sansavrm_core::Property,
     diagnostics: &mut Vec<ValidationDiagnostic>,
 ) {
-    match property.value_type {
-        sansavrm_core::PropertyValueType::String => {}
-
-        sansavrm_core::PropertyValueType::Number => {
-            if property.value.parse::<f64>().is_err() {
-                diagnostics.push(ValidationDiagnostic {
-                    code: DiagnosticCode::PropertyValueInvalid,
-                    severity: DiagnosticSeverity::Error,
-                    message: format!(
-                        "Property {} expects number but got {}",
-                        property.property_id, property.value
-                    ),
-                    target: Some(property.property_id.clone()),
-                });
-            }
-        }
-
-        sansavrm_core::PropertyValueType::Boolean => {
-            if property.value.parse::<bool>().is_err() {
-                diagnostics.push(ValidationDiagnostic {
-                    code: DiagnosticCode::PropertyValueInvalid,
-                    severity: DiagnosticSeverity::Error,
-                    message: format!(
-                        "Property {} expects boolean but got {}",
-                        property.property_id, property.value
-                    ),
-                    target: Some(property.property_id.clone()),
-                });
-            }
-        }
-
-        sansavrm_core::PropertyValueType::Object
-        | sansavrm_core::PropertyValueType::Array => {
-            // serde_json 導入後に Object / Array の構造検証を追加する。
-        }
+    match &property.value {
+        PropertyValue::String(_) => {}
+        PropertyValue::Number(_) => {}
+        PropertyValue::Bool(_) => {}
     }
 
     validate_property_classification_with_diagnostics(property, diagnostics);
@@ -466,32 +435,10 @@ fn validate_property_value(
     property: &sansavrm_core::Property,
     errors: &mut Vec<SansaVrmError>,
 ) {
-    match property.value_type {
-        sansavrm_core::PropertyValueType::String => {}
-
-        sansavrm_core::PropertyValueType::Number => {
-            if property.value.parse::<f64>().is_err() {
-                errors.push(SansaVrmError::InvalidInput(format!(
-                    "Property {} expects number but got {}",
-                    property.property_id, property.value
-                )));
-            }
-        }
-
-        sansavrm_core::PropertyValueType::Boolean => {
-            if property.value.parse::<bool>().is_err() {
-                errors.push(SansaVrmError::InvalidInput(format!(
-                    "Property {} expects boolean but got {}",
-                    property.property_id, property.value
-                )));
-            }
-        }
-
-        sansavrm_core::PropertyValueType::Object
-        | sansavrm_core::PropertyValueType::Array => {
-            // 現段階では JSON値検証未実装。
-            // serde_json 導入後に Object / Array の構造検証を追加する。
-        }
+    match &property.value {
+        PropertyValue::String(_) => {}
+        PropertyValue::Number(_) => {}
+        PropertyValue::Bool(_) => {}
     }
 
     validate_property_classification(property, errors);

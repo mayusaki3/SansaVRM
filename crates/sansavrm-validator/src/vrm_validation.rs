@@ -68,16 +68,24 @@ pub(crate) fn validate_vrm_humanoid(model: &Model, errors: &mut Vec<SansaVrmErro
     }
 
     for property in humanoid_properties {
+        let Some(module_id) = property.value.as_string() else {
+            errors.push(SansaVrmError::InvalidInput(format!(
+                "VRM humanoid bone {} must reference module by string value",
+                property.key
+            )));
+            continue;
+        };
+
         let exists = model
             .modules
             .iter()
-            .any(|module| module.module_id == property.value);
+            .any(|module| module.module_id == module_id);
 
         if !exists {
             errors.push(SansaVrmError::InvalidInput(format!(
                 "VRM humanoid bone {} references unknown module {}",
                 property.key,
-                property.value
+                module_id
             )));
         }
     }

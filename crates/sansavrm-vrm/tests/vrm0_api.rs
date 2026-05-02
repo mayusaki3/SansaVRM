@@ -68,24 +68,42 @@ fn vrm0_tc_002_import_should_set_version() {
     assert!(model
         .properties
         .iter()
-        .any(|property| property.key == "vrm.meta.name" && property.value == "Old VRM"));
+        .any(|property| property.key == "vrm.meta.name"
+            && matches!(
+                &property.value,
+                sansavrm_core::PropertyValue::String(value) if value == "Old VRM"
+            )
+        ));
 
     assert!(model
         .properties
         .iter()
-        .any(|property| property.key == "vrm.meta.version" && property.value == "0.99"));
+        .any(|property| property.key == "vrm.meta.version"
+            && matches!(
+                &property.value,
+                sansavrm_core::PropertyValue::String(value) if value == "0.99"
+            )
+        ));
 
     assert!(model
         .properties
         .iter()
-        .any(|property| property.key == "vrm.meta.authors" && property.value == "SansaVRM"));
+        .any(|property| property.key == "vrm.meta.authors"
+            && matches!(
+                &property.value,
+                sansavrm_core::PropertyValue::String(value) if value == "SansaVRM"
+            )
+        ));
 
     assert!(model
         .properties
         .iter()
         .any(|property| {
             property.key == "vrm.meta.license_url"
-                && property.value == "Redistribution_Prohibited"
+                && matches!(
+                    &property.value,
+                    sansavrm_core::PropertyValue::String(value) if value == "Redistribution_Prohibited"
+                )
         }));
 }
 
@@ -183,12 +201,18 @@ fn vrm0_tc_005_import_ignore_unknown_bone() {
 
     assert!(model.properties.iter().any(|property| {
         property.key == "vrm.humanoid.human_bones.hips.node"
-            && property.value == "Hips"
+            && matches!(
+                &property.value,
+                sansavrm_core::PropertyValue::String(value) if value == "Hips"
+            )
     }));
 
     assert!(model.properties.iter().any(|property| {
         property.key == "vrm.humanoid.human_bones.head.node"
-            && property.value == "Head"
+            && matches!(
+                &property.value,
+                sansavrm_core::PropertyValue::String(value) if value == "Head"
+            )
     }));
 
     assert!(!model.properties.iter().any(|property| {

@@ -42,25 +42,43 @@ fn vrm1_tc_001_import_minimal_should_create_model() {
     assert!(model
         .properties
         .iter()
-        .any(|property| property.key == "vrm.meta.name" && property.value == "Test VRM"));
+        .any(|property| property.key == "vrm.meta.name"
+            && matches!(
+                &property.value,
+                sansavrm_core::PropertyValue::String(value) if value == "Test VRM"
+            )
+        ));
 
     assert!(model
         .properties
         .iter()
-        .any(|property| property.key == "vrm.meta.version" && property.value == "1.0.0"));
+        .any(|property| property.key == "vrm.meta.version"
+            && matches!(
+                &property.value,
+                sansavrm_core::PropertyValue::String(value) if value == "1.0.0"
+            )
+        ));
 
     assert!(model
         .properties
         .iter()
-        .any(|property| property.key == "vrm.meta.authors" && property.value == "SansaVRM"));
+        .any(|property| property.key == "vrm.meta.authors"
+            && matches!(
+                &property.value,
+                sansavrm_core::PropertyValue::String(value) if value == "SansaVRM"
+            )
+        ));
 
     assert!(model
         .properties
         .iter()
         .any(|property| {
             property.key == "vrm.meta.license_url"
-                && property.value == "https://example.com/license"
-        }));
+                && matches!(
+                    &property.value,
+                    sansavrm_core::PropertyValue::String(value) if value == "https://example.com/license"
+                )
+            }));
 }
 
 #[test]
@@ -130,7 +148,10 @@ fn vrm1_tc_003_import_humanoid_should_create_properties() {
 
     assert!(model.properties.iter().any(|property| {
         property.key == "vrm.humanoid.human_bones.head.node"
-            && property.value == "Head"
+            && matches!(
+                &property.value,
+                sansavrm_core::PropertyValue::String(value) if value == "Head"
+            )
     }));
 }
 
@@ -210,7 +231,10 @@ fn vrm1_tc_005_import_ignore_unknown_bone() {
 
     assert!(model.properties.iter().any(|property| {
         property.key == "vrm.humanoid.human_bones.head.node"
-            && property.value == "Head"
+            && matches!(
+                &property.value,
+                sansavrm_core::PropertyValue::String(value) if value == "Head"
+            )
     }));
 
     assert!(!model.properties.iter().any(|property| {

@@ -45,13 +45,19 @@ fn vrm_rt_api_tc_001_vrm1_roundtrip_preserve_humanoid() {
     // 検証：hips
     assert!(re_model.properties.iter().any(|p| {
         p.key == "vrm.humanoid.human_bones.hips.node"
-            && p.value == "Hips"
+            && matches!(
+                &p.value,
+                sansavrm_core::PropertyValue::String(value) if value == "Hips"
+            )
     }));
 
     // 検証：head
     assert!(re_model.properties.iter().any(|p| {
         p.key == "vrm.humanoid.human_bones.head.node"
-            && p.value == "Head"
+            && matches!(
+                &p.value,
+                sansavrm_core::PropertyValue::String(value) if value == "Head"
+            )
     }));
 }
 
@@ -97,12 +103,18 @@ fn vrm_rt_api_tc_002_vrm0_roundtrip_preserve_humanoid() {
 
     assert!(re_model.properties.iter().any(|property| {
         property.key == "vrm.humanoid.human_bones.hips.node"
-            && property.value == "Hips"
+            && matches!(
+                &property.value,
+                sansavrm_core::PropertyValue::String(value) if value == "Hips"
+            )
     }));
 
     assert!(re_model.properties.iter().any(|property| {
         property.key == "vrm.humanoid.human_bones.head.node"
-            && property.value == "Head"
+            && matches!(
+                &property.value,
+                sansavrm_core::PropertyValue::String(value) if value == "Head"
+            )
     }));
 }
 

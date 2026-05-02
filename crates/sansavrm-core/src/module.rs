@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use crate::Property;
 
 /// Module 種別。
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum ModuleType {
     Body,
     Clothing,
@@ -22,7 +22,7 @@ pub enum ModuleType {
 ///
 /// 役割:
 /// - モデルを構成する論理的な部品を表現する。
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Module {
     pub module_id: String,
     pub module_type: ModuleType,

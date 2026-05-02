@@ -12,7 +12,7 @@ use crate::{CoreResult, Model};
 /// - 永続化・差分管理・ネストTransactionは後続実装。
 ///
 /// TODO(trace): CoreAPI仕様 / Transaction API
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Transaction {
     pub original: Model,
     pub working: Model,

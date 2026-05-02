@@ -1,7 +1,7 @@
 // crates/sansavrm-validator/tests/property_validation.rs
 
 use sansavrm_core::{
-    Model, Module, ModuleType, Property, PropertyRole, PropertyType, PropertyValueType,
+    Model, Module, ModuleType, Property, PropertyRole, PropertyType,
 };
 use sansavrm_validator::validate_model;
 
@@ -66,23 +66,7 @@ fn validator_property_002_number_value_should_pass() {
 }
 
 #[test]
-fn validator_property_003_invalid_number_should_fail() {
-    let model = model_with_module_property(Property {
-        property_id: "property_001".into(),
-        key: "weight".into(),
-        value: "not_number".into(),
-        value_type: PropertyValueType::Number,
-        property_type: PropertyType::Metadata,
-        role: PropertyRole::Module,
-    });
-
-    let result = validate_model(&model);
-
-    assert!(!result.success);
-}
-
-#[test]
-fn validator_property_004_boolean_value_should_pass() {
+fn validator_property_003_boolean_value_should_pass() {
     let model = model_with_module_property(Property::from_typed_value(
         "property_001",
         "enabled",
@@ -97,23 +81,7 @@ fn validator_property_004_boolean_value_should_pass() {
 }
 
 #[test]
-fn validator_property_005_invalid_boolean_should_fail() {
-    let model = model_with_module_property(Property {
-        property_id: "property_001".into(),
-        key: "enabled".into(),
-        value: "yes".into(),
-        value_type: PropertyValueType::Boolean,
-        property_type: PropertyType::Metadata,
-        role: PropertyRole::Module,
-    });
-
-    let result = validate_model(&model);
-
-    assert!(!result.success);
-}
-
-#[test]
-fn validator_property_006_physics_property_with_physics_role_should_pass() {
+fn validator_property_004_physics_property_with_physics_role_should_pass() {
     let model = model_with_module_property(Property::from_typed_value(
         "property_001",
         "mass",
@@ -128,7 +96,7 @@ fn validator_property_006_physics_property_with_physics_role_should_pass() {
 }
 
 #[test]
-fn validator_property_007_sensor_property_with_module_role_should_fail() {
+fn validator_property_005_sensor_property_with_module_role_should_fail() {
     let model = model_with_module_property(Property::from_typed_value(
         "property_001",
         "position",
@@ -143,14 +111,13 @@ fn validator_property_007_sensor_property_with_module_role_should_fail() {
 }
 
 #[test]
-fn validator_property_008_model_level_invalid_number_should_fail() {
+fn validator_property_006_model_level_invalid_number_should_fail() {
     let mut model = Model::new();
 
     model.properties.push(Property {
         property_id: "property_model_invalid_number".into(),
         key: "vrm.humanoid.human_bones.head.node".into(),
-        value: "Head".into(),
-        value_type: PropertyValueType::Number,
+        value: sansavrm_core::PropertyValue::String("Head".into()),
         property_type: PropertyType::Metadata,
         role: PropertyRole::Module,
     });
@@ -161,7 +128,7 @@ fn validator_property_008_model_level_invalid_number_should_fail() {
 }
 
 #[test]
-fn validator_property_009_model_level_vrm_humanoid_property_without_module_should_fail() {
+fn validator_property_007_model_level_vrm_humanoid_property_without_module_should_fail() {
     let mut model = Model::new();
 
     model.properties.push(Property::from_typed_value(
@@ -178,7 +145,7 @@ fn validator_property_009_model_level_vrm_humanoid_property_without_module_shoul
 }
 
 #[test]
-fn validator_property_010_vrm_humanoid_missing_head_should_fail() {
+fn validator_property_008_vrm_humanoid_missing_head_should_fail() {
     let mut model = Model::new();
 
     model.properties.push(Property::from_typed_value(
@@ -195,7 +162,7 @@ fn validator_property_010_vrm_humanoid_missing_head_should_fail() {
 }
 
 #[test]
-fn validator_property_011_vrm_humanoid_invalid_reference_should_fail() {
+fn validator_property_009_vrm_humanoid_invalid_reference_should_fail() {
     let mut model = Model::new();
 
     model.properties.push(Property::from_typed_value(
@@ -212,7 +179,7 @@ fn validator_property_011_vrm_humanoid_invalid_reference_should_fail() {
 }
 
 #[test]
-fn validator_property_012_vrm_humanoid_valid_should_pass() {
+fn validator_property_010_vrm_humanoid_valid_should_pass() {
     let mut model = Model::new();
 
     for bone_name in [
@@ -243,7 +210,7 @@ fn validator_property_012_vrm_humanoid_valid_should_pass() {
 }
 
 #[test]
-fn validator_property_013_vrm_humanoid_missing_spine_should_fail() {
+fn validator_property_011_vrm_humanoid_missing_spine_should_fail() {
     let mut model = Model::new();
 
     model.modules.push(Module {
@@ -282,7 +249,7 @@ fn validator_property_013_vrm_humanoid_missing_spine_should_fail() {
 }
 
 #[test]
-fn validator_property_014_typed_number_property_should_pass() {
+fn validator_property_012_typed_number_property_should_pass() {
     let mut model = Model::new();
 
     model.properties.push(Property::from_typed_value(
@@ -299,7 +266,7 @@ fn validator_property_014_typed_number_property_should_pass() {
 }
 
 #[test]
-fn validator_property_015_typed_bool_property_should_pass() {
+fn validator_property_013_typed_bool_property_should_pass() {
     let mut model = Model::new();
 
     model.properties.push(Property::from_typed_value(
@@ -316,7 +283,7 @@ fn validator_property_015_typed_bool_property_should_pass() {
 }
 
 #[test]
-fn validator_property_016_typed_string_property_should_pass() {
+fn validator_property_014_typed_string_property_should_pass() {
     let mut model = Model::new();
 
     model.properties.push(Property::from_typed_value(

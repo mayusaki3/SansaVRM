@@ -57,7 +57,7 @@ pub(crate) fn get_model_property<'a>(model: &'a Model, key: &str) -> Option<&'a 
         .properties
         .iter()
         .find(|property| property.key == key)
-        .map(|property| property.value.as_str())
+        .and_then(|property| property.value.as_string())
 }
 
 /// Import a string value from VRM meta into SansaVRM Model properties.

@@ -22,7 +22,7 @@ pub enum PropertyValueType {
 /// - 完全移行前に adapter / validator / tests を順次対応する。
 ///
 /// TODO(trace): CoreAPI仕様 / Property typed value
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum PropertyValue {
     String(String),
     Number(f64),
@@ -95,8 +95,7 @@ impl Property {
         Self {
             property_id: property_id.into(),
             key: key.into(),
-            value: value.to_legacy_string(),
-            value_type: value.value_type(),
+            value,
             property_type,
             role,
         }
@@ -153,12 +152,11 @@ pub enum PropertyRole {
 /// 注意:
 /// - value は初期実装では String 表現に留める。
 /// - JSON値対応は serde_json 導入時に拡張する。
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Property {
     pub property_id: String,
     pub key: String,
-    pub value: String,
-    pub value_type: PropertyValueType,
+    pub value: PropertyValue,
     pub property_type: PropertyType,
     pub role: PropertyRole,
 }

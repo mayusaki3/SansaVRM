@@ -75,10 +75,14 @@ pub(crate) fn apply_vrm0_humanoid(value: &mut Value, model: &Model, version: Vrm
                 continue;
             }
 
+            let Some(module_id) = property.value.as_string() else {
+                continue;
+            };
+
             if let Some(node_index) = model
                 .modules
                 .iter()
-                .position(|m| m.module_id == property.value)
+                .position(|module| module.module_id == module_id)
             {
                 bones.push(json!({
                     "bone": bone_name,

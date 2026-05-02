@@ -2,7 +2,6 @@
 
 use sansavrm_core::{
     DiagnosticCode, Model, Module, ModuleType, Property, PropertyRole, PropertyType,
-    PropertyValueType,
 };
 use sansavrm_validator::{validate_diagnostics, ValidateOptions};
 
@@ -17,8 +16,7 @@ fn validator_property_diag_001_classification_mismatch_should_return_diagnostic(
         properties: vec![Property {
             property_id: "property_001".into(),
             key: "position".into(),
-            value: "0.0".into(),
-            value_type: PropertyValueType::String,
+            value: sansavrm_core::PropertyValue::String("0.0".into()),
             property_type: PropertyType::Sensor,
             role: PropertyRole::Module,
         }],

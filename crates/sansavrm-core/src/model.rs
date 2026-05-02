@@ -8,7 +8,7 @@ use crate::{DiagnosticItem, Module, Property, SansaId, Slot, State, VrmVersion};
 ///
 /// TODO(trace): メタモデル仕様 / Connection
 /// TODO(trace): JSONスキーマ仕様 / connections.connection_type
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum ConnectionType {
     Attach,
     Joint,
@@ -26,7 +26,7 @@ pub enum ConnectionType {
 ///
 /// TODO(trace): メタモデル仕様 / Connection
 /// TODO(trace): CoreAPI仕様 / Connection操作API
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Connection {
     pub connection_id: String,
     pub from_id: String,
@@ -41,7 +41,7 @@ pub struct Connection {
 /// - SansaVRM Core のルートモデルを表現する。
 ///
 /// TODO(trace): メタモデル仕様 / Model に対応
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Model {
     pub model_id: String,
     pub modules: Vec<Module>,

@@ -67,10 +67,14 @@ pub(crate) fn apply_vrm1_humanoid(value: &mut Value, model: &Model, version: Vrm
             continue;
         };
 
+        let Some(module_id) = property.value.as_string() else {
+            continue;
+        };
+
         let Some(node_index) = model
             .modules
             .iter()
-            .position(|module| module.module_id == property.value)
+            .position(|module| module.module_id == module_id)
         else {
             continue;
         };

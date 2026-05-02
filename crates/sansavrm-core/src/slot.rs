@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use crate::Property;
 
 /// Slot 種別。
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum SlotType {
     Structure,
     Equipment,
@@ -24,7 +24,7 @@ pub enum SlotType {
 }
 
 /// Slot 接続制約。
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ConnectionRule {
     pub min_connections: usize,
     pub max_connections: usize,
@@ -37,7 +37,7 @@ pub struct ConnectionRule {
 ///
 /// 役割:
 /// - Module 間の接続点を表現する。
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Slot {
     pub slot_id: String,
     pub slot_type: SlotType,

@@ -119,7 +119,10 @@ fn core_property_api_005_update_property_should_replace_value() {
 
     let model = result.data.expect("model should be returned");
     assert_eq!(model.modules[0].properties[0].property_id, "property_001");
-    assert_eq!(model.modules[0].properties[0].value, "new");
+    assert_eq!(
+        model.modules[0].properties[0].value,
+        sansavrm_core::PropertyValue::String("new".into())
+    );
 }
 
 #[test]
@@ -200,8 +203,10 @@ fn core_property_api_011_property_from_typed_string_should_create_legacy_propert
 
     assert_eq!(property.property_id, "property_001");
     assert_eq!(property.key, "name");
-    assert_eq!(property.value, "SansaVRM");
-    assert_eq!(property.value_type, PropertyValueType::String);
+    assert_eq!(
+        property.value,
+        sansavrm_core::PropertyValue::String("SansaVRM".into())
+    );
     assert_eq!(property.property_type, PropertyType::Metadata);
     assert_eq!(property.role, PropertyRole::Module);
 }
@@ -216,8 +221,7 @@ fn core_property_api_012_property_from_typed_number_should_create_legacy_propert
         PropertyRole::Module,
     );
 
-    assert_eq!(property.value, "12.5");
-    assert_eq!(property.value_type, PropertyValueType::Number);
+    assert_eq!(property.value, sansavrm_core::PropertyValue::Number(12.5));
 }
 
 #[test]
@@ -230,6 +234,5 @@ fn core_property_api_013_property_from_typed_bool_should_create_legacy_property(
         PropertyRole::Module,
     );
 
-    assert_eq!(property.value, "true");
-    assert_eq!(property.value_type, PropertyValueType::Boolean);
+    assert_eq!(property.value, sansavrm_core::PropertyValue::Bool(true));
 }
