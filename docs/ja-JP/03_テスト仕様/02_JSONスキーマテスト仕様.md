@@ -46,7 +46,7 @@
 - enum
 - null許容
 - property_type の enum 検証
-- role の enum 検証
+- context の enum 検証
 
 ---
 
@@ -58,7 +58,7 @@
 - additionalProperties
 - oneOf / anyOf / allOf
 - if / then / else
-- Property の required（property_type / role）検証
+- Property の required（property_type / context）検証
 
 ---
 
@@ -176,7 +176,7 @@
 
 - テストID：SCHEMA-PROPERTY-006
 - 分類：制約検証
-- 内容：role が欠落
+- 内容：context が欠落
 - 期待結果：fail
 
 ---

@@ -241,70 +241,82 @@ ID や識別子は空文字列を許容しない。
 ```json
 {
   "$defs": {
+    "PropertyValue": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "String" },
+            "data": { "type": "string" }
+          },
+          "required": ["type", "data"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "Number" },
+            "data": { "type": "number" }
+          },
+          "required": ["type", "data"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "Bool" },
+            "data": { "type": "boolean" }
+          },
+          "required": ["type", "data"],
+          "additionalProperties": false
+        }
+      ]
+    },
     "Property": {
       "type": "object",
       "properties": {
         "property_id": { "$ref": "#/$defs/Id" },
         "key": { "type": "string", "minLength": 1 },
-        "value": {},
-        "value_type": {
-          "type": "string",
-          "enum": ["string", "number", "boolean", "object", "array"]
-        },
+        "value": { "$ref": "#/$defs/PropertyValue" },
         "property_type": {
           "type": "string",
           "enum": [
-            "physics",
-            "collision",
-            "visual",
-            "control",
-            "actuator",
-            "sensor",
-            "metadata",
-            "custom"
+            "Metadata",
+            "Physics",
+            "Geometry",
+            "Material",
+            "Texture",
+            "Rig",
+            "Animation",
+            "Expression",
+            "Control",
+            "Sensor",
+            "Actuator",
+            "Constraint",
+            "Compatibility",
+            "Rights",
+            "Revenue",
+            "Custom"
           ]
         },
-        "role": {
+        "context": {
           "type": "string",
           "enum": [
-            "module",
-            "slot",
-            "physics",
-            "control",
-            "actuator",
-            "sensor",
-            "interface",
-            "constraint",
-            "custom"
+            "Description",
+            "Simulation",
+            "Rendering",
+            "IO",
+            "Validation",
+            "Conversion",
+            "Execution",
+            "Binding",
+            "Authoring",
+            "Custom"
           ]
-        },
-        "constraints": { "$ref": "#/$defs/PropertyConstraints" },
-        "metadata": { "$ref": "#/$defs/PropertyMetadata" }
-      },
-      "required": ["property_id", "key", "value", "value_type", "property_type", "role"],
-      "additionalProperties": false,
-      "allOf": [
-        {
-          "if": { "properties": { "value_type": { "const": "string" } }, "required": ["value_type"] },
-          "then": { "properties": { "value": { "type": "string" } } }
-        },
-        {
-          "if": { "properties": { "value_type": { "const": "number" } }, "required": ["value_type"] },
-          "then": { "properties": { "value": { "type": "number" } } }
-        },
-        {
-          "if": { "properties": { "value_type": { "const": "boolean" } }, "required": ["value_type"] },
-          "then": { "properties": { "value": { "type": "boolean" } } }
-        },
-        {
-          "if": { "properties": { "value_type": { "const": "object" } }, "required": ["value_type"] },
-          "then": { "properties": { "value": { "type": "object" } } }
-        },
-        {
-          "if": { "properties": { "value_type": { "const": "array" } }, "required": ["value_type"] },
-          "then": { "properties": { "value": { "type": "array" } } }
         }
-      ]
+      },
+      "required": ["property_id", "key", "value", "property_type", "context"],
+      "additionalProperties": false
     }
   }
 }
@@ -1170,7 +1182,7 @@ SansaVRM 拡張群を検証する。
 - 条件式 DSL の意味評価
 - glTF 標準構造との実インデックス整合
 - rights / revenue / compatibility の owner 実在確認
-- `property_type` / `role` / `key` の意味論的整合
+- `property_type` / `context` / `key` の意味論的整合
 - MuJoCo 変換時の Property 分類妥当性
 
 ---

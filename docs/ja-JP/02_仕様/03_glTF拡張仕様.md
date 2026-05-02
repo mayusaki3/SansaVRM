@@ -249,8 +249,12 @@ ID は以下のいずれかを許容する。
         {
           "property_id": "prop/body/display_name",
           "key": "display_name",
-          "value": "Body",
-          "value_type": "string"
+          "value": {
+            "type": "String",
+            "data": "Body"
+          },
+          "property_type": "Metadata",
+          "context": "Description"
         }
       ],
       "state_refs": [
@@ -305,7 +309,7 @@ glTF 標準要素との対応を保持する。
       "owner_module_id": "module/body",
       "target_slot_types": ["Structure", "Equipment"],
       "current_connections": [
-        "module/hat_a.slot/root"
+        "connection/hat_a_to_head"
       ],
       "connection_rules": {
         "min_connections": 0,
@@ -318,16 +322,24 @@ glTF 標準要素との対応を保持する。
         {
           "property_id": "constraint/head_mount/required_tag",
           "key": "required_tag",
-          "value": "head_item",
-          "value_type": "string"
+          "value": {
+            "type": "String",
+            "data": "head_item"
+          },
+          "property_type": "Constraint",
+          "context": "Validation"
         }
       ],
       "properties": [
         {
           "property_id": "prop/head_mount/display_name",
           "key": "display_name",
-          "value": "Head Mount",
-          "value_type": "string"
+          "value": {
+            "type": "String",
+            "data": "Head Mount"
+          },
+          "property_type": "Metadata",
+          "context": "Description"
         }
       ]
     }
@@ -690,6 +702,7 @@ action は以下を基本とする。
         "VRM_meta": {}
       },
       "source_raw": {
+        "format_type": "VRM",
         "raw": {}
       },
       "diagnostics": [
@@ -711,14 +724,29 @@ action は以下を基本とする。
 
 ## 16. Property 共通表現
 
+Property は JSON Schema に準拠し、
+以下の項目を必須とする：
+
+- property_id
+- key
+- value
+- property_type
+- context
+
+これらが欠落する場合は無効なデータとする。
+
 Property は以下の共通構造で表現する。
 
 ```json
 {
   "property_id": "prop/example",
   "key": "display_name",
-  "value": "Body",
-  "value_type": "string",
+  "value": {
+    "type": "String",
+    "data": "Body"
+  },
+  "property_type": "Metadata",
+  "context": "Description",
   "constraints": {
     "required": true
   },
@@ -731,15 +759,15 @@ Property は以下の共通構造で表現する。
 }
 ```
 
-### 16.1 value_type
+`property_type` は Property が何の種類の情報かを表す。
+`context` は Property をどの処理文脈で解釈するかを表す。
 
-- `string`
-- `number`
-- `boolean`
-- `object`
-- `array`
+`context` は単一値とする。
+複数の処理文脈が必要な場合は Property を分割する。
 
-### 16.2 constraints
+### 16.1 constraints
+
+constraints は PropertyConstraints に準拠する。
 
 以下を基本とする。
 

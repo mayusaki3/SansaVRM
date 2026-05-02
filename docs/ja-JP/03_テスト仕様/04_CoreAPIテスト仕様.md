@@ -169,8 +169,11 @@
 
 - property_id が一意であること
 - owner_id が存在すること
-- value_type と value が整合すること
-- property_type / role が用途と整合すること
+- value が PropertyValue tagged 形式で保持されること
+- String / Number / Bool が型を保持したまま serialize / deserialize されること
+- property_type / context が意味分類・処理文脈と整合すること
+- context は単一値として扱われること
+- context は所有者種別ではなく処理文脈として扱われること
 
 ---
 
@@ -240,7 +243,7 @@
 - property の変更
 - visibility の変更
 - connection enabled 状態の変更
-- property_type / role の保持
+- property_type / context の保持
 
 ---
 
@@ -331,7 +334,7 @@
 
 - テストID：CORE-PROPERTY-006
 - 分類：Property操作
-- 内容：property_type / role 付き Property を追加
+- 内容：property_type / context 付き Property を追加
 - 期待結果：Property が owner_id に紐付いて追加される
 
 ---

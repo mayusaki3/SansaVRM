@@ -118,12 +118,12 @@
 対象：
 
 - property_type
-- role
+- context
 
 検証内容：
 
 - property_type と key の整合
-- property_type と role の整合
+- property_type と context の整合
 
 ---
 
@@ -132,7 +132,7 @@
 対象：
 
 - property_type
-- role
+- context
 - connection_type
 
 検証内容：

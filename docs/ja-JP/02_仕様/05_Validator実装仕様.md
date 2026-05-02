@@ -317,8 +317,8 @@ Validator は検証前に以下のインデックスを構築する。
 #### property_override
 
 - `property_id` が実在しなければならない
-- `value` は対象 Property の `value_type` と整合しなければならない
-- `property_type` および `role` は対象 Property の用途と整合しなければならない
+- `value` は対象 Property の PropertyValue 形式と整合しなければならない
+- `property_type` および `context` は対象 Property の意味分類・処理文脈と整合しなければならない
 
 #### visibility_change
 
@@ -419,23 +419,48 @@ Validator は検証前に以下のインデックスを構築する。
 ### 15.1 検証対象
 
 - `property_type`
-- `role`
+- `context`
 - `key`
-- `value_type`
+- `value.type`
 
 ### 15.2 検証規則
 
 - `property_type` は定義済み列挙値でなければならない
-- `role` は定義済み列挙値でなければならない
-- `property_type = physics` の場合、`key` は物理系 Property として解釈可能でなければならない
-- `property_type = actuator` の場合、`role` は `actuator` または `control` と整合しなければならない
-- `property_type = sensor` の場合、`role` は `sensor` と整合しなければならない
-- `property_type = collision` または `property_type = visual` の場合、MuJoCo geom 生成に必要な構造情報として解釈可能でなければならない
+- `context` は定義済み列挙値でなければならない
+- Property の値型は PropertyValue により表現される。
+- `property_type` は Property が何の種類の情報かを表す。
+- `context` は Property をどの処理文脈で解釈するかを表す。
+- `context` は単一値でなければならない。
+- Property の配置場所（model.properties / module.properties / slot.properties）と `context` は独立している。
+- `property_type = Physics` の場合、`key` は物理系 Property として解釈可能でなければならない。
+- `property_type = Actuator` の場合、`context` は `Control` / `Runtime` / `Simulation` のいずれかと整合する必要がある。
+- `property_type = Sensor` の場合、`context` は `IO` / `Runtime` / `Control` のいずれかと整合する必要がある。
+- `property_type = Geometry` / `Material` / `Texture` の場合、`context` は `Rendering` / `Conversion` のいずれかと整合する必要がある。
+- `property_type = Constraint` の場合、`context` は `Validation` と整合する必要がある。
 
-### 15.3 エラーコード
+### 15.3 Property context 整合性検証
+
+property_type と context は以下の関係を満たす必要がある。
+
+- property_type = Physics
+  - context は Simulation または Execution でなければならない
+- property_type = Geometry / Material / Texture
+  - context は Rendering または Conversion でなければならない
+- property_type = Actuator
+  - context は Control / Execution / Simulation のいずれかでなければならない
+- property_type = Sensor
+  - context は IO / Execution / Control のいずれかでなければならない
+- property_type = Constraint
+  - context は Validation でなければならない
+- property_type = Metadata
+  - context は Description でなければならない
+
+上記に違反する場合、PROPERTY_CONTEXT_INVALID を error として返す。
+
+### 15.4 エラーコード
 
 - `PROPERTY_TYPE_INVALID`
-- `PROPERTY_ROLE_INVALID`
+- `PROPERTY_CONTEXT_INVALID`
 - `PROPERTY_CLASSIFICATION_MISMATCH`
 - `PROPERTY_GEOM_DATA_INVALID`
 

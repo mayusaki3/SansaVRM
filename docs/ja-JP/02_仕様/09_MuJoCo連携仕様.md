@@ -180,15 +180,18 @@ MuJoCo変換では以下の Connection のみを対象とする：
 Property は以下の規則に基づき分類する：
 
 - physics系（mass, inertia 等） → geom
-- collision / visual は geom生成に使用される構造情報とする
+- Geometry / Material / Texture は geom生成または描画変換に使用される構造情報とする
 - actuator系（torque, motor 等） → actuator
 - sensor系（position, velocity, force 等） → sensor
 
-判定は以下の優先順位で行う：
+判定優先順位：
 
-1. property_type
-2. role（slotまたはmodule）
-3. name（フォールバック）
+1. property_type（必須）
+2. context（補助）
+3. key（フォールバック）
+
+context は分類を補強するが、
+property_type と矛盾してはならない。
 
 ---
 
@@ -221,7 +224,12 @@ Property から生成する：
 - position actuator
 - velocity actuator
 
-actuator_type は Property の property_type または role により決定する。
+actuator_type は property_type を優先し、context を補助判定として決定する。
+
+actuator 判定ルール：
+
+- property_type = Actuator → actuator
+- context = Control / Execution → actuator（補助）
 
 ---
 
@@ -234,7 +242,15 @@ Property から生成する：
 - force
 - contact
 
-sensor_type は Property の property_type または role により決定する。
+sensor_type は property_type を優先し、context を補助判定として決定する。
+
+sensor 判定ルール：
+
+- property_type = Sensor → sensor
+- context = IO / Execution → sensor（補助）
+
+property_type を優先し、
+context は補助判定としてのみ使用する。
 
 ---
 
