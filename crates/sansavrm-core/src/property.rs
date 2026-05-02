@@ -2,16 +2,6 @@
 
 use serde::{Deserialize, Serialize};
 
-/// Property の値型。
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub enum PropertyValueType {
-    String,
-    Number,
-    Boolean,
-    Object,
-    Array,
-}
-
 /// SansaVRM Property の型付き値。
 ///
 /// 役割:
@@ -39,18 +29,6 @@ impl PropertyValue {
             PropertyValue::String(value) => value.clone(),
             PropertyValue::Number(value) => value.to_string(),
             PropertyValue::Bool(value) => value.to_string(),
-        }
-    }
-
-    /// SansaVRM PropertyValue に対応する既存 PropertyValueType を返す。
-    ///
-    /// 戻り値:
-    /// - `PropertyValueType`: 既存 validator が利用する値型
-    pub fn value_type(&self) -> PropertyValueType {
-        match self {
-            PropertyValue::String(_) => PropertyValueType::String,
-            PropertyValue::Number(_) => PropertyValueType::Number,
-            PropertyValue::Bool(_) => PropertyValueType::Boolean,
         }
     }
 

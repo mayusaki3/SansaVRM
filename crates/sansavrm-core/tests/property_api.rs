@@ -2,7 +2,7 @@
 
 use sansavrm_core::{
     add_property, list_properties, remove_property, update_property, Model, Module, ModuleType,
-    Property, PropertyRole, PropertyType, PropertyValueType, Slot, SlotType,
+    Property, PropertyRole, PropertyType, Slot, SlotType,
 };
 
 fn base_model() -> Model {
@@ -165,34 +165,7 @@ fn core_property_api_007_list_properties_should_return_owner_properties() {
 }
 
 #[test]
-fn core_property_api_008_property_value_string_should_convert_to_legacy_string() {
-    let value = sansavrm_core::PropertyValue::String("SansaVRM".into());
-
-    assert_eq!(value.to_legacy_string(), "SansaVRM");
-    assert_eq!(value.value_type(), PropertyValueType::String);
-    assert_eq!(value.as_string(), Some("SansaVRM"));
-}
-
-#[test]
-fn core_property_api_009_property_value_number_should_convert_to_legacy_string() {
-    let value = sansavrm_core::PropertyValue::Number(12.5);
-
-    assert_eq!(value.to_legacy_string(), "12.5");
-    assert_eq!(value.value_type(), PropertyValueType::Number);
-    assert_eq!(value.as_string(), None);
-}
-
-#[test]
-fn core_property_api_010_property_value_bool_should_convert_to_legacy_string() {
-    let value = sansavrm_core::PropertyValue::Bool(true);
-
-    assert_eq!(value.to_legacy_string(), "true");
-    assert_eq!(value.value_type(), PropertyValueType::Boolean);
-    assert_eq!(value.as_string(), None);
-}
-
-#[test]
-fn core_property_api_011_property_from_typed_string_should_create_legacy_property() {
+fn core_property_api_008_property_from_typed_string_should_create_legacy_property() {
     let property = Property::from_typed_value(
         "property_001",
         "name",
@@ -212,7 +185,7 @@ fn core_property_api_011_property_from_typed_string_should_create_legacy_propert
 }
 
 #[test]
-fn core_property_api_012_property_from_typed_number_should_create_legacy_property() {
+fn core_property_api_009_property_from_typed_number_should_create_legacy_property() {
     let property = Property::from_typed_value(
         "property_001",
         "weight",
@@ -225,7 +198,7 @@ fn core_property_api_012_property_from_typed_number_should_create_legacy_propert
 }
 
 #[test]
-fn core_property_api_013_property_from_typed_bool_should_create_legacy_property() {
+fn core_property_api_010_property_from_typed_bool_should_create_legacy_property() {
     let property = Property::from_typed_value(
         "property_001",
         "enabled",
