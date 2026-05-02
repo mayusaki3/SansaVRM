@@ -2,7 +2,7 @@
 
 use sansavrm_core::{
     add_property, list_properties, remove_property, update_property, Model, Module, ModuleType,
-    Property, PropertyRole, PropertyType, Slot, SlotType,
+    Property, PropertyContext, PropertyType, Slot, SlotType,
 };
 
 fn base_model() -> Model {
@@ -34,7 +34,7 @@ fn metadata_property(property_id: &str, key: &str, value: &str) -> Property {
         key,
         sansavrm_core::PropertyValue::String(value.into()),
         PropertyType::Metadata,
-        PropertyRole::Module,
+        PropertyContext::Description,
     )
 }
 
@@ -171,7 +171,7 @@ fn core_property_api_008_property_from_typed_string_should_create_legacy_propert
         "name",
         sansavrm_core::PropertyValue::String("SansaVRM".into()),
         PropertyType::Metadata,
-        PropertyRole::Module,
+        PropertyContext::Description,
     );
 
     assert_eq!(property.property_id, "property_001");
@@ -181,7 +181,7 @@ fn core_property_api_008_property_from_typed_string_should_create_legacy_propert
         sansavrm_core::PropertyValue::String("SansaVRM".into())
     );
     assert_eq!(property.property_type, PropertyType::Metadata);
-    assert_eq!(property.role, PropertyRole::Module);
+    assert_eq!(property.context, PropertyContext::Description);
 }
 
 #[test]
@@ -191,7 +191,7 @@ fn core_property_api_009_property_from_typed_number_should_create_legacy_propert
         "weight",
         sansavrm_core::PropertyValue::Number(12.5),
         PropertyType::Metadata,
-        PropertyRole::Module,
+        PropertyContext::Description,
     );
 
     assert_eq!(property.value, sansavrm_core::PropertyValue::Number(12.5));
@@ -204,7 +204,7 @@ fn core_property_api_010_property_from_typed_bool_should_create_legacy_property(
         "enabled",
         sansavrm_core::PropertyValue::Bool(true),
         PropertyType::Metadata,
-        PropertyRole::Module,
+        PropertyContext::Description,
     );
 
     assert_eq!(property.value, sansavrm_core::PropertyValue::Bool(true));
@@ -217,7 +217,7 @@ fn core_property_api_011_property_value_json_should_use_tagged_format() {
         "mass",
         sansavrm_core::PropertyValue::Number(12.5),
         PropertyType::Metadata,
-        PropertyRole::Module,
+        PropertyContext::Description,
     );
 
     let json = serde_json::to_value(&property).expect("property should serialize");
@@ -237,7 +237,7 @@ fn core_property_api_012_property_value_json_should_deserialize_tagged_format() 
     "data": 12.5
   },
   "property_type": "Metadata",
-  "role": "Module"
+  "context": "Description"
 }
 "#;
 
@@ -247,5 +247,5 @@ fn core_property_api_012_property_value_json_should_deserialize_tagged_format() 
     assert_eq!(property.key, "mass");
     assert_eq!(property.value, sansavrm_core::PropertyValue::Number(12.5));
     assert_eq!(property.property_type, PropertyType::Metadata);
-    assert_eq!(property.role, PropertyRole::Module);
+    assert_eq!(property.context, PropertyContext::Description);
 }

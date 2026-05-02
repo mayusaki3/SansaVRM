@@ -21,10 +21,10 @@ pub enum PropertyValue {
 }
 
 impl PropertyValue {
-    /// SansaVRM PropertyValue を既存 Property.value 用の String に変換する。
+    /// SansaVRM PropertyValue を表示・ログ・互換処理用の文字列に変換する。
     ///
     /// 戻り値:
-    /// - `String`: 既存 Property.value に格納可能な文字列表現
+    /// - `String`: PropertyValue の文字列表現
     pub fn to_legacy_string(&self) -> String {
         match self {
             PropertyValue::String(value) => value.clone(),
@@ -50,8 +50,7 @@ impl Property {
     /// SansaVRM Property を型付き値から作成する。
     ///
     /// 役割:
-    /// - 既存の `value: String` / `value_type: PropertyValueType` を維持しながら、
-    ///   呼び出し側では `PropertyValue` を使えるようにする。
+    /// - `PropertyValue` を用いて Property の値を型安全に保持する。
     ///
     /// 引数:
     /// - `property_id`: Property ID
@@ -69,14 +68,14 @@ impl Property {
         key: impl Into<String>,
         value: PropertyValue,
         property_type: PropertyType,
-        role: PropertyRole,
+        context: PropertyContext,
     ) -> Self {
         Self {
             property_id: property_id.into(),
             key: key.into(),
             value,
             property_type,
-            role,
+            context,
         }
     }
 }
@@ -93,13 +92,21 @@ impl Property {
 /// TODO(trace): MuJoCo連携仕様 / Property分類ルール
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum PropertyType {
-    Physics,
-    Collision,
-    Visual,
-    Control,
-    Actuator,
-    Sensor,
     Metadata,
+    Physics,
+    Geometry,
+    Material,
+    Texture,
+    Rig,
+    Animation,
+    Expression,
+    Control,
+    Sensor,
+    Actuator,
+    Constraint,
+    Compatibility,
+    Rights,
+    Revenue,
     Custom,
 }
 
@@ -108,18 +115,19 @@ pub enum PropertyType {
 /// 役割:
 /// - Property がどの用途・文脈で使われるかを表現する。
 ///
-/// TODO(trace): JSONスキーマ仕様 / Property.role
+/// TODO(trace): JSONスキーマ仕様 / Property.context
 /// TODO(trace): 物理・制御メタモデル仕様 / Property の役割
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub enum PropertyRole {
-    Module,
-    Slot,
-    Physics,
-    Control,
-    Actuator,
-    Sensor,
-    Interface,
-    Constraint,
+pub enum PropertyContext {
+    Description,
+    Simulation,
+    Rendering,
+    IO,
+    Validation,
+    Conversion,
+    Execution,
+    Binding,
+    Authoring,
     Custom,
 }
 
@@ -129,13 +137,13 @@ pub enum PropertyRole {
 /// - Module / Slot / Rights / Revenue 等に付与される属性を表現する。
 ///
 /// 注意:
-/// - value は初期実装では String 表現に留める。
-/// - JSON値対応は serde_json 導入時に拡張する。
+/// - value は PropertyValue として型付き値を保持する。
+/// - JSON表現は serde tagged enum 形式を使用する。
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Property {
     pub property_id: String,
     pub key: String,
     pub value: PropertyValue,
     pub property_type: PropertyType,
-    pub role: PropertyRole,
+    pub context: PropertyContext,
 }

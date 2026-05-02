@@ -453,7 +453,7 @@ fn validate_property_classification(
 ) {
     if !property_classification_is_valid(property) {
         errors.push(SansaVrmError::InvalidInput(format!(
-            "Property {} has incompatible property_type / role / key",
+            "Property {} has incompatible property_type / context / key",
             property.property_id
         )));
     }
@@ -471,7 +471,7 @@ fn validate_property_classification_with_diagnostics(
             code: DiagnosticCode::PropertyClassificationMismatch,
             severity: DiagnosticSeverity::Error,
             message: format!(
-                "Property {} has incompatible property_type / role / key",
+                "Property {} has incompatible property_type / context / key",
                 property.property_id
             ),
             target: Some(property.property_id.clone()),
@@ -482,22 +482,44 @@ fn validate_property_classification_with_diagnostics(
 /// Property の分類整合性を判定する。
 ///
 /// 役割:
-/// - 初期実装では property_type と role の組み合わせを最小検証する。
+/// - property_type と context の組み合わせを検証する。
 ///
 /// 注意点:
 /// - key に基づく詳細判定は後続実装で追加する。
 fn property_classification_is_valid(property: &sansavrm_core::Property) -> bool {
-    use sansavrm_core::{PropertyRole, PropertyType};
+    use sansavrm_core::{PropertyContext, PropertyType};
 
-    match property.property_type {
-        PropertyType::Physics => matches!(property.role, PropertyRole::Physics | PropertyRole::Module),
-        PropertyType::Collision => matches!(property.role, PropertyRole::Physics | PropertyRole::Module),
-        PropertyType::Visual => matches!(property.role, PropertyRole::Module),
-        PropertyType::Control => matches!(property.role, PropertyRole::Control | PropertyRole::Module),
-        PropertyType::Actuator => matches!(property.role, PropertyRole::Actuator | PropertyRole::Control),
-        PropertyType::Sensor => matches!(property.role, PropertyRole::Sensor),
-        PropertyType::Metadata => matches!(property.role, PropertyRole::Module | PropertyRole::Slot | PropertyRole::Custom),
-        PropertyType::Custom => true,
+    match &property.property_type {
+        PropertyType::Physics => matches!(
+            property.context,
+            PropertyContext::Simulation | PropertyContext::Execution
+        ),
+        PropertyType::Geometry | PropertyType::Material | PropertyType::Texture => matches!(
+            property.context,
+            PropertyContext::Rendering | PropertyContext::Conversion
+        ),
+        PropertyType::Actuator => matches!(
+            property.context,
+            PropertyContext::Execution | PropertyContext::Simulation
+        ),
+        PropertyType::Sensor => matches!(
+            property.context,
+            PropertyContext::IO | PropertyContext::Execution
+        ),
+        PropertyType::Constraint => {
+            matches!(property.context, PropertyContext::Validation)
+        }
+        PropertyType::Metadata => {
+            matches!(property.context, PropertyContext::Description)
+        }
+        PropertyType::Control
+        | PropertyType::Rig
+        | PropertyType::Animation
+        | PropertyType::Expression
+        | PropertyType::Compatibility
+        | PropertyType::Rights
+        | PropertyType::Revenue
+        | PropertyType::Custom => true,
     }
 }
 

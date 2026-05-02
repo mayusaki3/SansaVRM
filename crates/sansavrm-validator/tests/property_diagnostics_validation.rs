@@ -1,7 +1,7 @@
 // crates/sansavrm-validator/tests/property_diagnostics_validation.rs
 
 use sansavrm_core::{
-    DiagnosticCode, Model, Module, ModuleType, Property, PropertyRole, PropertyType,
+    DiagnosticCode, Model, Module, ModuleType, Property, PropertyContext, PropertyType,
 };
 use sansavrm_validator::{validate_diagnostics, ValidateOptions};
 
@@ -18,7 +18,7 @@ fn validator_property_diag_001_classification_mismatch_should_return_diagnostic(
             key: "position".into(),
             value: sansavrm_core::PropertyValue::String("0.0".into()),
             property_type: PropertyType::Sensor,
-            role: PropertyRole::Module,
+            context: PropertyContext::Description,
         }],
     });
 

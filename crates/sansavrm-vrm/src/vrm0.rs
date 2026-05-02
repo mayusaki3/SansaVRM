@@ -1,5 +1,5 @@
 use sansavrm_core::{
-    Model, Property, PropertyRole, PropertyType, PropertyValue, VrmVersion,
+    Model, Property, PropertyContext, PropertyType, PropertyValue, VrmVersion,
 };
 use serde_json::{json, Value};
 
@@ -51,7 +51,7 @@ pub(crate) fn import_vrm0_humanoid(model: &mut Model, document: &str, version: O
             vrm_humanoid_bone_node_key(bone_name),
             PropertyValue::String(module.module_id.clone()),
             PropertyType::Metadata,
-            PropertyRole::Module,
+            PropertyContext::Binding,
         ));
     }
 }

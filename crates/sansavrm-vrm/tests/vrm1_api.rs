@@ -1,5 +1,5 @@
 use sansavrm_core::{
-    IoOptions, Model, Module, ModuleType, Property, PropertyRole, PropertyType,
+    IoOptions, Model, Module, ModuleType, Property, PropertyContext, PropertyType,
     VrmVersion,
 };
 use sansavrm_vrm::{export_vrm, import_vrm};
@@ -97,7 +97,7 @@ fn vrm1_tc_002_export_should_create_gltf_json() {
         "vrm.meta.name",
         sansavrm_core::PropertyValue::String("Exported VRM".into()),
         PropertyType::Metadata,
-        PropertyRole::Module,
+        PropertyContext::Description,
     ));
 
     let result = export_vrm(&model, VrmVersion::V1_0, IoOptions::default());
@@ -178,7 +178,7 @@ fn vrm1_tc_004_export_humanoid_should_create_human_bones() {
         "vrm.humanoid.human_bones.head.node",
         sansavrm_core::PropertyValue::String("Head".into()),
         PropertyType::Metadata,
-        PropertyRole::Module,
+        PropertyContext::Binding,
     ));
 
     let result = export_vrm(&model, VrmVersion::V1_0, IoOptions::default());
@@ -265,7 +265,7 @@ fn vrm1_tc_006_export_ignore_unknown_bone() {
         "vrm.humanoid.human_bones.head.node",
         sansavrm_core::PropertyValue::String("Head".into()),
         PropertyType::Metadata,
-        PropertyRole::Module,
+        PropertyContext::Binding,
     ));
 
     model.properties.push(Property::from_typed_value(
@@ -273,7 +273,7 @@ fn vrm1_tc_006_export_ignore_unknown_bone() {
         "vrm.humanoid.human_bones.customTail.node",
         sansavrm_core::PropertyValue::String("UnknownPart".into()),
         PropertyType::Metadata,
-        PropertyRole::Module,
+        PropertyContext::Binding,
     ));
 
     let result = export_vrm(&model, VrmVersion::V1_0, IoOptions::default());

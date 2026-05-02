@@ -1,7 +1,7 @@
 // crates/sansavrm-core/tests/model_api.rs
 
 use sansavrm_core::{create_model, export_model, load_model, CreateModelInput,
-    Model, Property, PropertyRole, PropertyType,
+    Model, Property, PropertyContext, PropertyType,
 };
 
 #[test]
@@ -86,7 +86,7 @@ fn core_model_api_006_model_json_roundtrip_should_preserve_property_value_types(
         "mass",
         sansavrm_core::PropertyValue::Number(12.5),
         PropertyType::Metadata,
-        PropertyRole::Module,
+        PropertyContext::Description,
     ));
 
     let json = serde_json::to_string(&model).expect("serialize");

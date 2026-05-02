@@ -1,7 +1,7 @@
 // crates/sansavrm-validator/tests/diagnostics_order_validation.rs
 
 use sansavrm_core::{
-    Connection, ConnectionType, Model, Module, ModuleType, Property, PropertyRole, PropertyType,
+    Connection, ConnectionType, Model, Module, ModuleType, Property, PropertyContext, PropertyType,
 };
 use sansavrm_validator::{validate_diagnostics, ValidateOptions};
 
@@ -18,7 +18,7 @@ fn validator_diag_order_001_diagnostics_order_should_be_stable() {
             key: "weight".into(),
             value: sansavrm_core::PropertyValue::String("not_number".into()),
             property_type: PropertyType::Metadata,
-            role: PropertyRole::Module,
+            context: PropertyContext::Description,
         }],
     });
 

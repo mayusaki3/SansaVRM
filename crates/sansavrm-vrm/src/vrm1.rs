@@ -1,5 +1,5 @@
 use sansavrm_core::{
-    Model, Property, PropertyRole, PropertyType, PropertyValue, VrmVersion,
+    Model, Property, PropertyContext, PropertyType, PropertyValue, VrmVersion,
 };
 use serde_json::{json, Value};
 
@@ -128,6 +128,6 @@ fn vrm_humanoid_bone_property(bone_name: &str, module_id: &str) -> Property {
         key,
         PropertyValue::String(module_id.into()),
         PropertyType::Metadata,
-        PropertyRole::Module,
+        PropertyContext::Binding,
     )
 }

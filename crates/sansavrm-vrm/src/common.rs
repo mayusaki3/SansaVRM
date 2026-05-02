@@ -1,5 +1,5 @@
 use sansavrm_core::{
-    Model, Property, PropertyRole, PropertyType, PropertyValue, VrmVersion,
+    Model, Property, PropertyContext, PropertyType, PropertyValue, VrmVersion,
 };
 use serde_json::Value;
 
@@ -102,7 +102,7 @@ pub(crate) fn vrm_meta_property(key: &str, value: &str) -> Property {
         key,
         PropertyValue::String(value.into()),
         PropertyType::Metadata,
-        PropertyRole::Module,
+        PropertyContext::Description,
     )
 }
 
