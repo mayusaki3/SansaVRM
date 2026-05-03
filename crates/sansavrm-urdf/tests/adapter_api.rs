@@ -1,5 +1,9 @@
-use sansavrm_core::{Model, Module, ModuleType};
-use sansavrm_urdf::{export_urdf, import_urdf};
+use sansavrm_core::{
+    Model, Module, ModuleType, Property, PropertyContext, PropertyType, PropertyValue
+};
+use sansavrm_urdf::{
+    classify_urdf_property, export_urdf, import_urdf, UrdfPropertyTarget,
+};
 
 #[test]
 fn urdf_adapter_001_import_minimal_urdf_should_create_model() {
@@ -85,4 +89,64 @@ fn urdf_adapter_005_export_empty_model_should_create_empty_robot() {
     let document = result.data.expect("document should be returned");
     assert!(document.contains(r#"<robot name="empty_robot">"#));
     assert!(document.contains("</robot>"));
+}
+
+#[test]
+fn urdf_adapter_006_physics_property_should_map_to_inertial() {
+    let property = Property::from_typed_value(
+        "property_001",
+        "mass",
+        PropertyValue::Number(1.0),
+        PropertyType::Physics,
+        PropertyContext::Simulation,
+    );
+
+    let target = classify_urdf_property(&property);
+
+    assert_eq!(target, UrdfPropertyTarget::Inertial);
+}
+
+#[test]
+fn urdf_adapter_007_geometry_rendering_property_should_map_to_visual() {
+    let property = Property::from_typed_value(
+        "property_001",
+        "mesh",
+        PropertyValue::String("mesh_001".into()),
+        PropertyType::Geometry,
+        PropertyContext::Rendering,
+    );
+
+    let target = classify_urdf_property(&property);
+
+    assert_eq!(target, UrdfPropertyTarget::Visual);
+}
+
+#[test]
+fn urdf_adapter_008_geometry_simulation_property_should_map_to_collision() {
+    let property = Property::from_typed_value(
+        "property_001",
+        "collision_shape",
+        PropertyValue::String("box".into()),
+        PropertyType::Geometry,
+        PropertyContext::Simulation,
+    );
+
+    let target = classify_urdf_property(&property);
+
+    assert_eq!(target, UrdfPropertyTarget::Collision);
+}
+
+#[test]
+fn urdf_adapter_009_metadata_property_should_ignore() {
+    let property = Property::from_typed_value(
+        "property_001",
+        "display_name",
+        PropertyValue::String("Body".into()),
+        PropertyType::Metadata,
+        PropertyContext::Description,
+    );
+
+    let target = classify_urdf_property(&property);
+
+    assert_eq!(target, UrdfPropertyTarget::Ignore);
 }
