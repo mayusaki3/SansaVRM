@@ -433,10 +433,7 @@ Validator は検証前に以下のインデックスを構築する。
 - `context` は単一値でなければならない。
 - Property の配置場所（model.properties / module.properties / slot.properties）と `context` は独立している。
 - `property_type = Physics` の場合、`key` は物理系 Property として解釈可能でなければならない。
-- `property_type = Actuator` の場合、`context` は `Control` / `Runtime` / `Simulation` のいずれかと整合する必要がある。
-- `property_type = Sensor` の場合、`context` は `IO` / `Runtime` / `Control` のいずれかと整合する必要がある。
-- `property_type = Geometry` / `Material` / `Texture` の場合、`context` は `Rendering` / `Conversion` のいずれかと整合する必要がある。
-- `property_type = Constraint` の場合、`context` は `Validation` と整合する必要がある。
+- `property_type` と `context` の具体的な整合関係は、15.3 Property context 整合性検証に従う。
 
 ### 15.3 Property context 整合性検証
 
@@ -447,13 +444,15 @@ property_type と context は以下の関係を満たす必要がある。
 - property_type = Geometry / Material / Texture
   - context は Rendering または Conversion でなければならない
 - property_type = Actuator
-  - context は Control / Execution / Simulation のいずれかでなければならない
+  - context は Execution または Simulation でなければならない
 - property_type = Sensor
-  - context は IO / Execution / Control のいずれかでなければならない
+  - context は IO または Execution でなければならない
 - property_type = Constraint
   - context は Validation でなければならない
 - property_type = Metadata
   - context は Description でなければならない
+- property_type = Control / Rig / Animation / Expression / Compatibility / Rights / Revenue / Custom
+  - 現時点では context の組み合わせ制約を設けない
 
 上記に違反する場合、PROPERTY_CONTEXT_INVALID を error として返す。
 
