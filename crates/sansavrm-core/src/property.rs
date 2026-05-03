@@ -57,7 +57,7 @@ impl Property {
     /// - `key`: Property key
     /// - `value`: 型付き Property value
     /// - `property_type`: Property分類
-    /// - `role`: Property役割
+    /// - `context`: Property の主たる処理文脈
     ///
     /// 戻り値:
     /// - `Property`: 既存構造互換の Property
@@ -86,7 +86,7 @@ impl Property {
 /// - 変換処理および Validator における Property の用途判定に使用する。
 ///
 /// 注意点:
-/// - `property_type -> role -> key` の順で分類判定する。
+/// - `property_type -> context -> key` の順で分類判定する。
 ///
 /// TODO(trace): JSONスキーマ仕様 / Property.property_type
 /// TODO(trace): MuJoCo連携仕様 / Property分類ルール
@@ -110,13 +110,13 @@ pub enum PropertyType {
     Custom,
 }
 
-/// Property の役割。
+/// Property の処理文脈。
 ///
 /// 役割:
 /// - Property がどの用途・文脈で使われるかを表現する。
 ///
 /// TODO(trace): JSONスキーマ仕様 / Property.context
-/// TODO(trace): 物理・制御メタモデル仕様 / Property の役割
+/// TODO(trace): 物理・制御メタモデル仕様 / Property の処理文脈
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum PropertyContext {
     Description,

@@ -127,7 +127,7 @@ fn vrm_humanoid_bone_property(bone_name: &str, module_id: &str) -> Property {
         format!("property_{}", key.replace('.', "_")),
         key,
         PropertyValue::String(module_id.into()),
-        PropertyType::Metadata,
+        PropertyType::Rig,
         PropertyContext::Binding,
     )
 }

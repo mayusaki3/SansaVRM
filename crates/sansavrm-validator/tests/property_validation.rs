@@ -81,7 +81,7 @@ fn validator_property_003_boolean_value_should_pass() {
 }
 
 #[test]
-fn validator_property_004_physics_property_with_physics_role_should_pass() {
+fn validator_property_004_physics_property_with_simulation_context_should_pass() {
     let model = model_with_module_property(Property::from_typed_value(
         "property_001",
         "mass",
@@ -96,7 +96,7 @@ fn validator_property_004_physics_property_with_physics_role_should_pass() {
 }
 
 #[test]
-fn validator_property_005_sensor_property_with_module_role_should_fail() {
+fn validator_property_005_sensor_property_with_description_context_should_fail() {
     let model = model_with_module_property(Property::from_typed_value(
         "property_001",
         "position",

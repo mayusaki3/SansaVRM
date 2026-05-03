@@ -50,7 +50,7 @@ pub(crate) fn import_vrm0_humanoid(model: &mut Model, document: &str, version: O
             format!("p_{}", bone_name),
             vrm_humanoid_bone_node_key(bone_name),
             PropertyValue::String(module.module_id.clone()),
-            PropertyType::Metadata,
+            PropertyType::Rig,
             PropertyContext::Binding,
         ));
     }

@@ -177,7 +177,7 @@ fn vrm1_tc_004_export_humanoid_should_create_human_bones() {
         "property_vrm_humanoid_human_bones_head_node",
         "vrm.humanoid.human_bones.head.node",
         sansavrm_core::PropertyValue::String("Head".into()),
-        PropertyType::Metadata,
+        PropertyType::Rig,
         PropertyContext::Binding,
     ));
 
@@ -264,7 +264,7 @@ fn vrm1_tc_006_export_ignore_unknown_bone() {
         "p_head",
         "vrm.humanoid.human_bones.head.node",
         sansavrm_core::PropertyValue::String("Head".into()),
-        PropertyType::Metadata,
+        PropertyType::Rig,
         PropertyContext::Binding,
     ));
 
@@ -272,7 +272,7 @@ fn vrm1_tc_006_export_ignore_unknown_bone() {
         "p_custom_tail",
         "vrm.humanoid.human_bones.customTail.node",
         sansavrm_core::PropertyValue::String("UnknownPart".into()),
-        PropertyType::Metadata,
+        PropertyType::Rig,
         PropertyContext::Binding,
     ));
 
