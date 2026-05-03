@@ -1,0 +1,224 @@
+[目次](./目次.md) > SansaVRM > VRM入出力対応 > Step F-1 VRM 0.x / 1.0 差分整理
+
+# Step F-1 VRM 0.x / 1.0 差分整理
+
+## 1. 目的
+
+SansaVRM の VRM adapter 実装に向けて、VRM 0.x と VRM 1.0 の構造差分を整理し、Property 変換対象を確定する。
+
+## 2. 前提
+
+VRM は glTF 2.0 ベースの humanoid 3D avatar フォーマットである。
+
+VRM 0.x は `extensions.VRM` に VRM固有情報を集約する。
+
+VRM 1.0 は機能別拡張へ整理され、主に以下へ分割される。
+
+| 機能 | VRM 0.x | VRM 1.0 |
+|---|---|---|
+| meta | extensions.VRM.meta | VRMC_vrm.meta |
+| humanoid | extensions.VRM.humanoid | VRMC_vrm.humanoid |
+| blendshape / 表情 | extensions.VRM.blendShapeMaster | VRMC_vrm.expressions |
+| lookAt | extensions.VRM.firstPerson / blendshape連携 | VRMC_vrm.lookAt |
+| firstPerson | extensions.VRM.firstPerson | VRMC_vrm.firstPerson |
+| springBone | extensions.VRM.secondaryAnimation | VRMC_springBone |
+| MToon material | extensions.VRM.materialProperties | VRMC_materials_mtoon |
+| constraint | なし、または独自実装 | VRMC_node_constraint |
+
+## 3. SansaVRM への影響
+
+### 3.1 import方針
+
+VRM固有構造は core に持ち込まない。
+
+VRM 0.x / 1.0 の差異は `crates/sansavrm-vrm` 内で吸収し、SansaVRM Model には Property / Module / Connection / Geometry として格納する。
+
+## 4. Propertyマッピング初期案
+
+| VRM要素 | SansaVRM要素 | PropertyType | PropertyContext |
+|---|---|---|---|
+| humanoid bone | Property + Binding | Rig | Simulation / Execution |
+| expression / blendshape | Property | Expression | Rendering / Execution |
+| material | Property | Material | Rendering / Conversion |
+| texture | Property | Texture | Rendering / Conversion |
+| meta | Property | Metadata | Description |
+| node | Module | - | - |
+| hierarchy | Connection | - | - |
+| mesh | Geometry | Geometry | Rendering / Simulation |
+| springBone | Property | Constraint または Physics | Simulation |
+| node constraint | Property | Constraint | Validation / Simulation |
+
+## 5. VRM 0.x import対象
+
+### 必須
+
+| VRM 0.x | 変換先 |
+|---|---|
+| extensions.VRM.humanoid | Rig Property + Binding |
+| extensions.VRM.blendShapeMaster | Expression Property |
+| extensions.VRM.materialProperties | Material / Texture Property |
+| extensions.VRM.meta | Metadata Property |
+| glTF nodes | Module |
+| glTF node hierarchy | Connection |
+| glTF meshes | Geometry |
+
+### 後回し可
+
+| VRM 0.x | 理由 |
+|---|---|
+| secondaryAnimation | springBone相当。Phase 2以降でよい |
+| firstPerson | ロボット統合モデルの初期必須ではない |
+| lookAt | expression / humanoid後でよい |
+
+## 6. VRM 1.0 import対象
+
+### 必須
+
+| VRM 1.0 | 変換先 |
+|---|---|
+| VRMC_vrm.humanoid | Rig Property + Binding |
+| VRMC_vrm.expressions | Expression Property |
+| VRMC_vrm.meta | Metadata Property |
+| VRMC_materials_mtoon | Material / Texture Property |
+| glTF nodes | Module |
+| glTF node hierarchy | Connection |
+| glTF meshes | Geometry |
+
+### 後回し可
+
+| VRM 1.0 | 理由 |
+|---|---|
+| VRMC_springBone | Phase 2以降 |
+| VRMC_node_constraint | Constraint設計の精査後 |
+| VRMC_vrm.lookAt | expression後 |
+| VRMC_vrm.firstPerson | avatar表示用途のため初期必須ではない |
+
+## 7. export方針
+
+### Phase 2 最小export
+
+SansaVRM Model から以下を再構築する。
+
+| SansaVRM | VRM出力 |
+|---|---|
+| Rig Property + Binding | humanoid |
+| Metadata Property | meta |
+| Material / Texture Property | material / texture |
+| Geometry | mesh |
+| Module / Connection | node hierarchy |
+
+修正箇所：Step F-1「### 非可逆方針」全文差し替え
+
+---
+
+### 非完全一致・情報保持方針
+
+VRM → SansaVRM → VRM において、JSON の完全一致は要求しない。
+
+ただし、import 時に取得可能な情報を欠落させてはならない。
+
+本方針では以下を明確に区別する。
+
+- 許容するもの：
+  - JSON構造の違い
+  - フィールド順序の違い
+  - 既定値の省略・補完
+  - フォーマット差異（配列順・表現形式など）
+
+- 許容しないもの：
+  - 意味的情報の欠落
+  - 再構築不能なデータ消失
+  - VRM仕様上意味を持つ値の破棄（未定義でない限り）
+
+---
+
+#### 情報保持ルール
+
+import 時に取得した情報は、以下の優先順位で保持する。
+
+1. SansaVRM標準構造へ変換
+   - Module / Connection / Geometry / Property / Binding
+
+2. Property として保持
+   - type / context に基づく意味付けを行う
+
+3. Property 内拡張データとして保持
+   - attributes / params / extras 相当領域
+
+4. adapter 内 passthrough 領域で保持
+   - 未対応 extension / unknown fields
+
+5. 明示的に破棄許可されたもののみ破棄
+
+---
+
+#### passthroughスコープ定義
+
+passthrough 領域は以下の単位で保持する。
+
+1. node単位
+   - extensions / extras が node に紐づく場合
+
+2. material単位
+   - VRMC_materials 等
+
+3. modelルート単位
+   - VRMC_vrm / meta 等
+
+保持形式：
+
+- key：元の extension 名
+- value：JSONそのまま
+
+export 時は元の配置階層へ復元する。
+
+---
+
+#### roundtrip保証レベル
+
+VRM → SansaVRM → VRM において以下を保証する。
+
+1. humanoid のボーン対応が維持される
+2. meta 情報が保持される
+3. material / texture の意味が維持される
+4. node / hierarchy / mesh が破綻しない
+5. 未対応情報が消失せず保持される（再出力可能であること）
+
+---
+
+#### 非完全一致の定義
+
+本設計における「非完全一致」とは以下を意味する。
+
+- JSON文字列としての一致は不要
+- しかし意味情報は保持される必要がある
+
+すなわち、
+
+「構造の非一致は許容するが、情報の欠落は許容しない」
+
+## 8. 実装順
+
+### Step F-2
+
+humanoid Property設計
+
+### Step F-3
+
+VRM 0.x import設計
+
+### Step F-4
+
+VRM 1.0 import設計
+
+### Step F-5
+
+importテスト設計
+
+### Step F-6
+
+実装
+
+---
+
+[目次](./目次.md) > SansaVRM > VRM入出力対応 > Step F-1 VRM 0.x / 1.0 差分整理

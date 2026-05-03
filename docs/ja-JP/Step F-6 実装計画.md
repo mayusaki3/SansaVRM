@@ -1,0 +1,310 @@
+[目次](./目次.md) > SansaVRM > VRM入出力対応 > Step F-6 実装計画
+
+# Step F-6 実装計画
+
+## 1. 目的
+
+`crates/sansavrm-vrm` に VRM 0.x / VRM 1.0 import の実装を追加するための作業計画を定義する。
+
+---
+
+## 2. 実装対象
+
+対象crate：
+
+- `crates/sansavrm-vrm`
+
+対象機能：
+
+- VRM形式判定
+- glTF / GLB読み込み
+- VRM 0.x import
+- VRM 1.0 import
+- SansaVRM Model 生成
+- passthrough保持
+- validator連携
+- importテスト
+
+---
+
+## 3. 実装順序
+
+### Phase F6-1：現状確認
+
+目的：
+
+- 既存コード構成を確認し、変更対象ファイルを確定する。
+
+確認対象：
+
+- `crates/sansavrm-vrm`
+- core model 定義
+- Property / Binding 定義
+- validator 呼び出し方法
+- MuJoCo / URDF adapter の実装パターン
+- 既存テスト構成
+
+成果物：
+
+- 変更対象ファイル一覧
+- 既存設計との整合確認
+
+---
+
+### Phase F6-2：テスト雛形作成
+
+目的：
+
+- Step F-5 のテスト番号に対応するテスト関数を先に作成する。
+
+対象：
+
+- `vrm0_import_*`
+- `vrm1_import_*`
+- `passthrough_*`
+- `roundtrip_*`
+- `validator_*`
+
+要件：
+
+- テスト番号をコメントまたはテスト名で確認可能にする
+- 最初は未実装失敗でよい
+- テストデータ生成ヘルパーを分離する
+
+---
+
+### Phase F6-3：共通import基盤
+
+目的：
+
+- VRM 0.x / 1.0 に共通する glTF 変換処理を実装する。
+
+実装対象：
+
+- glTF / GLB読み込み
+- node → Module
+- hierarchy → Connection
+- mesh → Geometry
+- texture基盤
+- passthrough基盤
+- validator呼び出し
+
+---
+
+### Phase F6-4：VRM 0.x import
+
+目的：
+
+- VRM 0.x 固有 extension を SansaVRM Model に変換する。
+
+実装対象：
+
+- `extensions.VRM` 検出
+- humanoid → Rig Property + Binding
+- blendShapeMaster → Expression Property
+- materialProperties → Material Property
+- meta → Metadata Property
+- secondaryAnimation passthrough
+
+---
+
+### Phase F6-5：VRM 1.0 import
+
+目的：
+
+- VRM 1.0 extension 群を SansaVRM Model に変換する。
+
+実装対象：
+
+- `VRMC_vrm` 検出
+- humanoid → Rig Property + Binding
+- expressions → Expression Property
+- `VRMC_materials_mtoon` → Material Property
+- meta → Metadata Property
+- springBone passthrough
+- node constraint passthrough
+
+---
+
+### Phase F6-6：roundtrip最小実装
+
+目的：
+
+- importした情報を最小限VRMとして再出力可能にする。
+
+実装対象：
+
+- humanoid export
+- meta export
+- material / texture export
+- passthrough復元
+- JSON完全一致ではなく意味保持を確認
+
+---
+
+### Phase F6-7：テスト全PASS化
+
+目的：
+
+- Step F-5 の T-F5-001 ～ T-F5-030 を通す。
+
+要件：
+
+- import正常系 PASS
+- 異常系 PASS
+- 情報保持 PASS
+- roundtrip PASS
+- validator連携 PASS
+
+---
+
+## 4. 変更対象ファイル候補
+
+現状確認前の候補であり、Phase F6-1 で確定する。
+
+| 種別 | ファイル候補 | 内容 |
+|---|---|---|
+| 実装 | `crates/sansavrm-vrm/src/lib.rs` | public API |
+| 実装 | `crates/sansavrm-vrm/src/import.rs` | import入口 |
+| 実装 | `crates/sansavrm-vrm/src/import/common.rs` | 共通glTF変換 |
+| 実装 | `crates/sansavrm-vrm/src/import/vrm0.rs` | VRM 0.x import |
+| 実装 | `crates/sansavrm-vrm/src/import/vrm1.rs` | VRM 1.0 import |
+| 実装 | `crates/sansavrm-vrm/src/passthrough.rs` | passthrough保持 |
+| 実装 | `crates/sansavrm-vrm/src/export.rs` | export入口 |
+| テスト | `crates/sansavrm-vrm/tests/vrm0_import.rs` | VRM 0.x importテスト |
+| テスト | `crates/sansavrm-vrm/tests/vrm1_import.rs` | VRM 1.0 importテスト |
+| テスト | `crates/sansavrm-vrm/tests/roundtrip.rs` | roundtripテスト |
+| テスト | `crates/sansavrm-vrm/tests/fixtures.rs` | テストfixture生成 |
+
+---
+
+## 5. 実装ルール
+
+### 5.1 core非侵入
+
+以下は禁止する。
+
+- VRM専用structを core に追加する
+- VRM 0.x / 1.0 固有型を core の公開APIに混入する
+- PropertyContextを拡張する
+- validatorルールを変更する
+
+---
+
+### 5.2 adapter責務
+
+VRM固有構造の解釈は `crates/sansavrm-vrm` 内に閉じる。
+
+coreへ渡す情報は以下に限定する。
+
+- Module
+- Connection
+- Geometry
+- Property
+- Binding
+- passthrough情報
+
+---
+
+### 5.3 情報保持
+
+import時に読める情報は破棄しない。
+
+保持優先順位：
+
+1. SansaVRM標準構造へ変換
+2. Propertyへ変換
+3. Property拡張データへ保持
+4. passthroughへ保持
+5. 明示破棄されたもののみ破棄
+
+---
+
+### 5.4 エラー処理
+
+import失敗とする条件：
+
+- glTF / GLBとして読めない
+- VRM extensionが存在しない
+- humanoid必須boneの node index が未解決
+- node hierarchy に循環がある
+- humanoid bone が重複している
+- expression / blendshape の参照先が未解決
+
+警告で継続する条件：
+
+- optional bone 欠落
+- 不明bone名
+- 未対応 extension
+- 未対応 material shader
+- 未使用 texture
+- meta一部欠落
+- Phase 1未対応の springBone / node constraint
+
+---
+
+## 6. テスト実装ルール
+
+### 6.1 テスト番号
+
+全テストは Step F-5 のテスト番号を保持する。
+
+例：
+
+```rust
+// T-F5-001: vrm0_import_minimal
+#[test]
+fn vrm0_import_minimal() {
+    // ...
+}
+```
+
+---
+
+### 6.2 fixture方針
+
+fixture は以下のいずれかで用意する。
+
+1. 最小glTF / VRM JSONをコード内で生成
+2. `tests/fixtures/` に最小 `.gltf` / `.glb` を配置
+3. binary fixture は必要最小限に限定
+
+---
+
+### 6.3 カバレッジ方針
+
+- 正常系
+- 異常系
+- 情報保持
+- roundtrip
+- validator連携
+
+を必ず含める。
+
+---
+
+## 7. 実装完了条件
+
+以下をすべて満たした場合、Step F 実装完了とする。
+
+1. T-F5-001 ～ T-F5-030 が全PASS
+2. validator PASS
+3. VRM 0.x import が動作する
+4. VRM 1.0 import が動作する
+5. humanoid Property化が動作する
+6. meta / material / texture が保持される
+7. passthrough情報が保持される
+8. roundtripで意味情報が保持される
+9. coreにVRM専用structを追加していない
+10. PropertyContextを拡張していない
+11. validatorルールを変更していない
+
+---
+
+## 8. 次ステップ
+
+Step F-7：実装開始前のリポジトリ現状確認
+
+---
+
+[目次](./目次.md) > SansaVRM > VRM入出力対応 > Step F-6 実装計画
