@@ -298,3 +298,93 @@ fn validator_property_014_typed_string_property_should_pass() {
 
     assert!(result.success);
 }
+
+#[test]
+fn validator_property_015_sensor_property_with_io_context_should_pass() {
+    let model = model_with_module_property(Property::from_typed_value(
+        "property_001",
+        "position",
+        sansavrm_core::PropertyValue::String("0.0".into()),
+        PropertyType::Sensor,
+        PropertyContext::IO,
+    ));
+
+    let result = validate_model(&model);
+
+    assert!(result.success);
+}
+
+#[test]
+fn validator_property_016_geometry_property_with_rendering_context_should_pass() {
+    let model = model_with_module_property(Property::from_typed_value(
+        "property_001",
+        "mesh",
+        sansavrm_core::PropertyValue::String("mesh_001".into()),
+        PropertyType::Geometry,
+        PropertyContext::Rendering,
+    ));
+
+    let result = validate_model(&model);
+
+    assert!(result.success);
+}
+
+#[test]
+fn validator_property_017_constraint_property_with_execution_context_should_fail() {
+    let model = model_with_module_property(Property::from_typed_value(
+        "property_001",
+        "required_tag",
+        sansavrm_core::PropertyValue::String("head_item".into()),
+        PropertyType::Constraint,
+        PropertyContext::Execution,
+    ));
+
+    let result = validate_model(&model);
+
+    assert!(!result.success);
+}
+
+#[test]
+fn validator_property_018_metadata_property_with_simulation_context_should_fail() {
+    let model = model_with_module_property(Property::from_typed_value(
+        "property_001",
+        "display_name",
+        sansavrm_core::PropertyValue::String("Body".into()),
+        PropertyType::Metadata,
+        PropertyContext::Simulation,
+    ));
+
+    let result = validate_model(&model);
+
+    assert!(!result.success);
+}
+
+#[test]
+fn validator_property_019_actuator_property_with_execution_context_should_pass() {
+    let model = model_with_module_property(Property::from_typed_value(
+        "property_001",
+        "torque",
+        sansavrm_core::PropertyValue::Number(1.0),
+        PropertyType::Actuator,
+        PropertyContext::Execution,
+    ));
+
+    let result = validate_model(&model);
+
+    assert!(result.success);
+}
+
+#[test]
+fn validator_property_020_actuator_property_with_description_context_should_fail() {
+    let model = model_with_module_property(Property::from_typed_value(
+        "property_001",
+        "torque",
+        sansavrm_core::PropertyValue::Number(1.0),
+        PropertyType::Actuator,
+        PropertyContext::Description,
+    ));
+
+    let result = validate_model(&model);
+
+    assert!(!result.success);
+}
