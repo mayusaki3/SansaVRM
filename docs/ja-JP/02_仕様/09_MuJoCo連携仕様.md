@@ -153,6 +153,18 @@ MuJoCo変換では以下の Connection のみを対象とする：
 または
 - diagnostics に記録
 
+MuJoCo への Property 出力分類は以下とする。
+
+- Physics / Geometry / Material / Texture → geom
+- Actuator → actuator
+- Sensor → sensor
+- Actuator + Execution / Simulation → actuator
+- Sensor + IO / Execution → sensor
+- その他 → MJCF へ直接出力しない
+
+※ property_type を主判定とし、context は補助判定とする。
+※ Control は概念上の分類であり、PropertyContext の値としては使用しない。
+
 ---
 
 ### 6.2 body生成
