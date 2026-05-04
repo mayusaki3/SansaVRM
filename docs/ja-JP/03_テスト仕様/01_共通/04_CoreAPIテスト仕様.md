@@ -13,7 +13,7 @@ canonical_document: true
 
 ## 1. 目的
 
-本仕様は、[CoreAPI仕様](../02_仕様/06_CoreAPI仕様.md) に基づく Core API の検証テスト仕様を定義する。
+本仕様は、[CoreAPI仕様](../../02_仕様/01_共通/06_CoreAPI仕様.md) に基づく Core API の検証テスト仕様を定義する。
 
 本仕様の目的は以下とする。
 
