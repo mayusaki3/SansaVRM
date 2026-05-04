@@ -188,7 +188,10 @@ Validator は検証前に以下のインデックスを構築する。
 
 ---
 
-## 8. ID一意性検証
+## 8. 検証単位
+
+### 8.1 ID一意性検証
+<!-- hldocs:sec_id=sec_xxxxxxxx -->
 
 ### 8.1 検証対象
 
@@ -202,7 +205,7 @@ Validator は検証前に以下のインデックスを構築する。
 - `extension_layer_id`
 - `property_id`
 
-### 8.2 検証規則
+### 8.1 検証規則
 
 - 同一スコープ内で重複してはならない
 - `model_id` は全体で一意でなければならない
@@ -211,7 +214,7 @@ Validator は検証前に以下のインデックスを構築する。
 - `state_id` は model内で一意でなければならない
 - `property_id` は owner 内で一意でなければならない
 
-### 8.3 エラーコード
+### 8.1 エラーコード
 
 - `DUPLICATE_MODEL_ID`
 - `DUPLICATE_MODULE_ID`
@@ -221,7 +224,8 @@ Validator は検証前に以下のインデックスを構築する。
 
 ---
 
-## 9. 参照実在性検証
+### 8.2 参照実在性検証
+<!-- hldocs:sec_id=sec_xxxxxxxx -->
 
 ### 9.1 検証対象
 
@@ -253,7 +257,8 @@ Validator は検証前に以下のインデックスを構築する。
 
 ---
 
-## 10. `connections` と `current_connections` の整合性検証
+### 8.3 接続整合性検証
+<!-- hldocs:sec_id=sec_xxxxxxxx -->
 
 ### 10.1 正本
 
@@ -294,7 +299,8 @@ Validator は検証前に以下のインデックスを構築する。
 
 ---
 
-## 11. `StateAction` 整合性検証
+### 8.4 `StateAction` 整合性検証
+<!-- hldocs:sec_id=sec_xxxxxxxx -->
 
 ### 11.1 検証対象
 
@@ -343,9 +349,10 @@ Validator は検証前に以下のインデックスを構築する。
 
 ---
 
-## 12. `owner_id` / `*_ref` 整合性検証
+### 8.5 `owner_id` / `*_ref` 整合性検証
+<!-- hldocs:sec_id=sec_k8m4q2r7 -->
 
-### 12.1 対象
+#### 8.5.1 対象
 
 - `rights.owner_id`
 - `revenue.owner_id`
@@ -355,14 +362,14 @@ Validator は検証前に以下のインデックスを構築する。
 - `revenue_ref`
 - `diagnostics_ref`
 
-### 12.2 検証規則
+#### 8.5.2 検証規則
 
 - `owner_id` は model / module / slot 等の正当な所有対象を参照しなければならない
 - `rights_ref` は `SansaVRM_rights.rights_id` を参照しなければならない
 - `revenue_ref` は `SansaVRM_revenue.revenue_id` を参照しなければならない
 - `diagnostics_ref` は `SansaVRM_diagnostics.diagnostics_id` を参照しなければならない
 
-### 12.3 エラーコード
+#### 8.5.3 エラーコード
 
 - `INVALID_OWNER_REF`
 - `RIGHTS_REF_NOT_FOUND`
@@ -371,9 +378,10 @@ Validator は検証前に以下のインデックスを構築する。
 
 ---
 
-## 13. `Compatibility` 整合性検証
+### 8.6 `Compatibility` 整合性検証
+<!-- hldocs:sec_id=sec_xxxxxxxx -->
 
-### 13.1 検証対象
+#### 8.6.1 検証対象
 
 - `required_slots[]`
 - `forbidden_slots[]`
@@ -382,14 +390,14 @@ Validator は検証前に以下のインデックスを構築する。
 - `constraint_rules[]`
 - `target_module_types[]`
 
-### 13.2 検証規則
+#### 8.6.2 検証規則
 
 - `required_slots[]` / `forbidden_slots[]` の参照先は実在しなければならない
 - 同一 ID が required / forbidden の両方に同時に存在してはならない
 - `constraint_rules.result` は定義済み列挙値でなければならない
 - `target_module_types[]` は許容集合内でなければならない
 
-### 13.3 エラーコード
+#### 8.6.3 エラーコード
 
 - `COMPATIBILITY_SLOT_NOT_FOUND`
 - `COMPATIBILITY_CONFLICT`
@@ -397,22 +405,23 @@ Validator は検証前に以下のインデックスを構築する。
 
 ---
 
-## 14. `Rights` / `Revenue` 整合性検証
+### 8.7 `Rights` / `Revenue` 整合性検証
+<!-- hldocs:sec_id=sec_xxxxxxxx -->
 
-### 14.1 Rights
+#### 8.7.1 Rights
 
 - `source_raw.format_type` は許容集合内でなければならない
 - `normalized` 必須項目は空であってはならない
 - `authors[]` は空配列でもよいが、運用上 warning を出してよい
 
-### 14.2 Revenue
+#### 8.7.2 Revenue
 
 - `policy` は許容集合内でなければならない
 - `weight` は 0 以上でなければならない
 - `royalty_rate` は null または 0 以上でなければならない
 - `fixed_fee` は null または 0 以上でなければならない
 
-### 14.3 エラーコード
+#### 8.7.3 エラーコード
 
 - `RIGHTS_FORMAT_INVALID`
 - `RIGHTS_REQUIRED_FIELD_EMPTY`
@@ -423,16 +432,17 @@ Validator は検証前に以下のインデックスを構築する。
 
 ---
 
-## 15. `Property` 分類整合性検証
+### 8.8 `Property` 分類整合性検証
+<!-- hldocs:sec_id=sec_xxxxxxxx -->
 
-### 15.1 検証対象
+#### 8.8.1 検証対象
 
 - `property_type`
 - `context`
 - `key`
 - `value.type`
 
-### 15.2 検証規則
+#### 8.8.2 検証規則
 
 - `property_type` は定義済み列挙値でなければならない
 - `context` は定義済み列挙値でなければならない
@@ -444,7 +454,7 @@ Validator は検証前に以下のインデックスを構築する。
 - `property_type = Physics` の場合、`key` は物理系 Property として解釈可能でなければならない。
 - `property_type` と `context` の具体的な整合関係は、15.3 Property context 整合性検証に従う。
 
-### 15.3 Property context 整合性検証
+#### 8.8.3 Property context 整合性検証
 
 property_type と context は以下の関係を満たす必要がある。
 
@@ -465,7 +475,7 @@ property_type と context は以下の関係を満たす必要がある。
 
 上記に違反する場合、PROPERTY_CONTEXT_INVALID を error として返す。
 
-### 15.4 エラーコード
+#### 8.8.4 エラーコード
 
 - `PROPERTY_TYPE_INVALID`
 - `PROPERTY_CONTEXT_INVALID`
@@ -474,20 +484,21 @@ property_type と context は以下の関係を満たす必要がある。
 
 ---
 
-## 16. glTF 補助整合性検証
+### 8.9 glTF 補助整合性検証
+<!-- hldocs:sec_id=sec_xxxxxxxx -->
 
-### 16.1 対象
+#### 8.9.1 対象
 
 - `node_index`
 - `mesh_index`
 - `material_indices[]`
 - `animation_indices[]`
 
-### 16.2 検証規則
+#### 8.9.2 検証規則
 
 glTF 標準部が入力に含まれる場合、各 index は対応する配列範囲内でなければならない。
 
-### 16.3 エラーコード
+#### 8.9.3 エラーコード
 
 - `GLTF_NODE_INDEX_OUT_OF_RANGE`
 - `GLTF_MESH_INDEX_OUT_OF_RANGE`

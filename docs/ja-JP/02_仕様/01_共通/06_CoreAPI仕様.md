@@ -30,13 +30,15 @@ Rust を含む各言語実装の基準とする。
 
 ## 2. 基本方針
 
-- Core は「状態を持つモデル操作エンジン」とする
-- API は副作用を明確に定義する
-- Validator は API 内部または外部で必ず呼び出される
-- すべての API はエラーを構造化して返す
-- データは immutable を基本とし、変更は新しい状態を返す方式を推奨する
-- ID は外部から指定可能とし、自動生成も許容する
-- glTF / VRM / URDF 依存処理は Adapter 層に分離する
+- Validator は JSON Schema 検証の後段で実行する
+- Validator は構造検証ではなく意味・参照整合検証を担当する
+- 検証結果は diagnostics 形式で返却可能とする
+- 検証は Fail-Fast ではなく、可能な限り複数問題を収集する
+- Error / Warning / Info の3段階以上の重大度を持つ
+- 自動修正は本仕様の対象外とする
+- Runtime 実行判定と Validator 判定は分離する
+- Validator はフォーマット非依存のメタモデル上で動作する
+- glTF / VRM / URDF 由来情報は必要に応じて補助参照してよい
 
 ---
 
@@ -117,6 +119,7 @@ Error {
 ## 6. Model管理API
 
 ### 6.1 create_model
+<!-- hldocs:sec_id=sec_a1b2c3d1 -->
 
 ```text
 create_model(input) -> Result<Model>
@@ -140,6 +143,7 @@ create_model(input) -> Result<Model>
 ---
 
 ### 6.2 load_model
+<!-- hldocs:sec_id=sec_a1b2c3d2 -->
 
 ```text
 load_model(document) -> Result<Model>
@@ -154,6 +158,7 @@ load_model(document) -> Result<Model>
 ---
 
 ### 6.3 export_model
+<!-- hldocs:sec_id=sec_a1b2c3d3 -->
 
 ```text
 export_model(model) -> Result<JSON>
@@ -169,6 +174,7 @@ export_model(model) -> Result<JSON>
 ## 7. Module操作API
 
 ### 7.1 add_module
+<!-- hldocs:sec_id=sec_a1b2c3d4 -->
 
 ```text
 add_module(model, module_def) -> Result<Model>
@@ -182,6 +188,7 @@ add_module(model, module_def) -> Result<Model>
 ---
 
 ### 7.2 remove_module
+<!-- hldocs:sec_id=sec_a1b2c3d5 -->
 
 ```text
 remove_module(model, module_id) -> Result<Model>
@@ -195,6 +202,7 @@ remove_module(model, module_id) -> Result<Model>
 ---
 
 ### 7.3 update_module
+<!-- hldocs:sec_id=sec_a1b2c3d6 -->
 
 ```text
 update_module(model, module_id, patch) -> Result<Model>
@@ -205,12 +213,16 @@ update_module(model, module_id, patch) -> Result<Model>
 ## 8. Slot操作API
 
 ### 8.1 add_slot
+<!-- hldocs:sec_id=sec_a1b2c3d7 -->
 
 ```text
 add_slot(model, slot_def) -> Result<Model>
 ```
 
+---
+
 ### 8.2 remove_slot
+<!-- hldocs:sec_id=sec_a1b2c3d8 -->
 
 ```text
 remove_slot(model, slot_id) -> Result<Model>
@@ -221,7 +233,10 @@ remove_slot(model, slot_id) -> Result<Model>
 - 参照されていないこと
 - 参照がある場合は error または cascading delete のどちらかを明記
 
+---
+
 ### 8.3 update_slot
+<!-- hldocs:sec_id=sec_a1b2c3d9 -->
 
 ```text
 update_slot(model, slot_id, patch) -> Result<Model>
@@ -232,6 +247,7 @@ update_slot(model, slot_id, patch) -> Result<Model>
 ## 9. Connection操作API
 
 ### 9.1 connect
+<!-- hldocs:sec_id=sec_a1b2c3e0 -->
 
 ```text
 connect(model, from_id, to_id, connection_type, options) -> Result<Model>
@@ -252,6 +268,7 @@ connect(model, from_id, to_id, connection_type, options) -> Result<Model>
 ---
 
 ### 9.2 disconnect
+<!-- hldocs:sec_id=sec_a1b2c3e1 -->
 
 ```text
 disconnect(model, connection_id) -> Result<Model>
@@ -260,6 +277,7 @@ disconnect(model, connection_id) -> Result<Model>
 ---
 
 ### 9.3 list_connections
+<!-- hldocs:sec_id=sec_a1b2c3e2 -->
 
 ```text
 list_connections(model) -> Connection[]
@@ -268,6 +286,7 @@ list_connections(model) -> Connection[]
 ---
 
 ### 9.4 enable_connection
+<!-- hldocs:sec_id=sec_a1b2c3e3 -->
 
 ```text
 enable_connection(model, connection_id) -> Result<Model>
@@ -276,6 +295,7 @@ enable_connection(model, connection_id) -> Result<Model>
 ---
 
 ### 9.5 disable_connection
+<!-- hldocs:sec_id=sec_a1b2c3e4 -->
 
 ```text
 disable_connection(model, connection_id) -> Result<Model>
@@ -286,6 +306,7 @@ disable_connection(model, connection_id) -> Result<Model>
 ## 10. State操作API
 
 ### 10.1 add_state
+<!-- hldocs:sec_id=sec_a1b2c3e5 -->
 
 ```text
 add_state(model, state_def) -> Result<Model>
@@ -294,6 +315,7 @@ add_state(model, state_def) -> Result<Model>
 ---
 
 ### 10.2 remove_state
+<!-- hldocs:sec_id=sec_a1b2c3e6 -->
 
 ```text
 remove_state(model, state_id) -> Result<Model>
@@ -307,6 +329,7 @@ remove_state(model, state_id) -> Result<Model>
 ---
 
 ### 10.3 evaluate_state
+<!-- hldocs:sec_id=sec_a1b2c3e7 -->
 
 ```text
 evaluate_state(model, context) -> Result<State[]>
@@ -320,6 +343,7 @@ evaluate_state(model, context) -> Result<State[]>
 ---
 
 ### 10.4 apply_state
+<!-- hldocs:sec_id=sec_a1b2c3e8 -->
 
 ```text
 apply_state(model, state_id) -> Result<Model>
@@ -338,24 +362,34 @@ apply_state(model, state_id) -> Result<Model>
 ## 11. Property操作API
 
 ### 11.1 add_property
+<!-- hldocs:sec_id=sec_a1b2c3e9 -->
 
 ```text
 add_property(model, owner_id, property_def) -> Result<Model>
 ```
 
+---
+
 ### 11.2 update_property
+<!-- hldocs:sec_id=sec_a1b2c3f0 -->
 
 ```text
 update_property(model, property_id, patch) -> Result<Model>
 ```
 
+---
+
 ### 11.3 remove_property
+<!-- hldocs:sec_id=sec_a1b2c3f1 -->
 
 ```text
 remove_property(model, property_id) -> Result<Model>
 ```
 
+---
+
 ### 11.4 list_properties
+<!-- hldocs:sec_id=sec_a1b2c3f2 -->
 
 ```text
 list_properties(model, owner_id) -> Property[]
@@ -366,6 +400,7 @@ list_properties(model, owner_id) -> Property[]
 ## 12. 評価API
 
 ### 12.1 evaluate
+<!-- hldocs:sec_id=sec_a1b2c3f3 -->
 
 ```text
 evaluate(model, context) -> Result<EvaluationResult>
@@ -383,6 +418,7 @@ evaluate(model, context) -> Result<EvaluationResult>
 ## 13. Validator統合
 
 ### 13.1 validate
+<!-- hldocs:sec_id=sec_a1b2c3f4 -->
 
 ```text
 validate(model, options) -> Result<ValidationResult>
@@ -398,12 +434,16 @@ validate(model, options) -> Result<ValidationResult>
 ## 14. I/O API
 
 ### 14.1 import_gltf
+<!-- hldocs:sec_id=sec_a1b2c3f5 -->
 
 ```text
 import_gltf(document) -> Result<Model>
 ```
 
+---
+
 ### 14.2 export_gltf
+<!-- hldocs:sec_id=sec_a1b2c3f6 -->
 
 ```text
 export_gltf(model) -> Result<GLTF>
@@ -412,12 +452,16 @@ export_gltf(model) -> Result<GLTF>
 ---
 
 ### 14.3 import_vrm
+<!-- hldocs:sec_id=sec_a1b2c3f7 -->
 
 ```text
 import_vrm(document) -> Result<Model>
 ```
 
+---
+
 ### 14.4 export_vrm
+<!-- hldocs:sec_id=sec_a1b2c3f8 -->
 
 - export_vrm は VRM仕様に準拠した glTF を生成する
 
@@ -443,6 +487,7 @@ export_vrm(model, version, options) -> Result<VRM>
 ---
 
 ### 14.5 import_urdf
+<!-- hldocs:sec_id=sec_a1b2c3f9 -->
 
 ```text
 import_urdf(document) -> Result<Model>
@@ -451,6 +496,7 @@ import_urdf(document) -> Result<Model>
 ---
 
 ### 14.6 export_urdf
+<!-- hldocs:sec_id=sec_a1b2c3g0 -->
 
 - export_urdf は URDF XML を生成する
 
@@ -461,12 +507,16 @@ export_urdf(model) -> Result<URDF>
 ---
 
 ### 14.7 import_mujoco
+<!-- hldocs:sec_id=sec_a1b2c3g1 -->
 
 ```text
 import_mujoco(document) -> Result<Model>
 ```
 
+---
+
 ### 14.8 export_mujoco
+<!-- hldocs:sec_id=sec_a1b2c3g2 -->
 
 ```text
 export_mujoco(model) -> Result<MJCF>
@@ -477,18 +527,25 @@ export_mujoco(model) -> Result<MJCF>
 ## 15. トランザクション
 
 ### 15.1 begin
+<!-- hldocs:sec_id=sec_a1b2c3g3 -->
 
 ```text
 begin(model) -> Transaction
 ```
 
+---
+
 ### 15.2 commit
+<!-- hldocs:sec_id=sec_a1b2c3g4 -->
 
 ```text
 commit(transaction) -> Result<Model>
 ```
 
+---
+
 ### 15.3 rollback
+<!-- hldocs:sec_id=sec_a1b2c3g5 -->
 
 ```text
 rollback(transaction) -> Model
