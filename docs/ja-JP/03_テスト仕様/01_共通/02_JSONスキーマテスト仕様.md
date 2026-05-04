@@ -138,6 +138,8 @@ canonical_document: true
 
 ### SCHEMA-STRUCT-001
 
+sec_id: sec_a8k3m2q1
+
 - テストID：SCHEMA-STRUCT-001
 - 分類：構造検証
 - 内容：実際のJSONを1つ載せること
@@ -146,6 +148,8 @@ canonical_document: true
 ---
 
 ### SCHEMA-TYPE-002
+
+sec_id: sec_b7n4p9r2
 
 - テストID：SCHEMA-TYPE-002
 - 分類：型検証
@@ -156,6 +160,8 @@ canonical_document: true
 
 ### SCHEMA-CONSTRAINT-003
 
+sec_id: sec_c6t5v8s3
+
 - テストID：SCHEMA-CONSTRAINT-003
 - 分類：制約検証
 - 内容：additionalProperties 禁止違反
@@ -164,6 +170,8 @@ canonical_document: true
 ---
 
 ### SCHEMA-REF-004
+
+sec_id: sec_d5w6x7u4
 
 - テストID：SCHEMA-REF-004
 - 分類：参照検証
@@ -174,6 +182,8 @@ canonical_document: true
 
 ### SCHEMA-PROPERTY-005
 
+sec_id: sec_e4y7z6v5
+
 - テストID：SCHEMA-PROPERTY-005
 - 分類：型検証
 - 内容：property_type に無効値を指定
@@ -182,6 +192,8 @@ canonical_document: true
 ---
 
 ### SCHEMA-PROPERTY-006
+
+sec_id: sec_f3a8b5w6
 
 - テストID：SCHEMA-PROPERTY-006
 - 分類：制約検証

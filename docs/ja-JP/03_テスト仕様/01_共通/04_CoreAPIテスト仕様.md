@@ -293,6 +293,8 @@ canonical_document: true
 
 ### CORE-MODEL-001
 
+sec_id: sec_k8j2m1a0
+
 - テストID：CORE-MODEL-001
 - 分類：Model管理
 - 内容：create_model 実行
@@ -302,6 +304,8 @@ canonical_document: true
 
 ### CORE-MODULE-002
 
+sec_id: sec_l7k3n0b1
+
 - テストID：CORE-MODULE-002
 - 分類：Module操作
 - 内容：module追加
@@ -310,6 +314,8 @@ canonical_document: true
 ---
 
 ### CORE-CONN-003
+
+sec_id: sec_m6l4p9c2
 
 - テストID：CORE-CONN-003
 - 分類：Connection操作
@@ -323,6 +329,8 @@ canonical_document: true
 
 ### CORE-STATE-004
 
+sec_id: sec_n5m5q8d3
+
 - テストID：CORE-STATE-004
 - 分類：State操作
 - 内容：state適用
@@ -331,6 +339,8 @@ canonical_document: true
 ---
 
 ### CORE-TX-005
+
+sec_id: sec_p4n6r7e4
 
 - テストID：CORE-TX-005
 - 分類：Transaction
@@ -341,6 +351,8 @@ canonical_document: true
 
 ### CORE-PROPERTY-006
 
+sec_id: sec_q3p7s6f5
+
 - テストID：CORE-PROPERTY-006
 - 分類：Property操作
 - 内容：property_type / context 付き Property を追加
@@ -349,6 +361,8 @@ canonical_document: true
 ---
 
 ### CORE-IO-007
+
+sec_id: sec_r2q8t5g6
 
 - テストID：CORE-IO-007
 - 分類：I/O変換
@@ -359,6 +373,8 @@ canonical_document: true
 
 ### CORE-CONN-008
 
+sec_id: sec_s1r9u4h7
+
 - テストID：CORE-CONN-008
 - 分類：Connection操作
 - 内容：disable_connection 実行
@@ -367,6 +383,8 @@ canonical_document: true
 ---
 
 ### CORE-EVAL-009
+
+sec_id: sec_t0s8v3j8
 
 - テストID：CORE-EVAL-009
 - 分類：Evaluate API
@@ -382,6 +400,8 @@ canonical_document: true
 ---
 
 ### CORE-EVAL-010
+
+sec_id: sec_u9t7w2k9
 
 - テストID：CORE-EVAL-010
 - 分類：Evaluate API

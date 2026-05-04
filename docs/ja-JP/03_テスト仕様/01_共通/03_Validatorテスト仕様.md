@@ -203,6 +203,8 @@ canonical_document: true
 
 ### VALIDATOR-REF-001
 
+sec_id: sec_g2c9d4x7
+
 - テストID：VALIDATOR-REF-001
 - 分類：参照整合性
 - 内容：存在しない module_id を参照
@@ -214,6 +216,8 @@ canonical_document: true
 
 ### VALIDATOR-CONN-002
 
+sec_id: sec_h1e0f3y8
+
 - テストID：VALIDATOR-CONN-002
 - 分類：接続整合性
 - 内容：max_connections 超過
@@ -224,6 +228,8 @@ canonical_document: true
 ---
 
 ### VALIDATOR-STATE-003
+
+sec_id: sec_j9g1h2z9
 
 - テストID：VALIDATOR-STATE-003
 - 分類：StateAction
