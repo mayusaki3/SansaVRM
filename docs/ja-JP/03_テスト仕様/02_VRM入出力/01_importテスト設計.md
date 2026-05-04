@@ -592,10 +592,4 @@ VRM 0.x / VRM 1.0 import 処理が SansaVRM Model へ正しく変換されるこ
 
 ---
 
-## 11. 次ステップ
-
-Step F-6：実装計画
-
----
-
 [目次](../../目次.md) > テスト仕様 > VRM入出力 > importテスト設計

@@ -164,10 +164,4 @@ PropertyContext:
 
 ---
 
-## 13. 次ステップ
-
-Step F-3：VRM 0.x import詳細設計
-
----
-
 [目次](../../目次.md) > 仕様 > VRM入出力 > humanoid Property設計
