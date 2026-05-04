@@ -132,9 +132,25 @@ https://sansavrm.local/schema/sansavrm/v1/extension-layer.schema.json
 
 ## 6. 共通バリデーション規則
 
-### 6.1 追加プロパティ
+### 6.1 構造検証
 
-特に断りがない限り、`additionalProperties` は `false` とする。
+sec_id: sec_a8k3m2q1
+
+JSON Schema により、オブジェクト構造および必須項目の存在を検証する。
+
+- 必須項目は各オブジェクトごとに `required` で定義する
+- 配列項目は、存在する場合は配列型でなければならない
+
+---
+
+### 6.2 制約検証
+
+sec_id: sec_c6t5v8s3
+
+以下の制約を検証する。
+
+- `additionalProperties` は `false` とする（特に断りがない限り）
+- 列挙値は `enum` により制約する
 
 ただし以下は例外とする。
 
@@ -143,19 +159,31 @@ https://sansavrm.local/schema/sansavrm/v1/extension-layer.schema.json
 - フォーマット固有拡張保持領域
 - 将来拡張を前提とした custom 領域
 
-### 6.2 必須規則
+---
 
-- 必須項目は各オブジェクトごとに `required` で定義する
-- 配列項目は、存在する場合は配列型でなければならない
-- 列挙値は `enum` により制約する
+### 6.3 型検証
 
-### 6.3 文字列規則
+sec_id: sec_b7n4p9r2
 
-ID や識別子は空文字列を許容しない。
+値の型は Schema 定義と一致しなければならない。
 
-### 6.4 null の扱い
+- `null` を許容する場合は `type: ["string", "null"]` 等で明示する
 
-`null` を許容する場合は `type: ["string", "null"]` 等で明示する。
+---
+
+### 6.4 参照構造検証
+
+sec_id: sec_d5w6x7u4
+
+`$ref` によるスキーマ参照は正しく解決可能でなければならない。
+
+---
+
+### 6.5 文字列規則
+
+文字列値に対して以下を適用する。
+
+- ID や識別子は空文字列を許容しない
 
 ---
 
