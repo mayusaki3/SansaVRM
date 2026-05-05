@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sansavrm.local/schema/sansavrm/v1/compatibility.schema.json",
+  "type": "object",
+  "properties": {
+    "compatibility": {
+      "type": "array",
+      "items": { "$ref": "defs.schema.json#/$defs/CompatibilityRule" }
+    }
+  },
+  "required": ["compatibility"],
+  "additionalProperties": false
+}
