@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sansavrm.local/schema/sansavrm/v1/states.schema.json",
+  "type": "object",
+  "properties": {
+    "states": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "state_id": { "$ref": "defs.schema.json#/$defs/Id" },
+          "conditions": { "$ref": "defs.schema.json#/$defs/Conditions" },
+          "actions": {
+            "type": "array",
+            "items": { "$ref": "defs.schema.json#/$defs/StateAction" }
+          }
+        },
+        "required": ["state_id", "conditions", "actions"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["states"],
+  "additionalProperties": false
+}
