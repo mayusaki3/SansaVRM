@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sansavrm.local/schema/sansavrm/v1/slots.schema.json",
+  "type": "object",
+  "properties": {
+    "slots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "slot_id": { "$ref": "defs.schema.json#/$defs/Id" },
+          "owner_module_id": { "$ref": "defs.schema.json#/$defs/Id" },
+          "type": { "type": "string", "minLength": 1 },
+          "connection_rule": { "$ref": "defs.schema.json#/$defs/ConnectionRule" }
+        },
+        "required": ["slot_id", "owner_module_id", "type"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["slots"],
+  "additionalProperties": false
+}
