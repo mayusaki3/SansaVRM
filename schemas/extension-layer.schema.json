@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sansavrm.local/schema/sansavrm/v1/extension-layer.schema.json",
+  "type": "object",
+  "properties": {
+    "layers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "layer_id": { "$ref": "defs.schema.json#/$defs/Id" },
+          "priority": { "type": "integer" },
+          "applies_to": { "type": "string" }
+        },
+        "required": ["layer_id"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["layers"],
+  "additionalProperties": false
+}
