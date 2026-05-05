@@ -5,10 +5,13 @@ use crate::{Connection, ConnectionType, CoreResult, Model, SansaId, SansaVrmErro
 /// Connection作成入力。
 ///
 /// 役割:
-/// - connect API の入力値を表現する。
+/// - connect_with_input API の入力値を表現する。
+///
+/// 注意点:
+/// - 既存互換の connect API は from_id / to_id / connection_type を直接受け取る。
 ///
 /// @hldocs.ref doc-20260504-000206Z-SV0G#sec_m6l4p9c2
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct ConnectInput {
     pub connection_id: Option<String>,
     pub from_id: String,
@@ -25,13 +28,39 @@ pub struct ConnectInput {
 ///
 /// 引数:
 /// - model: 更新対象Model。
-/// - input: 接続作成入力。
+/// - from_id: 接続元ID。
+/// - to_id: 接続先ID。
+/// - connection_type: Connection種別。
 ///
 /// 戻り値:
 /// - CoreResult<Model>: 更新後Model、または入力エラー。
 ///
 /// @hldocs.ref doc-20260504-000206Z-SV0G#sec_m6l4p9c2
-pub fn connect(mut model: Model, input: ConnectInput) -> CoreResult<Model> {
+pub fn connect(
+    model: Model,
+    from_id: impl Into<String>,
+    to_id: impl Into<String>,
+    connection_type: ConnectionType,
+) -> CoreResult<Model> {
+    connect_with_input(
+        model,
+        ConnectInput {
+            connection_id: None,
+            from_id: from_id.into(),
+            to_id: to_id.into(),
+            connection_type,
+            enabled: true,
+        },
+    )
+}
+
+/// 入力構造体を使用してModuleまたはSlotを接続する。
+///
+/// 役割:
+/// - connection_id や enabled を明示指定したい場合の補助API。
+///
+/// @hldocs.ref doc-20260504-000206Z-SV0G#sec_m6l4p9c2
+pub fn connect_with_input(mut model: Model, input: ConnectInput) -> CoreResult<Model> {
     if !connectable_id_exists(&model, &input.from_id) {
         return CoreResult::fail(SansaVrmError::InvalidInput(format!(
             "from_id not found: {}",
@@ -82,13 +111,6 @@ pub fn connect(mut model: Model, input: ConnectInput) -> CoreResult<Model> {
 /// - connection_id に一致するConnectionをModelから削除する。
 /// - Slotの current_connections からも対象IDを削除する。
 ///
-/// 引数:
-/// - model: 更新対象Model。
-/// - connection_id: 削除対象Connection ID。
-///
-/// 戻り値:
-/// - CoreResult<Model>: 更新後Model、または入力エラー。
-///
 /// @hldocs.ref doc-20260504-000206Z-SV0G#sec_a1b2c3e1
 pub fn disconnect(mut model: Model, connection_id: impl AsRef<str>) -> CoreResult<Model> {
     let connection_id = connection_id.as_ref();
@@ -115,15 +137,6 @@ pub fn disconnect(mut model: Model, connection_id: impl AsRef<str>) -> CoreResul
 
 /// Connection一覧を取得する。
 ///
-/// 役割:
-/// - Modelに含まれるConnection一覧を返す。
-///
-/// 引数:
-/// - model: 参照対象Model。
-///
-/// 戻り値:
-/// - Vec<Connection>: Connection一覧。
-///
 /// @hldocs.ref doc-20260504-000206Z-SV0G#sec_a1b2c3e2
 pub fn list_connections(model: &Model) -> Vec<Connection> {
     model.connections.clone()
@@ -131,32 +144,12 @@ pub fn list_connections(model: &Model) -> Vec<Connection> {
 
 /// Connectionを有効化する。
 ///
-/// 役割:
-/// - connection_id に一致するConnectionの enabled を true にする。
-///
-/// 引数:
-/// - model: 更新対象Model。
-/// - connection_id: 有効化対象Connection ID。
-///
-/// 戻り値:
-/// - CoreResult<Model>: 更新後Model、または入力エラー。
-///
 /// @hldocs.ref doc-20260504-000206Z-SV0G#sec_a1b2c3e3
 pub fn enable_connection(mut model: Model, connection_id: impl AsRef<str>) -> CoreResult<Model> {
     set_connection_enabled(&mut model, connection_id.as_ref(), true)
 }
 
 /// Connectionを無効化する。
-///
-/// 役割:
-/// - connection_id に一致するConnectionの enabled を false にする。
-///
-/// 引数:
-/// - model: 更新対象Model。
-/// - connection_id: 無効化対象Connection ID。
-///
-/// 戻り値:
-/// - CoreResult<Model>: 更新後Model、または入力エラー。
 ///
 /// @hldocs.ref doc-20260504-000206Z-SV0G#sec_s1r9u4h7
 pub fn disable_connection(mut model: Model, connection_id: impl AsRef<str>) -> CoreResult<Model> {
