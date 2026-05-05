@@ -1,0 +1,257 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sansavrm.local/schema/sansavrm/v1/defs.schema.json",
+  "$defs": {
+    "Id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "StringOrNull": {
+      "type": ["string", "null"]
+    },
+    "NumberOrNull": {
+      "type": ["number", "null"]
+    },
+    "PropertyConstraints": {
+      "type": "object",
+      "properties": {
+        "required": { "type": "boolean" },
+        "enum": { "type": "array", "items": {} },
+        "min": { "type": "number" },
+        "max": { "type": "number" },
+        "min_length": { "type": "integer", "minimum": 0 },
+        "max_length": { "type": "integer", "minimum": 0 },
+        "pattern": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "PropertyMetadata": {
+      "type": "object",
+      "properties": {
+        "description": { "$ref": "#/$defs/StringOrNull" },
+        "unit": { "$ref": "#/$defs/StringOrNull" },
+        "source": { "$ref": "#/$defs/StringOrNull" },
+        "notes": { "$ref": "#/$defs/StringOrNull" }
+      },
+      "required": ["description", "unit", "source", "notes"],
+      "additionalProperties": false
+    },
+    "PropertyValue": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "String" },
+            "data": { "type": "string" }
+          },
+          "required": ["type", "data"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "Number" },
+            "data": { "type": "number" }
+          },
+          "required": ["type", "data"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "Bool" },
+            "data": { "type": "boolean" }
+          },
+          "required": ["type", "data"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Property": {
+      "type": "object",
+      "properties": {
+        "property_id": { "$ref": "#/$defs/Id" },
+        "key": { "type": "string", "minLength": 1 },
+        "value": { "$ref": "#/$defs/PropertyValue" },
+        "property_type": {
+          "type": "string",
+          "enum": [
+            "Metadata",
+            "Physics",
+            "Geometry",
+            "Material",
+            "Texture",
+            "Rig",
+            "Animation",
+            "Expression",
+            "Control",
+            "Sensor",
+            "Actuator",
+            "Constraint",
+            "Compatibility",
+            "Rights",
+            "Revenue",
+            "Custom"
+          ]
+        },
+        "context": {
+          "type": "string",
+          "enum": [
+            "Description",
+            "Simulation",
+            "Rendering",
+            "IO",
+            "Validation",
+            "Conversion",
+            "Execution",
+            "Binding",
+            "Authoring",
+            "Custom"
+          ]
+        }
+      },
+      "required": ["property_id", "key", "value", "property_type", "context"],
+      "additionalProperties": false
+    },
+    "ConnectionRule": {
+      "type": "object",
+      "properties": {
+        "min_connections": { "type": "integer", "minimum": 0 },
+        "max_connections": { "type": "integer", "minimum": 0 },
+        "exclusive": { "type": "boolean" },
+        "replace_mode": { "type": "string", "minLength": 1 },
+        "priority": { "type": "integer" }
+      },
+      "required": ["min_connections", "max_connections", "exclusive", "replace_mode", "priority"],
+      "additionalProperties": false
+    },
+    "ConditionExpression": {
+      "type": "object",
+      "properties": {
+        "left": {},
+        "comparator": {
+          "type": "string",
+          "enum": ["eq", "neq", "gt", "gte", "lt", "lte", "in", "not_in"]
+        },
+        "right": {}
+      },
+      "required": ["left", "comparator", "right"],
+      "additionalProperties": false
+    },
+    "Conditions": {
+      "type": "object",
+      "properties": {
+        "operator": {
+          "type": "string",
+          "enum": ["AND", "OR", "NOT"]
+        },
+        "expressions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ConditionExpression" }
+        }
+      },
+      "required": ["operator", "expressions"],
+      "additionalProperties": false
+    },
+    "StateAction": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "module_enable",
+            "module_disable",
+            "slot_bind",
+            "slot_unbind",
+            "expression_change",
+            "property_override",
+            "visibility_change",
+            "connection_enable",
+            "connection_disable"
+          ]
+        },
+        "module_id": { "$ref": "#/$defs/Id" },
+        "slot_id": { "$ref": "#/$defs/Id" },
+        "target_slot_id": { "$ref": "#/$defs/Id" },
+        "expression_id": { "$ref": "#/$defs/Id" },
+        "property_id": { "$ref": "#/$defs/Id" },
+        "value": {},
+        "target_id": { "$ref": "#/$defs/Id" },
+        "visible": { "type": "boolean" },
+        "connection_id": { "$ref": "#/$defs/Id" }
+      },
+      "required": ["action"],
+      "additionalProperties": false
+    },
+    "CompatibilityRule": {
+      "type": "object",
+      "properties": {
+        "rule_id": { "$ref": "#/$defs/Id" },
+        "condition": { "type": "string", "minLength": 1 },
+        "result": {
+          "type": "string",
+          "enum": ["ALLOW", "CONDITIONAL", "DENY"]
+        },
+        "severity": {
+          "type": "string",
+          "enum": ["info", "normal", "warning", "critical"]
+        }
+      },
+      "required": ["rule_id", "condition", "result", "severity"],
+      "additionalProperties": false
+    },
+    "DiagnosticsItem": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "non_reversible_conversion",
+            "validation_error",
+            "rights_warning",
+            "structure_error",
+            "compatibility_error",
+            "runtime_warning",
+            "custom"
+          ]
+        },
+        "message": { "type": "string", "minLength": 1 },
+        "severity": {
+          "type": "string",
+          "enum": ["info", "normal", "warning", "critical"]
+        },
+        "source": { "type": "string", "minLength": 1 }
+      },
+      "required": ["type", "message", "severity", "source"],
+      "additionalProperties": false
+    },
+    "SourceRaw": {
+      "type": "object",
+      "properties": {
+        "format_type": {
+          "type": "string",
+          "enum": ["glTF", "VRM", "URDF", "custom"]
+        },
+        "raw": { "type": "object" }
+      },
+      "required": ["format_type", "raw"],
+      "additionalProperties": false
+    },
+    "GlTFBinding": {
+      "type": "object",
+      "properties": {
+        "node_index": { "type": "integer", "minimum": 0 },
+        "mesh_index": { "type": "integer", "minimum": 0 },
+        "material_indices": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 0 }
+        },
+        "animation_indices": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 0 }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
