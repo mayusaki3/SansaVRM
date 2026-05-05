@@ -11,7 +11,9 @@ use crate::vrm_validation::validate_vrm_humanoid;
 
 /// Model の基本検証
 ///
-/// TODO(trace): Validator実装仕様 / 基本検証
+/// 役割:
+/// - Validator実装仕様に基づく検証規則を順に実行する。
+/// - エラーを可能な限り収集し、CoreResult として返す。
 pub fn validate_model(model: &Model) -> CoreResult<()> {
     let mut errors = Vec::new();
 
@@ -38,7 +40,8 @@ pub fn validate_model(model: &Model) -> CoreResult<()> {
 
 /// Model の diagnostics 付き基本検証
 ///
-/// TODO(trace): Validator実装仕様 / diagnostics出力
+/// 役割:
+/// - diagnostics 形式で検証結果を返す。
 pub fn validate_model_with_diagnostics(model: &Model) -> ValidatorResult {
     let mut diagnostics = Vec::new();
 
@@ -56,7 +59,10 @@ pub fn validate_model_with_diagnostics(model: &Model) -> ValidatorResult {
 
 /// ID 一意性検証
 ///
-/// TODO(trace): Validator実装仕様 / ID一意性検証
+/// 役割:
+/// - Model全体でIDが重複していないことを検証する。
+///
+/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_f7a2d9m4
 fn validate_unique_ids(model: &Model, errors: &mut Vec<SansaVrmError>) {
     let mut ids = HashSet::new();
 
@@ -91,7 +97,10 @@ fn validate_unique_ids(model: &Model, errors: &mut Vec<SansaVrmError>) {
 
 /// ID 一意性 diagnostics 検証
 ///
-/// TODO(trace): Validator実装仕様 / diagnostics出力
+/// 役割:
+/// - ID重複を diagnostics 形式で検証する。
+///
+/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_f7a2d9m4
 fn validate_unique_ids_with_diagnostics(
     model: &Model,
     diagnostics: &mut Vec<ValidationDiagnostic>,
@@ -143,7 +152,11 @@ fn validate_unique_ids_with_diagnostics(
 
 /// Slot の owner_module_id 参照整合性検証
 ///
-/// TODO(trace): Validator実装仕様 / 参照整合性検証
+/// 役割:
+/// - Slot が参照する owner_module_id が実在することを検証する。
+///
+/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_g2c9d4x7
+/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_k8m4q2r7
 fn validate_slot_owner_refs(model: &Model, errors: &mut Vec<SansaVrmError>) {
     for slot in &model.slots {
         if !model
@@ -161,7 +174,11 @@ fn validate_slot_owner_refs(model: &Model, errors: &mut Vec<SansaVrmError>) {
 
 /// Slot の owner_module_id 参照整合性 diagnostics 検証
 ///
-/// TODO(trace): Validator実装仕様 / diagnostics出力
+/// 役割:
+/// - Slot owner参照不備を diagnostics 形式で検証する。
+///
+/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_g2c9d4x7
+/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_k8m4q2r7
 fn validate_slot_owner_refs_with_diagnostics(
     model: &Model,
     diagnostics: &mut Vec<ValidationDiagnostic>,
@@ -187,7 +204,10 @@ fn validate_slot_owner_refs_with_diagnostics(
 
 /// Connection の参照整合性検証
 ///
-/// TODO(trace): Validator実装仕様 / 接続整合性検証
+/// 役割:
+/// - Connection の from_id / to_id が実在することを検証する。
+///
+/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_h1e0f3y8
 fn validate_connections(model: &Model, errors: &mut Vec<SansaVrmError>) {
     for connection in &model.connections {
         let from_exists =
@@ -218,7 +238,10 @@ fn validate_connections(model: &Model, errors: &mut Vec<SansaVrmError>) {
 
 /// Connection の参照整合性 diagnostics 検証
 ///
-/// TODO(trace): Validator実装仕様 / diagnostics出力
+/// 役割:
+/// - Connection参照不備を diagnostics 形式で検証する。
+///
+/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_h1e0f3y8
 fn validate_connections_with_diagnostics(
     model: &Model,
     diagnostics: &mut Vec<ValidationDiagnostic>,
@@ -260,7 +283,10 @@ fn validate_connections_with_diagnostics(
 
 /// ConnectionRule の最小制約検証
 ///
-/// TODO(trace): Validator実装仕様 / 接続制約検証
+/// 役割:
+/// - Slot の ConnectionRule と実接続数の整合性を検証する。
+///
+/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_h1e0f3y8
 fn validate_connection_rules(model: &Model, errors: &mut Vec<SansaVrmError>) {
     for slot in &model.slots {
         if let Some(rule) = &slot.connection_rules {
@@ -298,7 +324,10 @@ fn validate_connection_rules(model: &Model, errors: &mut Vec<SansaVrmError>) {
 
 /// StateAction の参照整合性検証
 ///
-/// TODO(trace): Validator実装仕様 / State参照整合検証
+/// 役割:
+/// - StateAction が参照する Module / Slot / Connection が実在することを検証する。
+///
+/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_j9g1h2z9
 fn validate_state_actions(model: &Model, errors: &mut Vec<SansaVrmError>) {
     for state in &model.states {
         for action in &state.actions {
@@ -369,7 +398,10 @@ fn validate_state_actions(model: &Model, errors: &mut Vec<SansaVrmError>) {
 
 /// Model 内の Property 検証
 ///
-/// TODO(trace): Validator実装仕様 / Property整合性検証
+/// 役割:
+/// - Model / Module / Slot に含まれる Property を検証する。
+///
+/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_n4s1u6v0
 fn validate_properties(model: &Model, errors: &mut Vec<SansaVrmError>) {
     for property in &model.properties {
         validate_property_value(property, errors);
@@ -390,7 +422,10 @@ fn validate_properties(model: &Model, errors: &mut Vec<SansaVrmError>) {
 
 /// Model 内の Property diagnostics 検証
 ///
-/// TODO(trace): Validator実装仕様 / diagnostics出力
+/// 役割:
+/// - Model / Module / Slot に含まれる Property を diagnostics 形式で検証する。
+///
+/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_n4s1u6v0
 fn validate_properties_with_diagnostics(
     model: &Model,
     diagnostics: &mut Vec<ValidationDiagnostic>,
@@ -414,7 +449,10 @@ fn validate_properties_with_diagnostics(
 
 /// Property の値 diagnostics 検証
 ///
-/// TODO(trace): Validator実装仕様 / diagnostics出力
+/// 役割:
+/// - Property値と分類を diagnostics 形式で検証する。
+///
+/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_n4s1u6v0
 fn validate_property_value_with_diagnostics(
     property: &sansavrm_core::Property,
     diagnostics: &mut Vec<ValidationDiagnostic>,
@@ -430,7 +468,10 @@ fn validate_property_value_with_diagnostics(
 
 /// Property の値整合性検証
 ///
-/// TODO(trace): Validator実装仕様 / Property整合性検証
+/// 役割:
+/// - Property値と分類を検証する。
+///
+/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_n4s1u6v0
 fn validate_property_value(
     property: &sansavrm_core::Property,
     errors: &mut Vec<SansaVrmError>,
@@ -446,7 +487,10 @@ fn validate_property_value(
 
 /// Property の分類整合性検証
 ///
-/// TODO(trace): Validator実装仕様 / Property分類整合性検証
+/// 役割:
+/// - property_type と context の組み合わせを検証する。
+///
+/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_n4s1u6v0
 fn validate_property_classification(
     property: &sansavrm_core::Property,
     errors: &mut Vec<SansaVrmError>,
@@ -461,7 +505,10 @@ fn validate_property_classification(
 
 /// Property の分類整合性 diagnostics 検証
 ///
-/// TODO(trace): Validator実装仕様 / diagnostics出力
+/// 役割:
+/// - property_type と context の組み合わせを diagnostics 形式で検証する。
+///
+/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_n4s1u6v0
 fn validate_property_classification_with_diagnostics(
     property: &sansavrm_core::Property,
     diagnostics: &mut Vec<ValidationDiagnostic>,
@@ -486,6 +533,8 @@ fn validate_property_classification_with_diagnostics(
 ///
 /// 注意点:
 /// - key に基づく詳細判定は後続実装で追加する。
+///
+/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_n4s1u6v0
 fn property_classification_is_valid(property: &sansavrm_core::Property) -> bool {
     use sansavrm_core::{PropertyContext, PropertyType};
 
@@ -527,8 +576,6 @@ fn property_classification_is_valid(property: &sansavrm_core::Property) -> bool 
 ///
 /// 役割:
 /// - CI差分やテスト結果の再現性を確保する。
-///
-/// TODO(trace): Validator実装仕様 / diagnostics順序安定性
 fn sort_diagnostics(diagnostics: &mut [ValidationDiagnostic]) {
     diagnostics.sort_by(|a, b| {
         diagnostic_sort_key(a).cmp(&diagnostic_sort_key(b))
