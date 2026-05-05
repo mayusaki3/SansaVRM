@@ -118,11 +118,20 @@ fn validate_connections(model: &Model, errors: &mut Vec<SansaVrmError>) {
 /// @hldocs.ref doc-20260504-000205Z-SV0F#sec_h1e0f3y8
 fn validate_connections_with_diagnostics(model: &Model, diagnostics: &mut Vec<ValidationDiagnostic>) {
     for c in &model.connections {
-        if !id_exists(model, &c.from_id) || !id_exists(model, &c.to_id) {
+        if !id_exists(model, &c.from_id) {
             diagnostics.push(ValidationDiagnostic {
                 code: DiagnosticCode::RefNotFound,
                 severity: DiagnosticSeverity::Error,
-                message: format!("Connection {} has unknown endpoint", c.connection_id),
+                message: format!("Connection {} references unknown from_id {}", c.connection_id, c.from_id),
+                target: Some(c.connection_id.clone()),
+            });
+        }
+
+        if !id_exists(model, &c.to_id) {
+            diagnostics.push(ValidationDiagnostic {
+                code: DiagnosticCode::RefNotFound,
+                severity: DiagnosticSeverity::Error,
+                message: format!("Connection {} references unknown to_id {}", c.connection_id, c.to_id),
                 target: Some(c.connection_id.clone()),
             });
         }
