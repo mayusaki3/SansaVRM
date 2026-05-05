@@ -119,7 +119,7 @@ Error {
 ## 6. Model管理API
 
 ### 6.1 create_model
-<!-- hldocs:sec_id=sec_a1b2c3d1 -->
+<!-- hldocs:sec_id=sec_k8j2m1a0 -->
 
 ```text
 create_model(input) -> Result<Model>
@@ -174,7 +174,7 @@ export_model(model) -> Result<JSON>
 ## 7. Module操作API
 
 ### 7.1 add_module
-<!-- hldocs:sec_id=sec_a1b2c3d4 -->
+<!-- hldocs:sec_id=sec_l7k3n0b1 -->
 
 ```text
 add_module(model, module_def) -> Result<Model>
@@ -247,7 +247,7 @@ update_slot(model, slot_id, patch) -> Result<Model>
 ## 9. Connection操作API
 
 ### 9.1 connect
-<!-- hldocs:sec_id=sec_a1b2c3e0 -->
+<!-- hldocs:sec_id=sec_m6l4p9c2 -->
 
 ```text
 connect(model, from_id, to_id, connection_type, options) -> Result<Model>
@@ -295,7 +295,7 @@ enable_connection(model, connection_id) -> Result<Model>
 ---
 
 ### 9.5 disable_connection
-<!-- hldocs:sec_id=sec_a1b2c3e4 -->
+<!-- hldocs:sec_id=sec_s1r9u4h7 -->
 
 ```text
 disable_connection(model, connection_id) -> Result<Model>
@@ -343,7 +343,7 @@ evaluate_state(model, context) -> Result<State[]>
 ---
 
 ### 10.4 apply_state
-<!-- hldocs:sec_id=sec_a1b2c3e8 -->
+<!-- hldocs:sec_id=sec_n5m5q8d3 -->
 
 ```text
 apply_state(model, state_id) -> Result<Model>
@@ -362,7 +362,7 @@ apply_state(model, state_id) -> Result<Model>
 ## 11. Property操作API
 
 ### 11.1 add_property
-<!-- hldocs:sec_id=sec_a1b2c3e9 -->
+<!-- hldocs:sec_id=sec_q3p7s6f5 -->
 
 ```text
 add_property(model, owner_id, property_def) -> Result<Model>
@@ -399,8 +399,8 @@ list_properties(model, owner_id) -> Property[]
 
 ## 12. 評価API
 
-### 12.1 evaluate
-<!-- hldocs:sec_id=sec_a1b2c3f3 -->
+### 12.1 evaluate 条件一致
+<!-- hldocs:sec_id=sec_t0s8v3j8 -->
 
 ```text
 evaluate(model, context) -> Result<EvaluationResult>
@@ -412,6 +412,15 @@ evaluate(model, context) -> Result<EvaluationResult>
 - Compatibility評価
 - 接続検証
 - 結果生成
+
+#### 12.2 evaluate 条件不一致
+<!-- hldocs:sec_id=sec_u9t7w2k9 -->
+
+```text
+evaluate(model, context) -> Result<EvaluationResult>
+```
+
+条件に一致する State が存在しない場合、`active_states` および `applied_actions` は空となり、Model状態は変更されない。
 
 ---
 
@@ -461,7 +470,7 @@ import_vrm(document) -> Result<Model>
 ---
 
 ### 14.4 export_vrm
-<!-- hldocs:sec_id=sec_a1b2c3f8 -->
+<!-- hldocs:sec_id=sec_r2q8t5g6 -->
 
 - export_vrm は VRM仕様に準拠した glTF を生成する
 
@@ -545,7 +554,7 @@ commit(transaction) -> Result<Model>
 ---
 
 ### 15.3 rollback
-<!-- hldocs:sec_id=sec_a1b2c3g5 -->
+<!-- hldocs:sec_id=sec_p4n6r7e4 -->
 
 ```text
 rollback(transaction) -> Model
