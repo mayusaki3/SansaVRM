@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sansavrm.local/schema/sansavrm/v1/revenue.schema.json",
+  "type": "object",
+  "properties": {
+    "revenue": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rule_id": { "$ref": "defs.schema.json#/$defs/Id" },
+          "model": { "type": "string", "minLength": 1 },
+          "share": { "type": "number" }
+        },
+        "required": ["rule_id", "model"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["revenue"],
+  "additionalProperties": false
+}
