@@ -1,14 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""HLDocS traceability checker.
+"""HLDocS トレーサビリティ検査ツール。
 
-This tool validates references between HLDocS documents and Rust/Python test or
-implementation files.
-
-Notes:
-- Documentation files may contain illustrative references.
-- Documentation examples must not be treated as implementation references.
+HLDocS ドキュメント、実装コード、テストコード間の参照整合性を検査する。
+docs 配下の説明用 `@hldocs.ref` は実装参照として扱わない。
 """
 
 import argparse
@@ -27,25 +23,30 @@ CODE_EXTENSIONS = {".rs", ".py", ".toml", ".yml", ".yaml"}
 
 
 def normalize_path(path):
+    """パス区切りを `/` に統一する。"""
     return Path(path).as_posix()
 
 
 def is_doc_path(path):
+    """docs 配下のパスか判定する。"""
     normalized = normalize_path(path)
     return "/docs/" in f"/{normalized}" or normalized.startswith("docs/")
 
 
 def is_spec_path(path):
+    """仕様ドキュメント配下か判定する。"""
     normalized = normalize_path(path)
     return "docs/ja-JP/02_仕様/" in normalized
 
 
 def is_testspec_path(path):
+    """テスト仕様ドキュメント配下か判定する。"""
     normalized = normalize_path(path)
     return "docs/ja-JP/03_テスト仕様/" in normalized
 
 
 def is_code_or_test_path(path):
+    """実装コードまたはテストコードの検査対象か判定する。"""
     normalized = normalize_path(path)
     suffix = Path(path).suffix
 
@@ -63,6 +64,7 @@ def is_code_or_test_path(path):
 
 
 def is_test_path(path):
+    """テストコードか判定する。"""
     normalized = normalize_path(path)
     return (
         "/tests/" in f"/{normalized}"
@@ -73,6 +75,7 @@ def is_test_path(path):
 
 
 def is_implementation_path(path):
+    """実装コードか判定する。"""
     normalized = normalize_path(path)
 
     if not is_code_or_test_path(normalized):
@@ -88,10 +91,12 @@ def is_implementation_path(path):
 
 
 def is_trace_checker_path(path):
+    """本検査ツール自身か判定する。"""
     return normalize_path(path).startswith("tools/trace_check/")
 
 
 def collect_files(root):
+    """検査対象ファイル一覧を収集する。"""
     files = []
     for base, dirs, filenames in os.walk(root):
         dirs[:] = [d for d in dirs if d not in EXCLUDE_DIRS]
@@ -101,6 +106,7 @@ def collect_files(root):
 
 
 def read_file(path):
+    """UTF-8でファイルを読み込む。失敗時は空文字を返す。"""
     try:
         with open(path, "r", encoding="utf-8") as file:
             return file.read()
@@ -109,14 +115,17 @@ def read_file(path):
 
 
 def extract_sec_ids(text):
+    """テキストから sec_id を抽出する。"""
     return SEC_ID_PATTERN.findall(text)
 
 
 def extract_refs(text):
+    """テキストから @hldocs.ref を抽出する。"""
     return REF_PATTERN.findall(text)
 
 
 def to_relative(path, root):
+    """root からの相対パスを返す。"""
     try:
         return os.path.relpath(path, root)
     except ValueError:
@@ -124,6 +133,7 @@ def to_relative(path, root):
 
 
 def check(root, mode):
+    """トレーサビリティ検査を実行する。"""
     root = os.path.abspath(root)
     files = collect_files(root)
 
@@ -160,13 +170,13 @@ def check(root, mode):
     errors = []
     warnings = []
 
-    # CHECK-001: code/test refs must point to an existing spec sec_id.
+    # CHECK-001: コード・テスト上の参照が仕様sec_idを指していること。
     for ref in sorted(all_refs):
         _, sec = ref.split("#", 1)
         if sec not in spec_sec_ids:
             errors.append(("CHECK-001", ref, "sec_id not found in spec"))
 
-    # CHECK-002: trace TODO must not remain in strict mode.
+    # CHECK-002: strict モードでは暫定トレースTODOを禁止する。
     for todo_path in sorted(todos):
         item = ("CHECK-002", todo_path, "trace TODO found")
         if mode == "strict":
@@ -174,7 +184,7 @@ def check(root, mode):
         else:
             warnings.append(item)
 
-    # CHECK-003: testspec sec_id must exist in spec.
+    # CHECK-003: テスト仕様sec_idが仕様側にも存在すること。
     for sec in sorted(testspec_sec_ids):
         if sec not in spec_sec_ids:
             errors.append(("CHECK-003", sec, "testspec sec_id not in spec"))
@@ -182,7 +192,7 @@ def check(root, mode):
     implemented_secs = {ref.split("#", 1)[1] for ref in implementation_refs}
     tested_secs = {ref.split("#", 1)[1] for ref in test_refs}
 
-    # CHECK-004: spec sec_id should be implemented.
+    # CHECK-004: 仕様sec_idに対応する実装参照が存在すること。
     for sec in sorted(spec_sec_ids):
         if sec not in implemented_secs:
             item = ("CHECK-004", sec, "spec sec_id not implemented")
@@ -191,7 +201,7 @@ def check(root, mode):
             else:
                 warnings.append(item)
 
-    # CHECK-005: testspec sec_id should be tested.
+    # CHECK-005: テスト仕様sec_idに対応するテスト参照が存在すること。
     for sec in sorted(testspec_sec_ids):
         if sec not in tested_secs:
             item = ("CHECK-005", sec, "testspec sec_id not tested")
@@ -204,6 +214,7 @@ def check(root, mode):
 
 
 def main():
+    """CLI引数を処理し、検査結果を表示する。"""
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", default=".")
     parser.add_argument(
