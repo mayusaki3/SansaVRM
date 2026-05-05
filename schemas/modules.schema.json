@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sansavrm.local/schema/sansavrm/v1/modules.schema.json",
+  "type": "object",
+  "properties": {
+    "modules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "module_id": { "$ref": "defs.schema.json#/$defs/Id" },
+          "type": {
+            "type": "string",
+            "enum": ["Body", "Clothing", "Accessory", "Equipment", "Prop", "Module", "WorldObject", "CompositeRoot", "Custom"]
+          },
+          "slots": { "type": "array", "items": { "$ref": "defs.schema.json#/$defs/Id" } },
+          "properties": { "type": "array", "items": { "$ref": "defs.schema.json#/$defs/Property" } },
+          "state_refs": { "type": "array", "items": { "$ref": "defs.schema.json#/$defs/Id" } },
+          "glTF_binding": { "$ref": "defs.schema.json#/$defs/GlTFBinding" }
+        },
+        "required": ["module_id", "type"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["modules"],
+  "additionalProperties": false
+}
