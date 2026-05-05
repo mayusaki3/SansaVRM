@@ -1,39 +1,82 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""HLDocS traceability checker.
+
+This tool validates references between HLDocS documents and Rust/Python test or
+implementation files.
+
+Notes:
+- Documentation files may contain illustrative `@hldocs.ref` examples.
+- Those examples must not be treated as implementation references.
+"""
+
+import argparse
 import os
 import re
 import sys
-import argparse
+from pathlib import Path
 
 DOC_ID_PATTERN = re.compile(r"doc_id:\s*(doc-[^\s]+)")
 SEC_ID_PATTERN = re.compile(r"sec_[a-z0-9]+")
-REF_PATTERN = re.compile(r"@hldocs\.ref\s+(doc-[^#]+#sec_[a-z0-9]+)")
+REF_PATTERN = re.compile(r"@hldocs\.ref\s+(doc-[^#\s]+#sec_[a-z0-9]+)")
 TODO_PATTERN = re.compile(r"TODO\(trace\)")
 
 EXCLUDE_DIRS = {".git", "target", "node_modules", "__pycache__"}
+CODE_EXTENSIONS = {".rs", ".py", ".toml", ".yml", ".yaml"}
+
+
+def normalize_path(path):
+    return Path(path).as_posix()
+
+
+def is_doc_path(path):
+    normalized = normalize_path(path)
+    return "/docs/" in f"/{normalized}" or normalized.startswith("docs/")
+
+
+def is_spec_path(path):
+    normalized = normalize_path(path)
+    return "docs/ja-JP/02_仕様/" in normalized
+
+
+def is_testspec_path(path):
+    normalized = normalize_path(path)
+    return "docs/ja-JP/03_テスト仕様/" in normalized
+
+
+def is_code_or_test_path(path):
+    normalized = normalize_path(path)
+    suffix = Path(path).suffix
+
+    if is_doc_path(path):
+        return False
+
+    if suffix not in CODE_EXTENSIONS:
+        return False
+
+    return (
+        normalized.startswith("crates/")
+        or normalized.startswith("tests/")
+        or normalized.startswith("tools/")
+    )
 
 
 def collect_files(root):
     files = []
     for base, dirs, filenames in os.walk(root):
         dirs[:] = [d for d in dirs if d not in EXCLUDE_DIRS]
-        for f in filenames:
-            path = os.path.join(base, f)
-            files.append(path)
+        for filename in filenames:
+            files.append(os.path.join(base, filename))
     return files
 
 
 def read_file(path):
     try:
-        with open(path, "r", encoding="utf-8") as f:
-            return f.read()
+        with open(path, "r", encoding="utf-8") as file:
+            return file.read()
     except Exception:
         return ""
-
-
-def extract_doc_ids(text):
-    return DOC_ID_PATTERN.findall(text)
 
 
 def extract_sec_ids(text):
@@ -44,7 +87,15 @@ def extract_refs(text):
     return REF_PATTERN.findall(text)
 
 
+def to_relative(path, root):
+    try:
+        return os.path.relpath(path, root)
+    except ValueError:
+        return path
+
+
 def check(root, mode):
+    root = os.path.abspath(root)
     files = collect_files(root)
 
     spec_sec_ids = set()
@@ -53,59 +104,61 @@ def check(root, mode):
     todos = []
 
     for path in files:
+        rel_path = normalize_path(to_relative(path, root))
         text = read_file(path)
 
-        if "02_仕様" in path:
+        if is_spec_path(rel_path):
             spec_sec_ids.update(extract_sec_ids(text))
 
-        if "03_テスト仕様" in path:
+        if is_testspec_path(rel_path):
             testspec_sec_ids.update(extract_sec_ids(text))
 
-        if "@hldocs.ref" in text:
+        if is_code_or_test_path(rel_path):
             code_refs.update(extract_refs(text))
-
-        if TODO_PATTERN.search(text):
-            todos.append(path)
+            if TODO_PATTERN.search(text):
+                todos.append(rel_path)
 
     errors = []
     warnings = []
 
-    # CHECK-001
-    for ref in code_refs:
-        _, sec = ref.split("#")
+    # CHECK-001: code/test refs must point to an existing spec sec_id.
+    for ref in sorted(code_refs):
+        _, sec = ref.split("#", 1)
         if sec not in spec_sec_ids:
             errors.append(("CHECK-001", ref, "sec_id not found in spec"))
 
-    # CHECK-002
-    if todos:
+    # CHECK-002: TODO(trace) must not remain in strict mode.
+    for todo_path in sorted(todos):
+        item = ("CHECK-002", todo_path, "TODO(trace) found")
         if mode == "strict":
-            for t in todos:
-                errors.append(("CHECK-002", t, "TODO(trace) found"))
+            errors.append(item)
         else:
-            for t in todos:
-                warnings.append(("CHECK-002", t, "TODO(trace) found"))
+            warnings.append(item)
 
-    # CHECK-003
-    for sec in testspec_sec_ids:
+    # CHECK-003: testspec sec_id must exist in spec.
+    for sec in sorted(testspec_sec_ids):
         if sec not in spec_sec_ids:
             errors.append(("CHECK-003", sec, "testspec sec_id not in spec"))
 
-    # CHECK-004
-    implemented_secs = {r.split("#")[1] for r in code_refs}
-    for sec in spec_sec_ids:
-        if sec not in implemented_secs:
-            if mode == "strict":
-                errors.append(("CHECK-004", sec, "spec sec_id not implemented"))
-            else:
-                warnings.append(("CHECK-004", sec, "spec sec_id not implemented"))
+    referenced_secs = {ref.split("#", 1)[1] for ref in code_refs}
 
-    # CHECK-005
-    for sec in testspec_sec_ids:
-        if sec not in implemented_secs:
+    # CHECK-004: spec sec_id should be implemented.
+    for sec in sorted(spec_sec_ids):
+        if sec not in referenced_secs:
+            item = ("CHECK-004", sec, "spec sec_id not implemented")
             if mode == "strict":
-                errors.append(("CHECK-005", sec, "testspec sec_id not tested"))
+                errors.append(item)
             else:
-                warnings.append(("CHECK-005", sec, "testspec sec_id not tested"))
+                warnings.append(item)
+
+    # CHECK-005: testspec sec_id should be tested.
+    for sec in sorted(testspec_sec_ids):
+        if sec not in referenced_secs:
+            item = ("CHECK-005", sec, "testspec sec_id not tested")
+            if mode == "strict":
+                errors.append(item)
+            else:
+                warnings.append(item)
 
     return errors, warnings
 
@@ -113,21 +166,25 @@ def check(root, mode):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", default=".")
-    parser.add_argument("--mode", default="transitional", choices=["strict", "transitional"])
+    parser.add_argument(
+        "--mode",
+        default="transitional",
+        choices=["strict", "transitional"],
+    )
     args = parser.parse_args()
 
     errors, warnings = check(args.root, args.mode)
 
     if errors:
         print("TRACE CHECK FAIL")
-        for e in errors:
-            print(f"[{e[0]}] {e[1]} : {e[2]}")
+        for check_id, target, reason in errors:
+            print(f"[{check_id}] {target} : {reason}")
         sys.exit(1)
 
     if warnings:
         print("TRACE CHECK PASS WITH WARNINGS")
-        for w in warnings:
-            print(f"[{w[0]}] {w[1]} : {w[2]}")
+        for check_id, target, reason in warnings:
+            print(f"[{check_id}] {target} : {reason}")
         sys.exit(0)
 
     print("TRACE CHECK PASS")
