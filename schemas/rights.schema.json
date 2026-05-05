@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sansavrm.local/schema/sansavrm/v1/rights.schema.json",
+  "type": "object",
+  "properties": {
+    "rights": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rule_id": { "$ref": "defs.schema.json#/$defs/Id" },
+          "rule_type": { "type": "string", "minLength": 1 },
+          "condition": { "type": "string" },
+          "effect": { "type": "string", "minLength": 1 }
+        },
+        "required": ["rule_id", "rule_type", "effect"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["rights"],
+  "additionalProperties": false
+}
