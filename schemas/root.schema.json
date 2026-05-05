@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sansavrm.local/schema/sansavrm/v1/root.schema.json",
+  "type": "object",
+  "properties": {
+    "extensions": {
+      "type": "object",
+      "properties": {
+        "SansaVRM_model": { "$ref": "model.schema.json" },
+        "SansaVRM_modules": { "$ref": "modules.schema.json" },
+        "SansaVRM_slots": { "$ref": "slots.schema.json" },
+        "SansaVRM_states": { "$ref": "states.schema.json" },
+        "SansaVRM_rights": { "$ref": "rights.schema.json" },
+        "SansaVRM_revenue": { "$ref": "revenue.schema.json" },
+        "SansaVRM_compatibility": { "$ref": "compatibility.schema.json" },
+        "SansaVRM_diagnostics": { "$ref": "diagnostics.schema.json" },
+        "SansaVRM_extension_layer": { "$ref": "extension-layer.schema.json" }
+      },
+      "required": ["SansaVRM_model", "SansaVRM_modules", "SansaVRM_slots"],
+      "additionalProperties": true
+    },
+    "extensionsUsed": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "extensionsRequired": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "required": ["extensions"],
+  "additionalProperties": true
+}
