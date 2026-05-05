@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sansavrm.local/schema/sansavrm/v1/model.schema.json",
+  "type": "object",
+  "properties": {
+    "model_id": { "$ref": "defs.schema.json#/$defs/Id" },
+    "modules": { "type": "array" },
+    "slots": { "type": "array" },
+    "states": { "type": "array" },
+    "connections": { "type": "array" },
+    "diagnostics": { "type": "array" },
+    "properties": {
+      "type": "array",
+      "items": { "$ref": "defs.schema.json#/$defs/Property" }
+    }
+  },
+  "required": ["model_id"],
+  "additionalProperties": true
+}
