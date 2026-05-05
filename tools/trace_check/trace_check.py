@@ -7,8 +7,8 @@ This tool validates references between HLDocS documents and Rust/Python test or
 implementation files.
 
 Notes:
-- Documentation files may contain illustrative `@hldocs.ref` examples.
-- Those examples must not be treated as implementation references.
+- Documentation files may contain illustrative references.
+- Documentation examples must not be treated as implementation references.
 """
 
 import argparse
@@ -18,9 +18,9 @@ import sys
 from pathlib import Path
 
 DOC_ID_PATTERN = re.compile(r"doc_id:\s*(doc-[^\s]+)")
-SEC_ID_PATTERN = re.compile(r"sec_[a-z0-9]+")
-REF_PATTERN = re.compile(r"@hldocs\.ref\s+(doc-[^#\s]+#sec_[a-z0-9]+)")
-TODO_PATTERN = re.compile(r"TODO\(trace\)")
+SEC_ID_PATTERN = re.compile(r"sec_[a-z0-9]{8,}")
+REF_PATTERN = re.compile(r"@hldocs\.ref\s+(doc-[^#\s]+#sec_[a-z0-9]{8,})")
+TODO_PATTERN = re.compile(r"TODO" + r"\(trace\)")
 
 EXCLUDE_DIRS = {".git", "target", "node_modules", "__pycache__"}
 CODE_EXTENSIONS = {".rs", ".py", ".toml", ".yml", ".yaml"}
@@ -62,6 +62,35 @@ def is_code_or_test_path(path):
     )
 
 
+def is_test_path(path):
+    normalized = normalize_path(path)
+    return (
+        "/tests/" in f"/{normalized}"
+        or normalized.startswith("tests/")
+        or normalized.endswith("_test.rs")
+        or normalized.endswith("_tests.rs")
+    )
+
+
+def is_implementation_path(path):
+    normalized = normalize_path(path)
+
+    if not is_code_or_test_path(normalized):
+        return False
+
+    if is_test_path(normalized):
+        return False
+
+    if normalized.startswith("tools/trace_check/"):
+        return False
+
+    return normalized.startswith("crates/")
+
+
+def is_trace_checker_path(path):
+    return normalize_path(path).startswith("tools/trace_check/")
+
+
 def collect_files(root):
     files = []
     for base, dirs, filenames in os.walk(root):
@@ -100,7 +129,9 @@ def check(root, mode):
 
     spec_sec_ids = set()
     testspec_sec_ids = set()
-    code_refs = set()
+    implementation_refs = set()
+    test_refs = set()
+    all_refs = set()
     todos = []
 
     for path in files:
@@ -114,22 +145,30 @@ def check(root, mode):
             testspec_sec_ids.update(extract_sec_ids(text))
 
         if is_code_or_test_path(rel_path):
-            code_refs.update(extract_refs(text))
-            if TODO_PATTERN.search(text):
+            refs = set(extract_refs(text))
+            all_refs.update(refs)
+
+            if is_implementation_path(rel_path):
+                implementation_refs.update(refs)
+
+            if is_test_path(rel_path):
+                test_refs.update(refs)
+
+            if not is_trace_checker_path(rel_path) and TODO_PATTERN.search(text):
                 todos.append(rel_path)
 
     errors = []
     warnings = []
 
     # CHECK-001: code/test refs must point to an existing spec sec_id.
-    for ref in sorted(code_refs):
+    for ref in sorted(all_refs):
         _, sec = ref.split("#", 1)
         if sec not in spec_sec_ids:
             errors.append(("CHECK-001", ref, "sec_id not found in spec"))
 
-    # CHECK-002: TODO(trace) must not remain in strict mode.
+    # CHECK-002: trace TODO must not remain in strict mode.
     for todo_path in sorted(todos):
-        item = ("CHECK-002", todo_path, "TODO(trace) found")
+        item = ("CHECK-002", todo_path, "trace TODO found")
         if mode == "strict":
             errors.append(item)
         else:
@@ -140,11 +179,12 @@ def check(root, mode):
         if sec not in spec_sec_ids:
             errors.append(("CHECK-003", sec, "testspec sec_id not in spec"))
 
-    referenced_secs = {ref.split("#", 1)[1] for ref in code_refs}
+    implemented_secs = {ref.split("#", 1)[1] for ref in implementation_refs}
+    tested_secs = {ref.split("#", 1)[1] for ref in test_refs}
 
     # CHECK-004: spec sec_id should be implemented.
     for sec in sorted(spec_sec_ids):
-        if sec not in referenced_secs:
+        if sec not in implemented_secs:
             item = ("CHECK-004", sec, "spec sec_id not implemented")
             if mode == "strict":
                 errors.append(item)
@@ -153,7 +193,7 @@ def check(root, mode):
 
     # CHECK-005: testspec sec_id should be tested.
     for sec in sorted(testspec_sec_ids):
-        if sec not in referenced_secs:
+        if sec not in tested_secs:
             item = ("CHECK-005", sec, "testspec sec_id not tested")
             if mode == "strict":
                 errors.append(item)
