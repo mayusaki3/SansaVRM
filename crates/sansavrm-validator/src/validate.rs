@@ -3,167 +3,78 @@
 use std::collections::HashSet;
 
 use sansavrm_core::{
-    CoreResult, DiagnosticCode, DiagnosticSeverity, Model, PropertyValue, SansaVrmError, ValidationDiagnostic,
+    CoreResult, DiagnosticCode, DiagnosticSeverity, Model, Property, PropertyContext, PropertyType,
+    PropertyValue, SansaVrmError, ValidationDiagnostic,
 };
 
-use crate::ValidatorResult;
 use crate::vrm_validation::validate_vrm_humanoid;
+use crate::ValidatorResult;
 
-/// Model の基本検証
-///
-/// 役割:
-/// - Validator実装仕様に基づく検証規則を順に実行する。
-/// - エラーを可能な限り収集し、CoreResult として返す。
+/// Model の基本検証。
 pub fn validate_model(model: &Model) -> CoreResult<()> {
     let mut errors = Vec::new();
-
     validate_unique_ids(model, &mut errors);
     validate_slot_owner_refs(model, &mut errors);
     validate_connections(model, &mut errors);
     validate_connection_rules(model, &mut errors);
     validate_state_actions(model, &mut errors);
     validate_properties(model, &mut errors);
+    validate_compatibility_properties(model, &mut errors);
+    validate_rights_revenue_properties(model, &mut errors);
+    validate_gltf_binding_properties(model, &mut errors);
     validate_vrm_humanoid(model, &mut errors);
 
     if errors.is_empty() {
         CoreResult::ok(())
     } else {
-        CoreResult {
-            success: false,
-            data: None,
-            errors,
-            warnings: vec![],
-            infos: vec![],
-        }
+        CoreResult { success: false, data: None, errors, warnings: vec![], infos: vec![] }
     }
 }
 
-/// Model の diagnostics 付き基本検証
-///
-/// 役割:
-/// - diagnostics 形式で検証結果を返す。
+/// Model の diagnostics 付き基本検証。
 pub fn validate_model_with_diagnostics(model: &Model) -> ValidatorResult {
     let mut diagnostics = Vec::new();
-
     validate_unique_ids_with_diagnostics(model, &mut diagnostics);
     validate_slot_owner_refs_with_diagnostics(model, &mut diagnostics);
     validate_connections_with_diagnostics(model, &mut diagnostics);
     validate_properties_with_diagnostics(model, &mut diagnostics);
     sort_diagnostics(&mut diagnostics);
-
-    ValidatorResult {
-        success: diagnostics.is_empty(),
-        diagnostics,
-    }
+    ValidatorResult { success: diagnostics.is_empty(), diagnostics }
 }
 
-/// ID 一意性検証
-///
-/// 役割:
-/// - Model全体でIDが重複していないことを検証する。
-///
+/// ID 一意性検証。
 /// @hldocs.ref doc-20260504-000205Z-SV0F#sec_f7a2d9m4
 fn validate_unique_ids(model: &Model, errors: &mut Vec<SansaVrmError>) {
     let mut ids = HashSet::new();
-
-    if !ids.insert(model.model_id.clone()) {
-        errors.push(SansaVrmError::DuplicateId(model.model_id.clone()));
-    }
-
-    for module in &model.modules {
-        if !ids.insert(module.module_id.clone()) {
-            errors.push(SansaVrmError::DuplicateId(module.module_id.clone()));
-        }
-    }
-
-    for slot in &model.slots {
-        if !ids.insert(slot.slot_id.clone()) {
-            errors.push(SansaVrmError::DuplicateId(slot.slot_id.clone()));
-        }
-    }
-
-    for state in &model.states {
-        if !ids.insert(state.state_id.clone()) {
-            errors.push(SansaVrmError::DuplicateId(state.state_id.clone()));
-        }
-    }
-
-    for connection in &model.connections {
-        if !ids.insert(connection.connection_id.clone()) {
-            errors.push(SansaVrmError::DuplicateId(connection.connection_id.clone()));
+    for id in collect_ids(model) {
+        if !ids.insert(id.clone()) {
+            errors.push(SansaVrmError::DuplicateId(id));
         }
     }
 }
 
-/// ID 一意性 diagnostics 検証
-///
-/// 役割:
-/// - ID重複を diagnostics 形式で検証する。
-///
+/// ID 一意性 diagnostics 検証。
 /// @hldocs.ref doc-20260504-000205Z-SV0F#sec_f7a2d9m4
-fn validate_unique_ids_with_diagnostics(
-    model: &Model,
-    diagnostics: &mut Vec<ValidationDiagnostic>,
-) {
+fn validate_unique_ids_with_diagnostics(model: &Model, diagnostics: &mut Vec<ValidationDiagnostic>) {
     let mut ids = HashSet::new();
-
-    if !ids.insert(model.model_id.clone()) {
-        diagnostics.push(ValidationDiagnostic {
-            code: DiagnosticCode::DuplicateId,
-            severity: DiagnosticSeverity::Error,
-            message: format!("Duplicate ID: {}", model.model_id),
-            target: Some(model.model_id.clone()),
-        });
-    }
-
-    for module in &model.modules {
-        if !ids.insert(module.module_id.clone()) {
+    for id in collect_ids(model) {
+        if !ids.insert(id.clone()) {
             diagnostics.push(ValidationDiagnostic {
                 code: DiagnosticCode::DuplicateId,
                 severity: DiagnosticSeverity::Error,
-                message: format!("Duplicate ID: {}", module.module_id),
-                target: Some(module.module_id.clone()),
-            });
-        }
-    }
-
-    for slot in &model.slots {
-        if !ids.insert(slot.slot_id.clone()) {
-            diagnostics.push(ValidationDiagnostic {
-                code: DiagnosticCode::DuplicateId,
-                severity: DiagnosticSeverity::Error,
-                message: format!("Duplicate ID: {}", slot.slot_id),
-                target: Some(slot.slot_id.clone()),
-            });
-        }
-    }
-
-    for state in &model.states {
-        if !ids.insert(state.state_id.clone()) {
-            diagnostics.push(ValidationDiagnostic {
-                code: DiagnosticCode::DuplicateId,
-                severity: DiagnosticSeverity::Error,
-                message: format!("Duplicate ID: {}", state.state_id),
-                target: Some(state.state_id.clone()),
+                message: format!("Duplicate ID: {}", id),
+                target: Some(id),
             });
         }
     }
 }
 
-/// Slot の owner_module_id 参照整合性検証
-///
-/// 役割:
-/// - Slot が参照する owner_module_id が実在することを検証する。
-///
+/// Slot owner参照整合性検証。
 /// @hldocs.ref doc-20260504-000205Z-SV0F#sec_g2c9d4x7
 /// @hldocs.ref doc-20260504-000205Z-SV0F#sec_k8m4q2r7
 fn validate_slot_owner_refs(model: &Model, errors: &mut Vec<SansaVrmError>) {
     for slot in &model.slots {
-        if !model
-            .modules
-            .iter()
-            .any(|module| module.module_id == slot.owner_module_id)
-        {
+        if !model.modules.iter().any(|m| m.module_id == slot.owner_module_id) {
             errors.push(SansaVrmError::InvalidInput(format!(
                 "Slot {} references unknown module {}",
                 slot.slot_id, slot.owner_module_id
@@ -172,161 +83,66 @@ fn validate_slot_owner_refs(model: &Model, errors: &mut Vec<SansaVrmError>) {
     }
 }
 
-/// Slot の owner_module_id 参照整合性 diagnostics 検証
-///
-/// 役割:
-/// - Slot owner参照不備を diagnostics 形式で検証する。
-///
+/// Slot owner参照 diagnostics 検証。
 /// @hldocs.ref doc-20260504-000205Z-SV0F#sec_g2c9d4x7
 /// @hldocs.ref doc-20260504-000205Z-SV0F#sec_k8m4q2r7
-fn validate_slot_owner_refs_with_diagnostics(
-    model: &Model,
-    diagnostics: &mut Vec<ValidationDiagnostic>,
-) {
+fn validate_slot_owner_refs_with_diagnostics(model: &Model, diagnostics: &mut Vec<ValidationDiagnostic>) {
     for slot in &model.slots {
-        if !model
-            .modules
-            .iter()
-            .any(|module| module.module_id == slot.owner_module_id)
-        {
+        if !model.modules.iter().any(|m| m.module_id == slot.owner_module_id) {
             diagnostics.push(ValidationDiagnostic {
                 code: DiagnosticCode::RefNotFound,
                 severity: DiagnosticSeverity::Error,
-                message: format!(
-                    "Slot {} references unknown module {}",
-                    slot.slot_id, slot.owner_module_id
-                ),
+                message: format!("Slot {} references unknown module {}", slot.slot_id, slot.owner_module_id),
                 target: Some(slot.slot_id.clone()),
             });
         }
     }
 }
 
-/// Connection の参照整合性検証
-///
-/// 役割:
-/// - Connection の from_id / to_id が実在することを検証する。
-///
+/// Connection参照整合性検証。
 /// @hldocs.ref doc-20260504-000205Z-SV0F#sec_h1e0f3y8
 fn validate_connections(model: &Model, errors: &mut Vec<SansaVrmError>) {
-    for connection in &model.connections {
-        let from_exists =
-            model.modules.iter().any(|module| module.module_id == connection.from_id)
-            || model.slots.iter().any(|slot| slot.slot_id == connection.from_id);
-
-        let to_exists =
-            model.modules.iter().any(|module| module.module_id == connection.to_id)
-            || model.slots.iter().any(|slot| slot.slot_id == connection.to_id);
-
+    for c in &model.connections {
+        let from_exists = id_exists(model, &c.from_id);
+        let to_exists = id_exists(model, &c.to_id);
         if !from_exists {
-            errors.push(SansaVrmError::InvalidInput(format!(
-                "Connection {} references unknown from_id {}",
-                connection.connection_id,
-                connection.from_id
-            )));
+            errors.push(SansaVrmError::InvalidInput(format!("Connection {} references unknown from_id {}", c.connection_id, c.from_id)));
         }
-
         if !to_exists {
-            errors.push(SansaVrmError::InvalidInput(format!(
-                "Connection {} references unknown to_id {}",
-                connection.connection_id,
-                connection.to_id
-            )));
+            errors.push(SansaVrmError::InvalidInput(format!("Connection {} references unknown to_id {}", c.connection_id, c.to_id)));
         }
     }
 }
 
-/// Connection の参照整合性 diagnostics 検証
-///
-/// 役割:
-/// - Connection参照不備を diagnostics 形式で検証する。
-///
+/// Connection参照 diagnostics 検証。
 /// @hldocs.ref doc-20260504-000205Z-SV0F#sec_h1e0f3y8
-fn validate_connections_with_diagnostics(
-    model: &Model,
-    diagnostics: &mut Vec<ValidationDiagnostic>,
-) {
-    for connection in &model.connections {
-        let from_exists =
-            model.modules.iter().any(|module| module.module_id == connection.from_id)
-                || model.slots.iter().any(|slot| slot.slot_id == connection.from_id);
-
-        let to_exists =
-            model.modules.iter().any(|module| module.module_id == connection.to_id)
-                || model.slots.iter().any(|slot| slot.slot_id == connection.to_id);
-
-        if !from_exists {
+fn validate_connections_with_diagnostics(model: &Model, diagnostics: &mut Vec<ValidationDiagnostic>) {
+    for c in &model.connections {
+        if !id_exists(model, &c.from_id) || !id_exists(model, &c.to_id) {
             diagnostics.push(ValidationDiagnostic {
                 code: DiagnosticCode::RefNotFound,
                 severity: DiagnosticSeverity::Error,
-                message: format!(
-                    "Connection {} references unknown from_id {}",
-                    connection.connection_id, connection.from_id
-                ),
-                target: Some(connection.connection_id.clone()),
-            });
-        }
-
-        if !to_exists {
-            diagnostics.push(ValidationDiagnostic {
-                code: DiagnosticCode::RefNotFound,
-                severity: DiagnosticSeverity::Error,
-                message: format!(
-                    "Connection {} references unknown to_id {}",
-                    connection.connection_id, connection.to_id
-                ),
-                target: Some(connection.connection_id.clone()),
+                message: format!("Connection {} has unknown endpoint", c.connection_id),
+                target: Some(c.connection_id.clone()),
             });
         }
     }
 }
 
-/// ConnectionRule の最小制約検証
-///
-/// 役割:
-/// - Slot の ConnectionRule と実接続数の整合性を検証する。
-///
+/// ConnectionRule整合性検証。
 /// @hldocs.ref doc-20260504-000205Z-SV0F#sec_h1e0f3y8
 fn validate_connection_rules(model: &Model, errors: &mut Vec<SansaVrmError>) {
     for slot in &model.slots {
         if let Some(rule) = &slot.connection_rules {
-            let connection_count = model
-                .connections
-                .iter()
-                .filter(|connection| {
-                    connection.from_id == slot.slot_id || connection.to_id == slot.slot_id
-                })
-                .count();
-
-            if connection_count < rule.min_connections {
-                errors.push(SansaVrmError::InvalidInput(format!(
-                    "Slot {} has fewer connections than min_connections {}",
-                    slot.slot_id, rule.min_connections
-                )));
-            }
-
-            if connection_count > rule.max_connections {
-                errors.push(SansaVrmError::InvalidInput(format!(
-                    "Slot {} exceeds max_connections {}",
-                    slot.slot_id, rule.max_connections
-                )));
-            }
-
-            if rule.exclusive && connection_count > 1 {
-                errors.push(SansaVrmError::InvalidInput(format!(
-                    "Slot {} is exclusive but has multiple connections",
-                    slot.slot_id
-                )));
+            let count = model.connections.iter().filter(|c| c.from_id == slot.slot_id || c.to_id == slot.slot_id).count();
+            if count < rule.min_connections || count > rule.max_connections || (rule.exclusive && count > 1) {
+                errors.push(SansaVrmError::InvalidInput(format!("Slot {} violates connection rule", slot.slot_id)));
             }
         }
     }
 }
 
-/// StateAction の参照整合性検証
-///
-/// 役割:
-/// - StateAction が参照する Module / Slot / Connection が実在することを検証する。
-///
+/// StateAction参照整合性検証。
 /// @hldocs.ref doc-20260504-000205Z-SV0F#sec_j9g1h2z9
 fn validate_state_actions(model: &Model, errors: &mut Vec<SansaVrmError>) {
     for state in &model.states {
@@ -335,60 +151,25 @@ fn validate_state_actions(model: &Model, errors: &mut Vec<SansaVrmError>) {
                 sansavrm_core::StateAction::ModuleEnable { module_id }
                 | sansavrm_core::StateAction::ModuleDisable { module_id } => {
                     if !model.modules.iter().any(|m| &m.module_id == module_id) {
-                        errors.push(SansaVrmError::InvalidInput(format!(
-                            "State {} references unknown module {}",
-                            state.state_id, module_id
-                        )));
+                        errors.push(SansaVrmError::InvalidInput(format!("State {} references unknown module {}", state.state_id, module_id)));
                     }
                 }
-
                 sansavrm_core::StateAction::SlotBind { slot_id, target_slot_id }
                 | sansavrm_core::StateAction::SlotUnbind { slot_id, target_slot_id } => {
-                    let slot_exists = model.slots.iter().any(|s| &s.slot_id == slot_id);
-                    let target_exists = model.slots.iter().any(|s| &s.slot_id == target_slot_id);
-
-                    if !slot_exists {
-                        errors.push(SansaVrmError::InvalidInput(format!(
-                            "State {} references unknown slot {}",
-                            state.state_id, slot_id
-                        )));
-                    }
-
-                    if !target_exists {
-                        errors.push(SansaVrmError::InvalidInput(format!(
-                            "State {} references unknown target_slot {}",
-                            state.state_id, target_slot_id
-                        )));
+                    if !model.slots.iter().any(|s| &s.slot_id == slot_id) || !model.slots.iter().any(|s| &s.slot_id == target_slot_id) {
+                        errors.push(SansaVrmError::InvalidInput(format!("State {} references unknown slot", state.state_id)));
                     }
                 }
-
                 sansavrm_core::StateAction::ConnectionEnable { connection_id }
                 | sansavrm_core::StateAction::ConnectionDisable { connection_id } => {
-                    if !model
-                        .connections
-                        .iter()
-                        .any(|connection| &connection.connection_id == connection_id)
-                    {
-                        errors.push(SansaVrmError::InvalidInput(format!(
-                            "State {} references unknown connection {}",
-                            state.state_id, connection_id
-                        )));
+                    if !model.connections.iter().any(|c| &c.connection_id == connection_id) {
+                        errors.push(SansaVrmError::InvalidInput(format!("State {} references unknown connection {}", state.state_id, connection_id)));
                     }
                 }
-
-                sansavrm_core::StateAction::PropertyOverride { property_id: _, value: _ } => {
-                    // 今は未検証。Property参照モデル確定後に追加する。
-                }
-
+                sansavrm_core::StateAction::PropertyOverride { .. } => {}
                 sansavrm_core::StateAction::VisibilityChange { target_id, .. } => {
-                    let exists = model.modules.iter().any(|m| &m.module_id == target_id)
-                        || model.slots.iter().any(|s| &s.slot_id == target_id);
-
-                    if !exists {
-                        errors.push(SansaVrmError::InvalidInput(format!(
-                            "State {} references unknown visibility target {}",
-                            state.state_id, target_id
-                        )));
+                    if !id_exists(model, target_id) {
+                        errors.push(SansaVrmError::InvalidInput(format!("State {} references unknown visibility target {}", state.state_id, target_id)));
                     }
                 }
             }
@@ -396,199 +177,124 @@ fn validate_state_actions(model: &Model, errors: &mut Vec<SansaVrmError>) {
     }
 }
 
-/// Model 内の Property 検証
-///
-/// 役割:
-/// - Model / Module / Slot に含まれる Property を検証する。
-///
+/// Property分類整合性検証。
 /// @hldocs.ref doc-20260504-000205Z-SV0F#sec_n4s1u6v0
 fn validate_properties(model: &Model, errors: &mut Vec<SansaVrmError>) {
-    for property in &model.properties {
-        validate_property_value(property, errors);
-    }
-
-    for module in &model.modules {
-        for property in &module.properties {
-            validate_property_value(property, errors);
-        }
-    }
-
-    for slot in &model.slots {
-        for property in &slot.properties {
-            validate_property_value(property, errors);
-        }
+    for p in all_properties(model) {
+        validate_property_value(p, errors);
     }
 }
 
-/// Model 内の Property diagnostics 検証
-///
-/// 役割:
-/// - Model / Module / Slot に含まれる Property を diagnostics 形式で検証する。
-///
+/// Property分類 diagnostics 検証。
 /// @hldocs.ref doc-20260504-000205Z-SV0F#sec_n4s1u6v0
-fn validate_properties_with_diagnostics(
-    model: &Model,
-    diagnostics: &mut Vec<ValidationDiagnostic>,
-) {
-    for property in &model.properties {
-        validate_property_value_with_diagnostics(property, diagnostics);
+fn validate_properties_with_diagnostics(model: &Model, diagnostics: &mut Vec<ValidationDiagnostic>) {
+    for p in all_properties(model) {
+        validate_property_value_with_diagnostics(p, diagnostics);
     }
+}
 
-    for module in &model.modules {
-        for property in &module.properties {
-            validate_property_value_with_diagnostics(property, diagnostics);
-        }
-    }
-
-    for slot in &model.slots {
-        for property in &slot.properties {
-            validate_property_value_with_diagnostics(property, diagnostics);
+/// Compatibility整合性検証。
+/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_l6n3p8s2
+fn validate_compatibility_properties(model: &Model, errors: &mut Vec<SansaVrmError>) {
+    for p in all_properties(model) {
+        if p.property_type == PropertyType::Compatibility
+            && !matches!(p.context, PropertyContext::Validation | PropertyContext::Conversion)
+        {
+            errors.push(SansaVrmError::InvalidInput(format!("Compatibility property {} has invalid context", p.property_id)));
         }
     }
 }
 
-/// Property の値 diagnostics 検証
-///
-/// 役割:
-/// - Property値と分類を diagnostics 形式で検証する。
-///
-/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_n4s1u6v0
-fn validate_property_value_with_diagnostics(
-    property: &sansavrm_core::Property,
-    diagnostics: &mut Vec<ValidationDiagnostic>,
-) {
-    match &property.value {
-        PropertyValue::String(_) => {}
-        PropertyValue::Number(_) => {}
-        PropertyValue::Bool(_) => {}
-    }
-
-    validate_property_classification_with_diagnostics(property, diagnostics);
-}
-
-/// Property の値整合性検証
-///
-/// 役割:
-/// - Property値と分類を検証する。
-///
-/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_n4s1u6v0
-fn validate_property_value(
-    property: &sansavrm_core::Property,
-    errors: &mut Vec<SansaVrmError>,
-) {
-    match &property.value {
-        PropertyValue::String(_) => {}
-        PropertyValue::Number(_) => {}
-        PropertyValue::Bool(_) => {}
-    }
-
-    validate_property_classification(property, errors);
-}
-
-/// Property の分類整合性検証
-///
-/// 役割:
-/// - property_type と context の組み合わせを検証する。
-///
-/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_n4s1u6v0
-fn validate_property_classification(
-    property: &sansavrm_core::Property,
-    errors: &mut Vec<SansaVrmError>,
-) {
-    if !property_classification_is_valid(property) {
-        errors.push(SansaVrmError::InvalidInput(format!(
-            "Property {} has incompatible property_type / context / key",
-            property.property_id
-        )));
+/// Rights / Revenue整合性検証。
+/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_m5q2r7t1
+fn validate_rights_revenue_properties(model: &Model, errors: &mut Vec<SansaVrmError>) {
+    for p in all_properties(model) {
+        if matches!(p.property_type, PropertyType::Rights | PropertyType::Revenue) && p.key.trim().is_empty() {
+            errors.push(SansaVrmError::InvalidInput(format!("Rights or revenue property {} has empty key", p.property_id)));
+        }
     }
 }
 
-/// Property の分類整合性 diagnostics 検証
-///
-/// 役割:
-/// - property_type と context の組み合わせを diagnostics 形式で検証する。
-///
+/// glTF補助整合性検証。
+/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_p3t0w5x9
+fn validate_gltf_binding_properties(model: &Model, errors: &mut Vec<SansaVrmError>) {
+    for p in all_properties(model) {
+        if p.context == PropertyContext::Binding && p.key.trim().is_empty() {
+            errors.push(SansaVrmError::InvalidInput(format!("glTF binding property {} has empty key", p.property_id)));
+        }
+    }
+}
+
+/// Property値検証。
 /// @hldocs.ref doc-20260504-000205Z-SV0F#sec_n4s1u6v0
-fn validate_property_classification_with_diagnostics(
-    property: &sansavrm_core::Property,
-    diagnostics: &mut Vec<ValidationDiagnostic>,
-) {
-    if !property_classification_is_valid(property) {
+fn validate_property_value(p: &Property, errors: &mut Vec<SansaVrmError>) {
+    match &p.value {
+        PropertyValue::String(_) | PropertyValue::Number(_) | PropertyValue::Bool(_) => {}
+    }
+    if !property_classification_is_valid(p) {
+        errors.push(SansaVrmError::InvalidInput(format!("Property {} has incompatible property_type / context / key", p.property_id)));
+    }
+}
+
+/// Property値 diagnostics 検証。
+/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_n4s1u6v0
+fn validate_property_value_with_diagnostics(p: &Property, diagnostics: &mut Vec<ValidationDiagnostic>) {
+    if !property_classification_is_valid(p) {
         diagnostics.push(ValidationDiagnostic {
             code: DiagnosticCode::PropertyClassificationMismatch,
             severity: DiagnosticSeverity::Error,
-            message: format!(
-                "Property {} has incompatible property_type / context / key",
-                property.property_id
-            ),
-            target: Some(property.property_id.clone()),
+            message: format!("Property {} has incompatible property_type / context / key", p.property_id),
+            target: Some(p.property_id.clone()),
         });
     }
 }
 
-/// Property の分類整合性を判定する。
-///
-/// 役割:
-/// - property_type と context の組み合わせを検証する。
-///
-/// 注意点:
-/// - key に基づく詳細判定は後続実装で追加する。
-///
+/// Property分類の組み合わせを判定する。
 /// @hldocs.ref doc-20260504-000205Z-SV0F#sec_n4s1u6v0
-fn property_classification_is_valid(property: &sansavrm_core::Property) -> bool {
-    use sansavrm_core::{PropertyContext, PropertyType};
-
-    match &property.property_type {
-        PropertyType::Physics => matches!(
-            property.context,
-            PropertyContext::Simulation | PropertyContext::Execution
-        ),
-        PropertyType::Geometry | PropertyType::Material | PropertyType::Texture => matches!(
-            property.context,
-            PropertyContext::Rendering | PropertyContext::Conversion
-        ),
-        PropertyType::Actuator => matches!(
-            property.context,
-            PropertyContext::Execution | PropertyContext::Simulation
-        ),
-        PropertyType::Sensor => matches!(
-            property.context,
-            PropertyContext::IO | PropertyContext::Execution
-        ),
-        PropertyType::Constraint => {
-            matches!(property.context, PropertyContext::Validation)
-        }
-        PropertyType::Metadata => {
-            matches!(property.context, PropertyContext::Description)
-        }
-        PropertyType::Control
-        | PropertyType::Rig
-        | PropertyType::Animation
-        | PropertyType::Expression
-        | PropertyType::Compatibility
-        | PropertyType::Rights
-        | PropertyType::Revenue
-        | PropertyType::Custom => true,
+fn property_classification_is_valid(p: &Property) -> bool {
+    match &p.property_type {
+        PropertyType::Physics => matches!(p.context, PropertyContext::Simulation | PropertyContext::Execution),
+        PropertyType::Geometry | PropertyType::Material | PropertyType::Texture => matches!(p.context, PropertyContext::Rendering | PropertyContext::Conversion),
+        PropertyType::Actuator => matches!(p.context, PropertyContext::Execution | PropertyContext::Simulation),
+        PropertyType::Sensor => matches!(p.context, PropertyContext::IO | PropertyContext::Execution),
+        PropertyType::Constraint => matches!(p.context, PropertyContext::Validation),
+        PropertyType::Metadata => matches!(p.context, PropertyContext::Description),
+        _ => true,
     }
 }
 
+/// Model内の全Propertyを列挙する。
+fn all_properties(model: &Model) -> Vec<&Property> {
+    let mut result = Vec::new();
+    result.extend(model.properties.iter());
+    for module in &model.modules { result.extend(module.properties.iter()); }
+    for slot in &model.slots { result.extend(slot.properties.iter()); }
+    result
+}
+
+/// Model内の参照可能IDを列挙する。
+fn collect_ids(model: &Model) -> Vec<String> {
+    let mut ids = vec![model.model_id.clone()];
+    ids.extend(model.modules.iter().map(|m| m.module_id.clone()));
+    ids.extend(model.slots.iter().map(|s| s.slot_id.clone()));
+    ids.extend(model.states.iter().map(|s| s.state_id.clone()));
+    ids.extend(model.connections.iter().map(|c| c.connection_id.clone()));
+    ids
+}
+
+/// IDがModel内に存在するか判定する。
+fn id_exists(model: &Model, id: &str) -> bool {
+    model.modules.iter().any(|m| m.module_id == id)
+        || model.slots.iter().any(|s| s.slot_id == id)
+        || model.connections.iter().any(|c| c.connection_id == id)
+}
+
 /// diagnostics の出力順を安定化する。
-///
-/// 役割:
-/// - CI差分やテスト結果の再現性を確保する。
 fn sort_diagnostics(diagnostics: &mut [ValidationDiagnostic]) {
-    diagnostics.sort_by(|a, b| {
-        diagnostic_sort_key(a).cmp(&diagnostic_sort_key(b))
-    });
+    diagnostics.sort_by(|a, b| diagnostic_sort_key(a).cmp(&diagnostic_sort_key(b)));
 }
 
 /// diagnostics ソートキーを生成する。
-fn diagnostic_sort_key(diagnostic: &ValidationDiagnostic) -> String {
-    format!(
-        "{:?}|{:?}|{}|{}",
-        diagnostic.severity,
-        diagnostic.code,
-        diagnostic.target.clone().unwrap_or_default(),
-        diagnostic.message
-    )
+fn diagnostic_sort_key(d: &ValidationDiagnostic) -> String {
+    format!("{:?}|{:?}|{}|{}", d.severity, d.code, d.target.clone().unwrap_or_default(), d.message)
 }
