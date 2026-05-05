@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sansavrm.local/schema/sansavrm/v1/diagnostics.schema.json",
+  "type": "object",
+  "properties": {
+    "diagnostics": {
+      "type": "array",
+      "items": { "$ref": "defs.schema.json#/$defs/DiagnosticsItem" }
+    }
+  },
+  "required": ["diagnostics"],
+  "additionalProperties": false
+}
