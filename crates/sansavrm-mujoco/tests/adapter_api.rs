@@ -33,9 +33,9 @@ fn mujoco_adapter_002_export_joint_model_should_create_mjcf() {
     assert!(result.success);
 
     let document = result.data.expect("document should be returned");
-    assert!(document.contains(r#"<mujoco model=\"test_model\">"#));
+    assert!(document.contains(r#"<mujoco model="test_model">"#));
     assert!(document.contains(r#"<worldbody>"#));
-    assert!(document.contains(r#"<joint name=\"joint_001\"/>"#));
+    assert!(document.contains(r#"<joint name="joint_001"/>"#));
 }
 
 /// 非Joint接続モデルのexportが失敗することを検証する。
@@ -69,7 +69,7 @@ fn mujoco_adapter_004_export_empty_model_should_create_empty_mjcf() {
     assert!(result.success);
 
     let document = result.data.expect("document should be returned");
-    assert!(document.contains(r#"<mujoco model=\"empty_model\">"#));
+    assert!(document.contains(r#"<mujoco model="empty_model">"#));
     assert!(document.contains(r#"<worldbody>"#));
     assert!(document.contains(r#"</mujoco>"#));
 }
