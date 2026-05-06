@@ -1,8 +1,6 @@
 // crates/sansavrm-validator/tests/property_validation.rs
 
-use sansavrm_core::{
-    Model, Module, ModuleType, Property, PropertyContext, PropertyType,
-};
+use sansavrm_core::{Model, Module, ModuleType, Property, PropertyContext, PropertyType};
 use sansavrm_validator::validate_model;
 
 fn model_with_module_property(property: Property) -> Model {
@@ -35,6 +33,8 @@ fn add_humanoid_bone(model: &mut Model, bone_name: &str, module_id: &str) {
     ));
 }
 
+/// 文字列PropertyValueを検証できることを確認する。
+/// @hldocs.ref doc-20260504-000403Z-SV0Q#sec_b2a0d5s6
 #[test]
 fn validator_property_001_string_value_should_pass() {
     let model = model_with_module_property(Property::from_typed_value(
@@ -50,6 +50,8 @@ fn validator_property_001_string_value_should_pass() {
     assert!(result.success);
 }
 
+/// 数値PropertyValueを検証できることを確認する。
+/// @hldocs.ref doc-20260504-000403Z-SV0Q#sec_b2a0d5s6
 #[test]
 fn validator_property_002_number_value_should_pass() {
     let model = model_with_module_property(Property::from_typed_value(
@@ -65,6 +67,8 @@ fn validator_property_002_number_value_should_pass() {
     assert!(result.success);
 }
 
+/// 真偽値PropertyValueを検証できることを確認する。
+/// @hldocs.ref doc-20260504-000403Z-SV0Q#sec_b2a0d5s6
 #[test]
 fn validator_property_003_boolean_value_should_pass() {
     let model = model_with_module_property(Property::from_typed_value(
@@ -80,6 +84,8 @@ fn validator_property_003_boolean_value_should_pass() {
     assert!(result.success);
 }
 
+/// Physics PropertyとSimulation contextの組み合わせを許可することを確認する。
+/// @hldocs.ref doc-20260504-000403Z-SV0Q#sec_c1b9e4t7
 #[test]
 fn validator_property_004_physics_property_with_simulation_context_should_pass() {
     let model = model_with_module_property(Property::from_typed_value(
@@ -95,6 +101,8 @@ fn validator_property_004_physics_property_with_simulation_context_should_pass()
     assert!(result.success);
 }
 
+/// Sensor PropertyとDescription contextの不整合を検出することを確認する。
+/// @hldocs.ref doc-20260504-000403Z-SV0Q#sec_c1b9e4t7
 #[test]
 fn validator_property_005_sensor_property_with_description_context_should_fail() {
     let model = model_with_module_property(Property::from_typed_value(
@@ -110,6 +118,8 @@ fn validator_property_005_sensor_property_with_description_context_should_fail()
     assert!(!result.success);
 }
 
+/// Modelレベルの不正なVRM humanoid参照を検出することを確認する。
+/// @hldocs.ref doc-20260504-000403Z-SV0Q#sec_e9d7g2v9
 #[test]
 fn validator_property_006_model_level_invalid_number_should_fail() {
     let mut model = Model::new();
@@ -127,6 +137,8 @@ fn validator_property_006_model_level_invalid_number_should_fail() {
     assert!(!result.success);
 }
 
+/// VRM humanoid Propertyが存在しても参照先Moduleがない場合に失敗することを確認する。
+/// @hldocs.ref doc-20260504-000403Z-SV0Q#sec_e9d7g2v9
 #[test]
 fn validator_property_007_model_level_vrm_humanoid_property_without_module_should_fail() {
     let mut model = Model::new();
@@ -144,6 +156,8 @@ fn validator_property_007_model_level_vrm_humanoid_property_without_module_shoul
     assert!(!result.success);
 }
 
+/// VRM humanoidの必須head欠落を検出することを確認する。
+/// @hldocs.ref doc-20260504-000403Z-SV0Q#sec_e9d7g2v9
 #[test]
 fn validator_property_008_vrm_humanoid_missing_head_should_fail() {
     let mut model = Model::new();
@@ -161,6 +175,8 @@ fn validator_property_008_vrm_humanoid_missing_head_should_fail() {
     assert!(!result.success);
 }
 
+/// VRM humanoidの不正参照を検出することを確認する。
+/// @hldocs.ref doc-20260504-000403Z-SV0Q#sec_e9d7g2v9
 #[test]
 fn validator_property_009_vrm_humanoid_invalid_reference_should_fail() {
     let mut model = Model::new();
@@ -178,6 +194,8 @@ fn validator_property_009_vrm_humanoid_invalid_reference_should_fail() {
     assert!(!result.success);
 }
 
+/// VRM humanoidの有効構成を許可することを確認する。
+/// @hldocs.ref doc-20260504-000403Z-SV0Q#sec_e9d7g2v9
 #[test]
 fn validator_property_010_vrm_humanoid_valid_should_pass() {
     let mut model = Model::new();
@@ -209,6 +227,8 @@ fn validator_property_010_vrm_humanoid_valid_should_pass() {
     assert!(result.success);
 }
 
+/// VRM humanoidの必須spine欠落を検出することを確認する。
+/// @hldocs.ref doc-20260504-000403Z-SV0Q#sec_e9d7g2v9
 #[test]
 fn validator_property_011_vrm_humanoid_missing_spine_should_fail() {
     let mut model = Model::new();
@@ -248,6 +268,8 @@ fn validator_property_011_vrm_humanoid_missing_spine_should_fail() {
     assert!(!result.success);
 }
 
+/// typed number Propertyを許可することを確認する。
+/// @hldocs.ref doc-20260504-000403Z-SV0Q#sec_b2a0d5s6
 #[test]
 fn validator_property_012_typed_number_property_should_pass() {
     let mut model = Model::new();
@@ -265,6 +287,8 @@ fn validator_property_012_typed_number_property_should_pass() {
     assert!(result.success);
 }
 
+/// typed bool Propertyを許可することを確認する。
+/// @hldocs.ref doc-20260504-000403Z-SV0Q#sec_b2a0d5s6
 #[test]
 fn validator_property_013_typed_bool_property_should_pass() {
     let mut model = Model::new();
@@ -282,6 +306,8 @@ fn validator_property_013_typed_bool_property_should_pass() {
     assert!(result.success);
 }
 
+/// typed string Propertyを許可することを確認する。
+/// @hldocs.ref doc-20260504-000403Z-SV0Q#sec_b2a0d5s6
 #[test]
 fn validator_property_014_typed_string_property_should_pass() {
     let mut model = Model::new();
@@ -299,6 +325,8 @@ fn validator_property_014_typed_string_property_should_pass() {
     assert!(result.success);
 }
 
+/// Sensor PropertyとIO contextの組み合わせを許可することを確認する。
+/// @hldocs.ref doc-20260504-000403Z-SV0Q#sec_c1b9e4t7
 #[test]
 fn validator_property_015_sensor_property_with_io_context_should_pass() {
     let model = model_with_module_property(Property::from_typed_value(
@@ -314,6 +342,8 @@ fn validator_property_015_sensor_property_with_io_context_should_pass() {
     assert!(result.success);
 }
 
+/// Geometry PropertyとRendering contextの組み合わせを許可することを確認する。
+/// @hldocs.ref doc-20260504-000403Z-SV0Q#sec_c1b9e4t7
 #[test]
 fn validator_property_016_geometry_property_with_rendering_context_should_pass() {
     let model = model_with_module_property(Property::from_typed_value(
@@ -329,6 +359,8 @@ fn validator_property_016_geometry_property_with_rendering_context_should_pass()
     assert!(result.success);
 }
 
+/// Constraint PropertyとExecution contextの不整合を検出することを確認する。
+/// @hldocs.ref doc-20260504-000403Z-SV0Q#sec_c1b9e4t7
 #[test]
 fn validator_property_017_constraint_property_with_execution_context_should_fail() {
     let model = model_with_module_property(Property::from_typed_value(
@@ -344,6 +376,8 @@ fn validator_property_017_constraint_property_with_execution_context_should_fail
     assert!(!result.success);
 }
 
+/// Metadata PropertyとSimulation contextの不整合を検出することを確認する。
+/// @hldocs.ref doc-20260504-000403Z-SV0Q#sec_c1b9e4t7
 #[test]
 fn validator_property_018_metadata_property_with_simulation_context_should_fail() {
     let model = model_with_module_property(Property::from_typed_value(
@@ -359,6 +393,8 @@ fn validator_property_018_metadata_property_with_simulation_context_should_fail(
     assert!(!result.success);
 }
 
+/// Actuator PropertyとExecution contextの組み合わせを許可することを確認する。
+/// @hldocs.ref doc-20260504-000403Z-SV0Q#sec_c1b9e4t7
 #[test]
 fn validator_property_019_actuator_property_with_execution_context_should_pass() {
     let model = model_with_module_property(Property::from_typed_value(
@@ -374,6 +410,8 @@ fn validator_property_019_actuator_property_with_execution_context_should_pass()
     assert!(result.success);
 }
 
+/// Actuator PropertyとDescription contextの不整合を検出することを確認する。
+/// @hldocs.ref doc-20260504-000403Z-SV0Q#sec_c1b9e4t7
 #[test]
 fn validator_property_020_actuator_property_with_description_context_should_fail() {
     let model = model_with_module_property(Property::from_typed_value(
