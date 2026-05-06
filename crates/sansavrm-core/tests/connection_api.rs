@@ -38,6 +38,8 @@ fn base_model() -> Model {
     model
 }
 
+/// Connectionを追加できることを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_m6l4p9c2
 #[test]
 fn core_conn_api_001_connect_should_add_connection() {
     let model = base_model();
@@ -54,6 +56,8 @@ fn core_conn_api_001_connect_should_add_connection() {
     assert!(model.connections[0].enabled);
 }
 
+/// 存在しない接続元IDではConnectionを追加できないことを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_m6l4p9c2
 #[test]
 fn core_conn_api_002_connect_unknown_from_id_should_fail() {
     let model = base_model();
@@ -64,6 +68,8 @@ fn core_conn_api_002_connect_unknown_from_id_should_fail() {
     assert_eq!(result.errors.len(), 1);
 }
 
+/// Connectionを無効化できることを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_s1r9u4h7
 #[test]
 fn core_conn_api_003_disable_connection_should_set_enabled_false() {
     let model = base_model();
@@ -79,6 +85,8 @@ fn core_conn_api_003_disable_connection_should_set_enabled_false() {
     assert!(!model.connections[0].enabled);
 }
 
+/// Connectionを有効化できることを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_s1r9u4h7
 #[test]
 fn core_conn_api_004_enable_connection_should_set_enabled_true() {
     let model = base_model();
@@ -97,6 +105,8 @@ fn core_conn_api_004_enable_connection_should_set_enabled_true() {
     assert!(model.connections[0].enabled);
 }
 
+/// Connectionを削除できることを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_m6l4p9c2
 #[test]
 fn core_conn_api_005_disconnect_should_remove_connection() {
     let model = base_model();
@@ -112,6 +122,8 @@ fn core_conn_api_005_disconnect_should_remove_connection() {
     assert!(model.connections.is_empty());
 }
 
+/// Connection一覧を取得できることを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_m6l4p9c2
 #[test]
 fn core_conn_api_006_list_connections_should_return_connections() {
     let model = base_model();
