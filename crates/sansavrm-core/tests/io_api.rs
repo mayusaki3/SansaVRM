@@ -5,6 +5,8 @@ use sansavrm_core::{
     import_vrm, IoOptions, Model, VrmVersion,
 };
 
+/// glTF importが未実装であることを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_r2q8t5g6
 #[test]
 fn core_io_api_001_import_gltf_returns_not_implemented() {
     let result = import_gltf("{}".into());
@@ -13,6 +15,8 @@ fn core_io_api_001_import_gltf_returns_not_implemented() {
     assert_eq!(result.errors.len(), 1);
 }
 
+/// glTF exportが未実装であることを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_r2q8t5g6
 #[test]
 fn core_io_api_002_export_gltf_returns_not_implemented() {
     let model = Model::new();
@@ -23,6 +27,8 @@ fn core_io_api_002_export_gltf_returns_not_implemented() {
     assert_eq!(result.errors.len(), 1);
 }
 
+/// VRM importが未実装であることを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_r2q8t5g6
 #[test]
 fn core_io_api_003_import_vrm_returns_not_implemented() {
     let result = import_vrm("{}".into());
@@ -31,6 +37,8 @@ fn core_io_api_003_import_vrm_returns_not_implemented() {
     assert_eq!(result.errors.len(), 1);
 }
 
+/// VRM1 exportが未実装であることを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_r2q8t5g6
 #[test]
 fn core_io_api_004_export_vrm_1_0_returns_not_implemented() {
     let model = Model::new();
@@ -41,6 +49,8 @@ fn core_io_api_004_export_vrm_1_0_returns_not_implemented() {
     assert_eq!(result.errors.len(), 1);
 }
 
+/// VRM0 exportが未実装であることを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_r2q8t5g6
 #[test]
 fn core_io_api_005_export_vrm_0x_returns_not_implemented() {
     let model = Model::new();
@@ -51,6 +61,8 @@ fn core_io_api_005_export_vrm_0x_returns_not_implemented() {
     assert_eq!(result.errors.len(), 1);
 }
 
+/// URDF importが未実装であることを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_r2q8t5g6
 #[test]
 fn core_io_api_006_import_urdf_returns_not_implemented() {
     let result = import_urdf("<robot />".into());
@@ -59,6 +71,8 @@ fn core_io_api_006_import_urdf_returns_not_implemented() {
     assert_eq!(result.errors.len(), 1);
 }
 
+/// URDF exportが未実装であることを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_r2q8t5g6
 #[test]
 fn core_io_api_007_export_urdf_returns_not_implemented() {
     let model = Model::new();
@@ -69,6 +83,8 @@ fn core_io_api_007_export_urdf_returns_not_implemented() {
     assert_eq!(result.errors.len(), 1);
 }
 
+/// MuJoCo importが未実装であることを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_r2q8t5g6
 #[test]
 fn core_io_api_008_import_mujoco_returns_not_implemented() {
     let result = import_mujoco("<mujoco />".into());
@@ -77,6 +93,8 @@ fn core_io_api_008_import_mujoco_returns_not_implemented() {
     assert_eq!(result.errors.len(), 1);
 }
 
+/// MuJoCo exportが未実装であることを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_r2q8t5g6
 #[test]
 fn core_io_api_009_export_mujoco_returns_not_implemented() {
     let model = Model::new();
