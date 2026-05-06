@@ -1,6 +1,8 @@
 use sansavrm_core::{Model, Module, ModuleType};
 use sansavrm_gltf::{export_gltf, import_gltf};
 
+/// 最小glTFをimportしてModelへ変換できることを検証する。
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_v8u6x1l0
 #[test]
 fn gltf_adapter_001_import_minimal_gltf_should_create_model() {
     let document = r#"
@@ -25,6 +27,8 @@ fn gltf_adapter_001_import_minimal_gltf_should_create_model() {
     assert_eq!(model.modules[1].module_id, "Arm");
 }
 
+/// ModelをglTF JSONへexportできることを検証する。
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_v8u6x1l0
 #[test]
 fn gltf_adapter_002_export_model_should_create_gltf_json() {
     let mut model = Model::new();
@@ -53,6 +57,8 @@ fn gltf_adapter_002_export_model_should_create_gltf_json() {
     assert!(document.contains("\"name\": \"Arm\""));
 }
 
+/// 不正JSONのglTF importが失敗することを検証する。
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_v8u6x1l0
 #[test]
 fn gltf_adapter_003_import_invalid_json_should_fail() {
     let result = import_gltf("{ invalid json".into());
@@ -61,6 +67,8 @@ fn gltf_adapter_003_import_invalid_json_should_fail() {
     assert_eq!(result.errors.len(), 1);
 }
 
+/// asset欠落glTFのimportが失敗することを検証する。
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_v8u6x1l0
 #[test]
 fn gltf_adapter_004_import_without_asset_should_fail() {
     let result = import_gltf(r#"{ "nodes": [] }"#.into());
@@ -69,6 +77,8 @@ fn gltf_adapter_004_import_without_asset_should_fail() {
     assert_eq!(result.errors.len(), 1);
 }
 
+/// 空Modelを空nodesのglTFへexportできることを検証する。
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_v8u6x1l0
 #[test]
 fn gltf_adapter_005_export_empty_model_should_create_empty_nodes() {
     let model = Model::new();
