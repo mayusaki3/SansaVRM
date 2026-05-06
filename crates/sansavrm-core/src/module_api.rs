@@ -10,7 +10,14 @@ use crate::{CoreResult, Model, Module, SansaVrmError};
 /// 注意点:
 /// - module_id は Model 内で一意である必要がある。
 ///
-/// TODO(trace): CoreAPI仕様 / add_module
+/// 引数:
+/// - model: 更新対象Model。
+/// - module: 追加するModule。
+///
+/// 戻り値:
+/// - CoreResult<Model>: 更新後Model、または重複IDエラー。
+///
+/// @hldocs.ref doc-20260504-000206Z-SV0G#sec_l7k3n0b1
 pub fn add_module(mut model: Model, module: Module) -> CoreResult<Model> {
     if model
         .modules
@@ -33,7 +40,15 @@ pub fn add_module(mut model: Model, module: Module) -> CoreResult<Model> {
 /// - patch は初期実装では部分更新ではなく全体差し替えとする。
 /// - 差し替え後も module_id は維持する。
 ///
-/// TODO(trace): CoreAPI仕様 / update_module
+/// 引数:
+/// - model: 更新対象Model。
+/// - module_id: 更新対象Module ID。
+/// - patch: 差し替え後Module。
+///
+/// 戻り値:
+/// - CoreResult<Model>: 更新後Model、またはID未検出エラー。
+///
+/// @hldocs.ref doc-20260504-000206Z-SV0G#sec_a1b2c3d6
 pub fn update_module(
     mut model: Model,
     module_id: impl AsRef<str>,
@@ -63,7 +78,14 @@ pub fn update_module(
 /// - 初期実装では参照が存在する場合は削除を拒否する。
 /// - cascading delete は後続実装で追加する。
 ///
-/// TODO(trace): CoreAPI仕様 / remove_module
+/// 引数:
+/// - model: 更新対象Model。
+/// - module_id: 削除対象Module ID。
+///
+/// 戻り値:
+/// - CoreResult<Model>: 更新後Model、または入力エラー。
+///
+/// @hldocs.ref doc-20260504-000206Z-SV0G#sec_a1b2c3d5
 pub fn remove_module(mut model: Model, module_id: impl AsRef<str>) -> CoreResult<Model> {
     let module_id = module_id.as_ref();
 
