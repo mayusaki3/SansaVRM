@@ -31,6 +31,8 @@ fn base_model() -> Model {
     result.data.expect("model should be returned")
 }
 
+/// Slotを追加できることを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_a3z1c6r5
 #[test]
 fn core_slot_api_001_add_slot_should_add_slot() {
     let model = base_model();
@@ -45,6 +47,8 @@ fn core_slot_api_001_add_slot_should_add_slot() {
     assert_eq!(model.modules[0].slots, vec!["slot_001"]);
 }
 
+/// 重複Slot IDを追加できないことを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_a3z1c6r5
 #[test]
 fn core_slot_api_002_add_duplicate_slot_should_fail() {
     let model = base_model();
@@ -58,6 +62,8 @@ fn core_slot_api_002_add_duplicate_slot_should_fail() {
     assert_eq!(result.errors.len(), 1);
 }
 
+/// 存在しないowner ModuleへSlotを追加できないことを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_a3z1c6r5
 #[test]
 fn core_slot_api_003_add_slot_unknown_owner_should_fail() {
     let model = base_model();
@@ -68,6 +74,8 @@ fn core_slot_api_003_add_slot_unknown_owner_should_fail() {
     assert_eq!(result.errors.len(), 1);
 }
 
+/// Slotを更新でき、既存slot_idを維持することを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_a3z1c6r5
 #[test]
 fn core_slot_api_004_update_slot_should_replace_slot() {
     let model = base_model();
@@ -88,6 +96,8 @@ fn core_slot_api_004_update_slot_should_replace_slot() {
     assert_eq!(model.slots[0].slot_type, SlotType::Equipment);
 }
 
+/// Slotを削除できることを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_a3z1c6r5
 #[test]
 fn core_slot_api_005_remove_slot_should_remove_slot() {
     let model = base_model();
@@ -104,6 +114,8 @@ fn core_slot_api_005_remove_slot_should_remove_slot() {
     assert!(model.modules[0].slots.is_empty());
 }
 
+/// 参照中のSlotを削除できないことを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_a3z1c6r5
 #[test]
 fn core_slot_api_006_remove_referenced_slot_should_fail() {
     let model = base_model();
