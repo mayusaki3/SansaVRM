@@ -58,6 +58,8 @@ fn connection_disable_state(state_id: &str, connection_id: &str, enabled: bool) 
     }
 }
 
+/// Stateを追加できることを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_n5m5q8d3
 #[test]
 fn core_state_api_001_add_state_should_add_state() {
     let model = base_model();
@@ -71,6 +73,8 @@ fn core_state_api_001_add_state_should_add_state() {
     assert_eq!(model.states.len(), 1);
 }
 
+/// 重複State IDを追加できないことを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_n5m5q8d3
 #[test]
 fn core_state_api_002_add_duplicate_state_should_fail() {
     let model = base_model();
@@ -85,6 +89,8 @@ fn core_state_api_002_add_duplicate_state_should_fail() {
     assert_eq!(result.errors.len(), 1);
 }
 
+/// Stateを削除できることを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_n5m5q8d3
 #[test]
 fn core_state_api_003_remove_state_should_remove_state() {
     let model = base_model();
@@ -101,6 +107,8 @@ fn core_state_api_003_remove_state_should_remove_state() {
     assert!(model.states.is_empty());
 }
 
+/// 有効なStateのみを評価結果として返すことを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_t0s8v3j8
 #[test]
 fn core_state_api_004_evaluate_state_should_return_enabled_states() {
     let model = base_model();
@@ -126,6 +134,8 @@ fn core_state_api_004_evaluate_state_should_return_enabled_states() {
     assert_eq!(states[0].state_id, "state_001");
 }
 
+/// State適用でConnectionを無効化できることを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_n5m5q8d3
 #[test]
 fn core_state_api_005_apply_state_should_disable_connection() {
     let model = base_model();
@@ -144,6 +154,8 @@ fn core_state_api_005_apply_state_should_disable_connection() {
     assert!(!model.connections[0].enabled);
 }
 
+/// 存在しないStateを適用できないことを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_n5m5q8d3
 #[test]
 fn core_state_api_006_apply_unknown_state_should_fail() {
     let model = base_model();
@@ -154,6 +166,9 @@ fn core_state_api_006_apply_unknown_state_should_fail() {
     assert_eq!(result.errors.len(), 1);
 }
 
+/// Model評価結果にactive_states/applied_actions/connection_statusが含まれることを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_t0s8v3j8
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_u9t7w2k9
 #[test]
 fn core_state_api_007_evaluate_should_return_evaluation_result() {
     let model = base_model();
