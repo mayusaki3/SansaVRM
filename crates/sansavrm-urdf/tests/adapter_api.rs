@@ -5,6 +5,8 @@ use sansavrm_urdf::{
     classify_urdf_property, export_urdf, import_urdf, UrdfPropertyTarget,
 };
 
+/// 最小URDFをimportしてModelへ変換できることを検証する。
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_x6w4z9n2
 #[test]
 fn urdf_adapter_001_import_minimal_urdf_should_create_model() {
     let document = r#"
@@ -25,6 +27,8 @@ fn urdf_adapter_001_import_minimal_urdf_should_create_model() {
     assert_eq!(model.modules[1].module_id, "arm_link");
 }
 
+/// ModelをURDF XMLへexportできることを検証する。
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_x6w4z9n2
 #[test]
 fn urdf_adapter_002_export_model_should_create_urdf_xml() {
     let mut model = Model::with_id("test_robot");
@@ -53,6 +57,8 @@ fn urdf_adapter_002_export_model_should_create_urdf_xml() {
     assert!(document.contains(r#"<link name="arm_link"/>"#));
 }
 
+/// 不正XMLのURDF importが失敗することを検証する。
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_x6w4z9n2
 #[test]
 fn urdf_adapter_003_import_invalid_xml_should_fail() {
     let result = import_urdf("<robot>".into());
@@ -61,6 +67,8 @@ fn urdf_adapter_003_import_invalid_xml_should_fail() {
     assert_eq!(result.errors.len(), 1);
 }
 
+/// name欠落URDF import時にmodel_idを生成することを検証する。
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_x6w4z9n2
 #[test]
 fn urdf_adapter_004_import_without_name_should_generate_model_id() {
     let document = r#"
@@ -78,6 +86,8 @@ fn urdf_adapter_004_import_without_name_should_generate_model_id() {
     assert_eq!(model.modules.len(), 1);
 }
 
+/// 空Modelを空URDF robotへexportできることを検証する。
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_x6w4z9n2
 #[test]
 fn urdf_adapter_005_export_empty_model_should_create_empty_robot() {
     let model = Model::with_id("empty_robot");
@@ -91,6 +101,8 @@ fn urdf_adapter_005_export_empty_model_should_create_empty_robot() {
     assert!(document.contains("</robot>"));
 }
 
+/// PhysicsプロパティがInertialへ分類されることを検証する。
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_x6w4z9n2
 #[test]
 fn urdf_adapter_006_physics_property_should_map_to_inertial() {
     let property = Property::from_typed_value(
@@ -106,6 +118,8 @@ fn urdf_adapter_006_physics_property_should_map_to_inertial() {
     assert_eq!(target, UrdfPropertyTarget::Inertial);
 }
 
+/// Rendering GeometryプロパティがVisualへ分類されることを検証する。
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_x6w4z9n2
 #[test]
 fn urdf_adapter_007_geometry_rendering_property_should_map_to_visual() {
     let property = Property::from_typed_value(
@@ -121,6 +135,8 @@ fn urdf_adapter_007_geometry_rendering_property_should_map_to_visual() {
     assert_eq!(target, UrdfPropertyTarget::Visual);
 }
 
+/// Simulation GeometryプロパティがCollisionへ分類されることを検証する。
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_x6w4z9n2
 #[test]
 fn urdf_adapter_008_geometry_simulation_property_should_map_to_collision() {
     let property = Property::from_typed_value(
@@ -136,6 +152,8 @@ fn urdf_adapter_008_geometry_simulation_property_should_map_to_collision() {
     assert_eq!(target, UrdfPropertyTarget::Collision);
 }
 
+/// Metadataプロパティが無視されることを検証する。
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_x6w4z9n2
 #[test]
 fn urdf_adapter_009_metadata_property_should_ignore() {
     let property = Property::from_typed_value(
