@@ -1,8 +1,6 @@
 // crates/sansavrm-core/tests/transaction_api.rs
 
-use sansavrm_core::{
-    add_module, begin, commit, rollback, Model, Module, ModuleType,
-};
+use sansavrm_core::{add_module, begin, commit, rollback, Model, Module, ModuleType};
 
 fn module(module_id: &str) -> Module {
     Module {
@@ -13,6 +11,8 @@ fn module(module_id: &str) -> Module {
     }
 }
 
+/// Transactionを開始できることを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_p4n6r7e4
 #[test]
 fn core_tx_api_001_begin_should_create_active_transaction() {
     let model = Model::with_id("model_001");
@@ -27,6 +27,8 @@ fn core_tx_api_001_begin_should_create_active_transaction() {
     assert_eq!(transaction.working.model_id, "model_001");
 }
 
+/// Transactionをcommitできることを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_p4n6r7e4
 #[test]
 fn core_tx_api_002_commit_should_return_working_model() {
     let model = Model::with_id("model_001");
@@ -46,6 +48,8 @@ fn core_tx_api_002_commit_should_return_working_model() {
     assert_eq!(model.modules[0].module_id, "module_001");
 }
 
+/// Transactionをrollbackできることを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_p4n6r7e4
 #[test]
 fn core_tx_api_003_rollback_should_return_original_model() {
     let model = Model::with_id("model_001");
