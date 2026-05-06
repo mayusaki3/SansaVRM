@@ -54,6 +54,8 @@ fn build_model_with_rule(max_connections: usize, exclusive: bool) -> Model {
     model
 }
 
+/// ConnectionRuleの最大接続数内であれば成功することを検証する。
+/// @hldocs.ref doc-20260504-000403Z-SV0Q#sec_d0c8f3u8
 #[test]
 fn validator_connrule_001_connection_within_max_should_pass() {
     let mut model = build_model_with_rule(1, false);
@@ -71,6 +73,8 @@ fn validator_connrule_001_connection_within_max_should_pass() {
     assert!(result.success);
 }
 
+/// ConnectionRuleの最大接続数超過を検出することを検証する。
+/// @hldocs.ref doc-20260504-000403Z-SV0Q#sec_d0c8f3u8
 #[test]
 fn validator_connrule_002_max_connections_exceeded_should_fail() {
     let mut model = build_model_with_rule(1, false);
@@ -97,6 +101,8 @@ fn validator_connrule_002_max_connections_exceeded_should_fail() {
     assert_eq!(result.errors.len(), 1);
 }
 
+/// exclusive指定Slotへの複数接続を検出することを検証する。
+/// @hldocs.ref doc-20260504-000403Z-SV0Q#sec_d0c8f3u8
 #[test]
 fn validator_connrule_003_exclusive_multiple_connections_should_fail() {
     let mut model = build_model_with_rule(10, true);
