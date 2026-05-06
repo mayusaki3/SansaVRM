@@ -10,8 +10,7 @@ use crate::{CoreResult, Model, Property, SansaVrmError};
 /// - owner_id が Slot ID の場合は Slot 配下へ Property を追加する。
 ///
 /// 注意点:
-/// - property_id の重複検証は Validator 側でも行う。
-/// - 本APIでは同一 owner 内の重複を即時エラーにする。
+/// - property_id は Model 全体で一意とする。
 ///
 /// 引数:
 /// - model: 更新対象 Model。
@@ -29,19 +28,17 @@ pub fn add_property(
 ) -> CoreResult<Model> {
     let owner_id = owner_id.as_ref();
 
+    if property_exists_in_model(&model, &property.property_id) {
+        return duplicate_property_result(&property.property_id);
+    }
+
     if model.model_id == owner_id {
-        if has_property(&model.properties, &property.property_id) {
-            return duplicate_property_result(&property.property_id);
-        }
         model.properties.push(property);
         return CoreResult::ok(model);
     }
 
     for module in &mut model.modules {
         if module.module_id == owner_id {
-            if has_property(&module.properties, &property.property_id) {
-                return duplicate_property_result(&property.property_id);
-            }
             module.properties.push(property);
             return CoreResult::ok(model);
         }
@@ -49,9 +46,6 @@ pub fn add_property(
 
     for slot in &mut model.slots {
         if slot.slot_id == owner_id {
-            if has_property(&slot.properties, &property.property_id) {
-                return duplicate_property_result(&property.property_id);
-            }
             slot.properties.push(property);
             return CoreResult::ok(model);
         }
@@ -66,11 +60,11 @@ pub fn add_property(
 /// Property を更新する。
 ///
 /// 役割:
-/// - property_id に一致する Property を置換する。
+/// - property_id に一致する Property の内容を置換する。
 ///
 /// 注意点:
 /// - owner の移動は行わない。
-/// - replacement.property_id は property_id と一致している必要がある。
+/// - replacement.property_id は無視し、既存 property_id を維持する。
 ///
 /// 引数:
 /// - model: 更新対象 Model。
@@ -84,16 +78,10 @@ pub fn add_property(
 pub fn update_property(
     mut model: Model,
     property_id: impl AsRef<str>,
-    replacement: Property,
+    mut replacement: Property,
 ) -> CoreResult<Model> {
     let property_id = property_id.as_ref();
-
-    if replacement.property_id != property_id {
-        return CoreResult::fail(SansaVrmError::InvalidInput(format!(
-            "Replacement property_id does not match target: {}",
-            property_id
-        )));
-    }
+    replacement.property_id = property_id.to_string();
 
     if replace_property(&mut model.properties, property_id, &replacement) {
         return CoreResult::ok(model);
@@ -191,6 +179,19 @@ pub fn list_properties(model: &Model, owner_id: impl AsRef<str>) -> CoreResult<V
         "Property owner not found: {}",
         owner_id
     )))
+}
+
+/// Property ID が Model 全体に存在するか判定する。
+fn property_exists_in_model(model: &Model, property_id: &str) -> bool {
+    has_property(&model.properties, property_id)
+        || model
+            .modules
+            .iter()
+            .any(|module| has_property(&module.properties, property_id))
+        || model
+            .slots
+            .iter()
+            .any(|slot| has_property(&slot.properties, property_id))
 }
 
 /// Property ID が一覧内に存在するか判定する。
