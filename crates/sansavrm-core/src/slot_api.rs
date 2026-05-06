@@ -12,7 +12,14 @@ use crate::{CoreResult, Model, SansaVrmError, Slot};
 /// - slot_id は Model 内で一意である必要がある。
 /// - owner_module_id は既存 Module を参照する必要がある。
 ///
-/// TODO(trace): CoreAPI仕様 / add_slot
+/// 引数:
+/// - model: 更新対象Model。
+/// - slot: 追加するSlot。
+///
+/// 戻り値:
+/// - CoreResult<Model>: 更新後Model、または入力エラー。
+///
+/// @hldocs.ref doc-20260504-000206Z-SV0G#sec_a1b2c3d7
 pub fn add_slot(mut model: Model, slot: Slot) -> CoreResult<Model> {
     if model
         .slots
@@ -48,7 +55,15 @@ pub fn add_slot(mut model: Model, slot: Slot) -> CoreResult<Model> {
 /// - 差し替え後も slot_id は維持する。
 /// - owner_module_id は既存 Module を参照する必要がある。
 ///
-/// TODO(trace): CoreAPI仕様 / update_slot
+/// 引数:
+/// - model: 更新対象Model。
+/// - slot_id: 更新対象Slot ID。
+/// - patch: 差し替え後Slot。
+///
+/// 戻り値:
+/// - CoreResult<Model>: 更新後Model、または入力エラー。
+///
+/// @hldocs.ref doc-20260504-000206Z-SV0G#sec_a1b2c3d9
 pub fn update_slot(
     mut model: Model,
     slot_id: impl AsRef<str>,
@@ -111,7 +126,14 @@ pub fn update_slot(
 /// - 初期実装では Connection / StateAction から参照されている Slot は削除を拒否する。
 /// - cascading delete は後続実装で追加する。
 ///
-/// TODO(trace): CoreAPI仕様 / remove_slot
+/// 引数:
+/// - model: 更新対象Model。
+/// - slot_id: 削除対象Slot ID。
+///
+/// 戻り値:
+/// - CoreResult<Model>: 更新後Model、または入力エラー。
+///
+/// @hldocs.ref doc-20260504-000206Z-SV0G#sec_a1b2c3d8
 pub fn remove_slot(mut model: Model, slot_id: impl AsRef<str>) -> CoreResult<Model> {
     let slot_id = slot_id.as_ref();
 
