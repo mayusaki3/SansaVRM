@@ -4,6 +4,8 @@ use sansavrm_core::{
 };
 use sansavrm_vrm::{export_vrm, import_vrm};
 
+/// VRM1 importでModelとmetaを復元できることを検証する。
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_y5x3a8p3
 #[test]
 fn vrm1_tc_001_import_minimal_should_create_model() {
     let document = r#"
@@ -81,6 +83,8 @@ fn vrm1_tc_001_import_minimal_should_create_model() {
             }));
 }
 
+/// VRM1 exportでglTF JSONとVRMC_vrm拡張を生成できることを検証する。
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_y5x3a8p3
 #[test]
 fn vrm1_tc_002_export_should_create_gltf_json() {
     let mut model = Model::new();
@@ -114,6 +118,8 @@ fn vrm1_tc_002_export_should_create_gltf_json() {
     assert!(document.contains("\"name\": \"Exported VRM\""));
 }
 
+/// VRM1 humanoid importでhuman bonesをProperty化できることを検証する。
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_y5x3a8p3
 #[test]
 fn vrm1_tc_003_import_humanoid_should_create_properties() {
     let document = r#"
@@ -155,6 +161,8 @@ fn vrm1_tc_003_import_humanoid_should_create_properties() {
     }));
 }
 
+/// VRM1 humanoid exportでhumanBonesオブジェクトを生成できることを検証する。
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_y5x3a8p3
 #[test]
 fn vrm1_tc_004_export_humanoid_should_create_human_bones() {
     let mut model = Model::new();
@@ -193,6 +201,8 @@ fn vrm1_tc_004_export_humanoid_should_create_human_bones() {
     assert!(document.contains("\"node\": 1"));
 }
 
+/// VRM1 importで未知boneを無視できることを検証する。
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_y5x3a8p3
 #[test]
 fn vrm1_tc_005_import_ignore_unknown_bone() {
     let document = r#"
@@ -242,6 +252,8 @@ fn vrm1_tc_005_import_ignore_unknown_bone() {
     }));
 }
 
+/// VRM1 exportで未知boneを無視できることを検証する。
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_y5x3a8p3
 #[test]
 fn vrm1_tc_006_export_ignore_unknown_bone() {
     let mut model = Model::new();
