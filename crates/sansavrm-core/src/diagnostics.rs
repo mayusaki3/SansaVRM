@@ -83,6 +83,7 @@ pub struct DiagnosticItem {
 /// @hldocs.ref doc-20260504-000205Z-SV0F#sec_h1e0f3y8
 /// @hldocs.ref doc-20260504-000205Z-SV0F#sec_j9g1h2z9
 /// @hldocs.ref doc-20260504-000205Z-SV0F#sec_n4s1u6v0
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ValidationDiagnostic {
     pub code: DiagnosticCode,
     pub severity: DiagnosticSeverity,
