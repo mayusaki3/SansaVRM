@@ -38,6 +38,8 @@ fn metadata_property(property_id: &str, key: &str, value: &str) -> Property {
     )
 }
 
+/// ModuleへPropertyを追加できることを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_q3p7s6f5
 #[test]
 fn core_property_api_001_add_property_to_module_should_pass() {
     let model = base_model();
@@ -52,6 +54,8 @@ fn core_property_api_001_add_property_to_module_should_pass() {
     assert_eq!(model.modules[0].properties[0].property_id, "property_001");
 }
 
+/// SlotへPropertyを追加できることを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_q3p7s6f5
 #[test]
 fn core_property_api_002_add_property_to_slot_should_pass() {
     let model = base_model();
@@ -66,6 +70,8 @@ fn core_property_api_002_add_property_to_slot_should_pass() {
     assert_eq!(model.slots[0].properties[0].property_id, "property_001");
 }
 
+/// 存在しないownerへPropertyを追加できないことを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_q3p7s6f5
 #[test]
 fn core_property_api_003_add_property_unknown_owner_should_fail() {
     let model = base_model();
@@ -77,6 +83,8 @@ fn core_property_api_003_add_property_unknown_owner_should_fail() {
     assert_eq!(result.errors.len(), 1);
 }
 
+/// property_idがModel全体で一意であることを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_q3p7s6f5
 #[test]
 fn core_property_api_004_add_duplicate_property_id_should_fail() {
     let model = base_model();
@@ -98,6 +106,8 @@ fn core_property_api_004_add_duplicate_property_id_should_fail() {
     assert_eq!(result.errors.len(), 1);
 }
 
+/// Propertyを更新でき、既存property_idを維持することを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_q3p7s6f5
 #[test]
 fn core_property_api_005_update_property_should_replace_value() {
     let model = base_model();
@@ -125,6 +135,8 @@ fn core_property_api_005_update_property_should_replace_value() {
     );
 }
 
+/// Propertyを削除できることを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_q3p7s6f5
 #[test]
 fn core_property_api_006_remove_property_should_remove_property() {
     let model = base_model();
@@ -144,6 +156,8 @@ fn core_property_api_006_remove_property_should_remove_property() {
     assert!(model.modules[0].properties.is_empty());
 }
 
+/// owner_idに対応するProperty一覧を取得できることを検証する。
+/// @hldocs.ref doc-20260504-000404Z-SV0R#sec_q3p7s6f5
 #[test]
 fn core_property_api_007_list_properties_should_return_owner_properties() {
     let model = base_model();
