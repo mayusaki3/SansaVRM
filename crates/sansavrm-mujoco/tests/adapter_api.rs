@@ -5,6 +5,8 @@ use sansavrm_mujoco::{
     classify_mujoco_property, export_mujoco, import_mujoco, MujocoPropertyTarget,
 };
 
+/// Mujoco importが未実装であることを検証する。
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_w7v5y0m1
 #[test]
 fn mujoco_adapter_001_import_returns_not_implemented() {
     let result = import_mujoco("<mujoco />".into());
@@ -12,6 +14,8 @@ fn mujoco_adapter_001_import_returns_not_implemented() {
     assert!(!result.success);
 }
 
+/// Joint接続モデルがMJCFへexportできることを検証する。
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_w7v5y0m1
 #[test]
 fn mujoco_adapter_002_export_joint_model_should_create_mjcf() {
     let mut model = Model::with_id("test_model");
@@ -29,11 +33,13 @@ fn mujoco_adapter_002_export_joint_model_should_create_mjcf() {
     assert!(result.success);
 
     let document = result.data.expect("document should be returned");
-    assert!(document.contains(r#"<mujoco model="test_model">"#));
+    assert!(document.contains(r#"<mujoco model=\"test_model\">"#));
     assert!(document.contains(r#"<worldbody>"#));
-    assert!(document.contains(r#"<joint name="joint_001"/>"#));
+    assert!(document.contains(r#"<joint name=\"joint_001\"/>"#));
 }
 
+/// 非Joint接続モデルのexportが失敗することを検証する。
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_w7v5y0m1
 #[test]
 fn mujoco_adapter_003_export_non_joint_model_should_fail_before_export() {
     let mut model = Model::new();
@@ -52,6 +58,8 @@ fn mujoco_adapter_003_export_non_joint_model_should_fail_before_export() {
     assert_eq!(result.errors.len(), 1);
 }
 
+/// 空モデルがMJCFへexportできることを検証する。
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_w7v5y0m1
 #[test]
 fn mujoco_adapter_004_export_empty_model_should_create_empty_mjcf() {
     let model = Model::with_id("empty_model");
@@ -61,11 +69,13 @@ fn mujoco_adapter_004_export_empty_model_should_create_empty_mjcf() {
     assert!(result.success);
 
     let document = result.data.expect("document should be returned");
-    assert!(document.contains(r#"<mujoco model="empty_model">"#));
+    assert!(document.contains(r#"<mujoco model=\"empty_model\">"#));
     assert!(document.contains(r#"<worldbody>"#));
     assert!(document.contains(r#"</mujoco>"#));
 }
 
+/// PhysicsプロパティがGeomへ分類されることを検証する。
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_w7v5y0m1
 #[test]
 fn mujoco_adapter_005_physics_property_should_map_to_geom() {
     let property = Property::from_typed_value(
@@ -81,6 +91,8 @@ fn mujoco_adapter_005_physics_property_should_map_to_geom() {
     assert_eq!(target, MujocoPropertyTarget::Geom);
 }
 
+/// ActuatorプロパティがActuatorへ分類されることを検証する。
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_w7v5y0m1
 #[test]
 fn mujoco_adapter_006_actuator_property_should_map_to_actuator() {
     let property = Property::from_typed_value(
@@ -96,6 +108,8 @@ fn mujoco_adapter_006_actuator_property_should_map_to_actuator() {
     assert_eq!(target, MujocoPropertyTarget::Actuator);
 }
 
+/// SensorプロパティがSensorへ分類されることを検証する。
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_w7v5y0m1
 #[test]
 fn mujoco_adapter_007_sensor_property_should_map_to_sensor() {
     let property = Property::from_typed_value(
@@ -111,6 +125,8 @@ fn mujoco_adapter_007_sensor_property_should_map_to_sensor() {
     assert_eq!(target, MujocoPropertyTarget::Sensor);
 }
 
+/// Metadataプロパティが無視されることを検証する。
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_w7v5y0m1
 #[test]
 fn mujoco_adapter_008_metadata_property_should_ignore() {
     let property = Property::from_typed_value(
