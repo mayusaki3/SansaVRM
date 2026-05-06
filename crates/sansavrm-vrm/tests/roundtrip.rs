@@ -1,9 +1,11 @@
 // crates/sansavrm-vrm/tests/roundtrip.rs
 
 use sansavrm_core::{IoOptions, VrmVersion};
-use sansavrm_vrm::{export_vrm, import_vrm};
 use sansavrm_test_utils::json::normalize_json;
+use sansavrm_vrm::{export_vrm, import_vrm};
 
+/// VRM1 import/export/import roundtripでnode構造を保持できることを検証する。
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_z4y2b7q4
 #[test]
 fn vrm_rt_core_tc_001_vrm1_import_export_import_should_keep_nodes() {
     let input = r#"
@@ -55,6 +57,8 @@ fn vrm_rt_core_tc_001_vrm1_import_export_import_should_keep_nodes() {
     assert_eq!(reimported_model.vrm_version, Some(VrmVersion::V1_0));
 }
 
+/// VRM0 import/export/import roundtripでnode構造を保持できることを検証する。
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_z4y2b7q4
 #[test]
 fn vrm_rt_core_tc_002_vrm0_import_export_import_should_keep_nodes() {
     let input = r#"
