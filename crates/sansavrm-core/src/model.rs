@@ -6,8 +6,8 @@ use crate::{DiagnosticItem, Module, Property, SansaId, Slot, State, VrmVersion};
 
 /// Connection 種別。
 ///
-/// TODO(trace): メタモデル仕様 / Connection
-/// TODO(trace): JSONスキーマ仕様 / connections.connection_type
+/// @hldocs.ref doc-20260504-000201Z-SV0A#sec_a8k3m2q1
+/// @hldocs.ref doc-20260504-000204Z-SV0E#sec_a1b2c3f4
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum ConnectionType {
     Attach,
@@ -24,8 +24,8 @@ pub enum ConnectionType {
 /// - `from_id` / `to_id` は Module ID または Slot ID を参照する。
 /// - `current_connections` には `connection_id` を保持する。
 ///
-/// TODO(trace): メタモデル仕様 / Connection
-/// TODO(trace): CoreAPI仕様 / Connection操作API
+/// @hldocs.ref doc-20260504-000201Z-SV0A#sec_a8k3m2q1
+/// @hldocs.ref doc-20260504-000206Z-SV0G#sec_m6l4p9c2
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Connection {
     pub connection_id: String,
@@ -40,7 +40,7 @@ pub struct Connection {
 /// 役割:
 /// - SansaVRM Core のルートモデルを表現する。
 ///
-/// TODO(trace): メタモデル仕様 / Model に対応
+/// @hldocs.ref doc-20260504-000201Z-SV0A#sec_a8k3m2q1
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Model {
     pub model_id: String,
@@ -59,7 +59,7 @@ impl Model {
     /// 戻り値:
     /// - `Model`: 初期化済みの空モデル
     ///
-    /// TODO(trace): CoreAPI仕様 / create_model に対応
+    /// @hldocs.ref doc-20260504-000206Z-SV0G#sec_k8j2m1a0
     pub fn new() -> Self {
         Self {
             model_id: SansaId::new("model").0,
@@ -80,6 +80,8 @@ impl Model {
     ///
     /// 戻り値:
     /// - `Model`
+    ///
+    /// @hldocs.ref doc-20260504-000206Z-SV0G#sec_k8j2m1a0
     pub fn with_id(model_id: impl Into<String>) -> Self {
         Self {
             model_id: model_id.into(),
