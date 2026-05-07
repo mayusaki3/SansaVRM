@@ -1,4 +1,6 @@
 //! SansaVRM glTF adapter.
+//!
+//! @hldocs.ref doc-20260504-000405Z-SV0S#sec_v8u6x1l0
 
 use sansavrm_core::{CoreResult, GltfDocument, Model, Module, ModuleType, SansaVrmError};
 use serde::{Deserialize, Serialize};
@@ -44,7 +46,7 @@ struct GltfRootOut {
 
 /// glTF を SansaVRM Model へ import する。
 ///
-/// TODO(trace): 変換仕様 / glTF Import
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_v8u6x1l0
 pub fn import_gltf(document: GltfDocument) -> CoreResult<Model> {
     let gltf = match serde_json::from_str::<GltfRoot>(&document) {
         Ok(gltf) => gltf,
@@ -82,7 +84,7 @@ pub fn import_gltf(document: GltfDocument) -> CoreResult<Model> {
 
 /// SansaVRM Model を glTF へ export する。
 ///
-/// TODO(trace): 変換仕様 / glTF Export
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_v8u6x1l0
 pub fn export_gltf(model: &Model) -> CoreResult<GltfDocument> {
     let gltf = GltfRootOut {
         asset: GltfAssetOut {
