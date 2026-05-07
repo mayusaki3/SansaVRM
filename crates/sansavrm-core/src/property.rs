@@ -11,7 +11,8 @@ use serde::{Deserialize, Serialize};
 /// - String / Number / Bool を enum として保持する。
 /// - JSON互換形式は別途 serde 方針で定義する。
 ///
-/// TODO(trace): CoreAPI仕様 / Property typed value
+/// @hldocs.ref doc-20260504-000204Z-SV0E#sec_b2a0d5s6
+/// @hldocs.ref doc-20260504-000403Z-SV0Q#sec_b2a0d5s6
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "type", content = "data")]
 pub enum PropertyValue {
@@ -25,6 +26,8 @@ impl PropertyValue {
     ///
     /// 戻り値:
     /// - `String`: PropertyValue の文字列表現
+    ///
+    /// @hldocs.ref doc-20260504-000204Z-SV0E#sec_b2a0d5s6
     pub fn to_legacy_string(&self) -> String {
         match self {
             PropertyValue::String(value) => value.clone(),
@@ -38,6 +41,8 @@ impl PropertyValue {
     /// 戻り値:
     /// - `Some(&str)`: String値の場合
     /// - `None`: Number / Bool の場合
+    ///
+    /// @hldocs.ref doc-20260504-000204Z-SV0E#sec_b2a0d5s6
     pub fn as_string(&self) -> Option<&str> {
         match self {
             PropertyValue::String(value) => Some(value.as_str()),
@@ -62,7 +67,8 @@ impl Property {
     /// 戻り値:
     /// - `Property`: 既存構造互換の Property
     ///
-    /// TODO(trace): CoreAPI仕様 / Property typed value
+    /// @hldocs.ref doc-20260504-000204Z-SV0E#sec_b2a0d5s6
+    /// @hldocs.ref doc-20260504-000206Z-SV0G#sec_q3p7s6f5
     pub fn from_typed_value(
         property_id: impl Into<String>,
         key: impl Into<String>,
@@ -88,8 +94,8 @@ impl Property {
 /// 注意点:
 /// - `property_type -> context -> key` の順で分類判定する。
 ///
-/// TODO(trace): JSONスキーマ仕様 / Property.property_type
-/// TODO(trace): MuJoCo連携仕様 / Property分類ルール
+/// @hldocs.ref doc-20260504-000204Z-SV0E#sec_c1b9e4t7
+/// @hldocs.ref doc-20260504-000203Z-SV0D#sec_c6t5v8s3
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum PropertyType {
     Metadata,
@@ -115,8 +121,8 @@ pub enum PropertyType {
 /// 役割:
 /// - Property がどの用途・文脈で使われるかを表現する。
 ///
-/// TODO(trace): JSONスキーマ仕様 / Property.context
-/// TODO(trace): 物理・制御メタモデル仕様 / Property の処理文脈
+/// @hldocs.ref doc-20260504-000204Z-SV0E#sec_c1b9e4t7
+/// @hldocs.ref doc-20260504-000203Z-SV0D#sec_c6t5v8s3
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum PropertyContext {
     Description,
@@ -139,6 +145,9 @@ pub enum PropertyContext {
 /// 注意:
 /// - value は PropertyValue として型付き値を保持する。
 /// - JSON表現は serde tagged enum 形式を使用する。
+///
+/// @hldocs.ref doc-20260504-000201Z-SV0A#sec_a8k3m2q1
+/// @hldocs.ref doc-20260504-000204Z-SV0E#sec_b2a0d5s6
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Property {
     pub property_id: String,
