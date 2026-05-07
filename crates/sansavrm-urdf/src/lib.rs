@@ -1,6 +1,8 @@
 //! SansaVRM URDF adapter.
 //!
 //! @hldocs.ref doc-20260504-000405Z-SV0S#sec_x6w4z9n2
+//! @hldocs.ref doc-20260504-000405Z-SV0S#sec_x6w4z9n3
+//! @hldocs.ref doc-20260504-000405Z-SV0S#sec_x6w4z9n4
 //! @hldocs.ref doc-20260504-000203Z-SV0D#sec_c6t5v8s3
 
 use quick_xml::de::from_str;
@@ -20,6 +22,8 @@ use sansavrm_core::{
 /// - property_type を優先し、context は補助判定として扱う。
 ///
 /// @hldocs.ref doc-20260504-000405Z-SV0S#sec_x6w4z9n2
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_x6w4z9n3
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_x6w4z9n4
 /// @hldocs.ref doc-20260504-000203Z-SV0D#sec_c6t5v8s3
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum UrdfPropertyTarget {
@@ -68,6 +72,8 @@ struct UrdfLink {
 /// - `Geometry + Simulation` は collision として扱う。
 ///
 /// @hldocs.ref doc-20260504-000405Z-SV0S#sec_x6w4z9n2
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_x6w4z9n3
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_x6w4z9n4
 /// @hldocs.ref doc-20260504-000203Z-SV0D#sec_c6t5v8s3
 pub fn classify_urdf_property(property: &Property) -> UrdfPropertyTarget {
     match property.property_type {
@@ -128,6 +134,8 @@ pub fn import_urdf(document: UrdfDocument) -> CoreResult<Model> {
 /// SansaVRM Model を URDF へ export する。
 ///
 /// @hldocs.ref doc-20260504-000405Z-SV0S#sec_x6w4z9n2
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_x6w4z9n3
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_x6w4z9n4
 pub fn export_urdf(model: &Model) -> CoreResult<UrdfDocument> {
     let mut document = format!(r#"<robot name="{}">"#, model.model_id);
 
