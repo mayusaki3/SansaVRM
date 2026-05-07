@@ -1,4 +1,7 @@
 //! SansaVRM URDF adapter.
+//!
+//! @hldocs.ref doc-20260504-000405Z-SV0S#sec_x6w4z9n2
+//! @hldocs.ref doc-20260504-000203Z-SV0D#sec_c6t5v8s3
 
 use quick_xml::de::from_str;
 use serde::Deserialize;
@@ -15,6 +18,9 @@ use sansavrm_core::{
 /// 注意点:
 /// - この分類は export 前段の判定であり、実際の URDF XML 生成は別処理で行う。
 /// - property_type を優先し、context は補助判定として扱う。
+///
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_x6w4z9n2
+/// @hldocs.ref doc-20260504-000203Z-SV0D#sec_c6t5v8s3
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum UrdfPropertyTarget {
     Inertial,
@@ -60,6 +66,9 @@ struct UrdfLink {
 /// - `Physics + Simulation` は inertial として扱う。
 /// - `Geometry / Material / Texture + Rendering` は visual として扱う。
 /// - `Geometry + Simulation` は collision として扱う。
+///
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_x6w4z9n2
+/// @hldocs.ref doc-20260504-000203Z-SV0D#sec_c6t5v8s3
 pub fn classify_urdf_property(property: &Property) -> UrdfPropertyTarget {
     match property.property_type {
         PropertyType::Physics => match property.context {
@@ -86,7 +95,7 @@ pub fn classify_urdf_property(property: &Property) -> UrdfPropertyTarget {
 
 /// URDF を SansaVRM Model へ import する。
 ///
-/// TODO(trace): 変換仕様 / URDF Import
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_x6w4z9n2
 pub fn import_urdf(document: UrdfDocument) -> CoreResult<Model> {
     let robot = match from_str::<UrdfRobot>(&document) {
         Ok(robot) => robot,
@@ -118,7 +127,7 @@ pub fn import_urdf(document: UrdfDocument) -> CoreResult<Model> {
 
 /// SansaVRM Model を URDF へ export する。
 ///
-/// TODO(trace): 変換仕様 / URDF Export
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_x6w4z9n2
 pub fn export_urdf(model: &Model) -> CoreResult<UrdfDocument> {
     let mut document = format!(r#"<robot name="{}">"#, model.model_id);
 
