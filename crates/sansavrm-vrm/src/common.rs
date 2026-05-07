@@ -4,16 +4,15 @@ use sansavrm_core::{
 use serde_json::Value;
 
 /// SansaVRM: VRM humanoid humanBones Property key prefix.
-/// TODO(trace): 変換仕様 / VRM Humanoid Property
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_y5x3a8p3
 pub(crate) const VRM_HUMANOID_BONE_PREFIX: &str = "vrm.humanoid.human_bones.";
 
-
 /// SansaVRM: VRM humanoid humanBones Property key suffix.
-/// TODO(trace): 変換仕様 / VRM Humanoid Property
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_y5x3a8p3
 pub(crate) const VRM_HUMANOID_BONE_NODE_SUFFIX: &str = ".node";
 
 /// SansaVRM: VRM 1.0 supported humanoid bones.
-/// TODO(trace): 変換仕様 / VRM Humanoid Property
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_y5x3a8p3
 pub(crate) const VRM_HUMANOID_BONES: &[&str] = &[
     "hips",
     "spine",
@@ -35,7 +34,7 @@ pub(crate) const VRM_HUMANOID_BONES: &[&str] = &[
 ];
 
 /// SansaVRM: VRM humanoid humanBone key を Property key に変換する。
-/// TODO(trace): 変換仕様 / VRM Humanoid Property
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_y5x3a8p3
 pub(crate) fn vrm_humanoid_bone_node_key(bone_name: &str) -> String {
     format!(
         "{}{}{}",
@@ -44,7 +43,7 @@ pub(crate) fn vrm_humanoid_bone_node_key(bone_name: &str) -> String {
 }
 
 /// SansaVRM: VRM humanoid humanBone Property key から bone名を取得する。
-/// TODO(trace): 変換仕様 / VRM Humanoid Property
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_y5x3a8p3
 pub(crate) fn parse_vrm_humanoid_bone_property_key(key: &str) -> Option<&str> {
     key.strip_prefix(VRM_HUMANOID_BONE_PREFIX)?
         .strip_suffix(VRM_HUMANOID_BONE_NODE_SUFFIX)
@@ -112,7 +111,7 @@ pub(crate) fn vrm_meta_property(key: &str, value: &str) -> Property {
 /// - VRM 1.0: presence of "extensions.VRMC_vrm"
 /// - VRM 0.x: presence of "extensions.VRM"
 ///
-/// TODO(trace): 変換仕様 / VRM Version Detection
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_y5x3a8p3
 pub(crate) fn detect_vrm_version(document: &str) -> Option<VrmVersion> {
     let value = serde_json::from_str::<Value>(document).ok()?;
     let extensions = value.get("extensions")?;
