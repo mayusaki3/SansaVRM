@@ -6,7 +6,7 @@ use serde_json::Value;
 /// - Format agnostic (VRM / glTF / URDF / MuJoCo)
 /// - Used for RoundTrip and semantic equality tests
 ///
-/// TODO(trace): Test共通化 / JSON normalization
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_e4y7z6v5
 pub fn normalize_json(value: &Value) -> Value {
     match value {
         Value::Object(map) => {
