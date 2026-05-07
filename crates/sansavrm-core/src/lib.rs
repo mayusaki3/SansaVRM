@@ -7,8 +7,10 @@
 //! - Model / Module / Slot / State / Property / Diagnostics の基本構造を定義する。
 //!
 //! 注意:
-//! - 正式な HLDocS `@hldocs.ref` は HLDocS 化後に付与する。
-//! - 現段階では `TODO(trace)` による暫定トレースのみを使用する。
+//! - Core crate は SansaVRM メタモデルと Core API の公開境界を提供する。
+//!
+//! @hldocs.ref doc-20260504-000201Z-SV0A#sec_a8k3m2q1
+//! @hldocs.ref doc-20260504-000206Z-SV0G#sec_k8j2m1a0
 
 pub mod diagnostics;
 pub mod error;
