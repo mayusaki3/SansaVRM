@@ -13,7 +13,7 @@ use crate::common::{
 };
 
 /// SansaVRM: VRM 1.0 humanoid Import
-/// TODO(trace): 変換仕様 / VRM 1.0 Humanoid Import
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_z4y2b7q4
 pub(crate) fn import_vrm1_humanoid(model: &mut Model, document: &str, version: Option<VrmVersion>) {
     if version != Some(VrmVersion::V1_0) {
         return;
@@ -52,7 +52,7 @@ pub(crate) fn import_vrm1_humanoid(model: &mut Model, document: &str, version: O
 }
 
 /// SansaVRM: VRM 1.0 humanoid Export
-/// TODO(trace): 変換仕様 / VRM 1.0 Humanoid Export
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_z4y2b7q4
 pub(crate) fn apply_vrm1_humanoid(value: &mut Value, model: &Model, version: VrmVersion) {
     if version != VrmVersion::V1_0 {
         return;
@@ -85,7 +85,7 @@ pub(crate) fn apply_vrm1_humanoid(value: &mut Value, model: &Model, version: Vrm
 }
 
 /// SansaVRM: VRM 1.0 meta Import
-/// TODO(trace): 変換仕様 / VRM 1.0 Meta Import
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_z4y2b7q4
 pub(crate) fn import_vrm1_meta(model: &mut Model, value: &Value) {
     if let Some(meta) = value.pointer("/extensions/VRMC_vrm/meta") {
         import_string_property(model, meta, "name", "vrm.meta.name");
@@ -96,7 +96,7 @@ pub(crate) fn import_vrm1_meta(model: &mut Model, value: &Value) {
 }
 
 /// SansaVRM: VRM 1.0 meta Export
-/// TODO(trace): 変換仕様 / VRM 1.0 Meta Export
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_z4y2b7q4
 pub(crate) fn apply_vrm1_meta(value: &mut Value, model: &Model) {
     value["extensions"]["VRMC_vrm"]["meta"]["name"] =
         json!(get_model_property(model, "vrm.meta.name").unwrap_or_default());
@@ -119,7 +119,7 @@ pub(crate) fn apply_vrm1_meta(value: &mut Value, model: &Model) {
 
 /// Create a SansaVRM Property for VRM 1.0 humanoid humanBone mapping.
 ///
-/// TODO(trace): 変換仕様 / VRM 1.0 Humanoid Property
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_z4y2b7q4
 fn vrm_humanoid_bone_property(bone_name: &str, module_id: &str) -> Property {
     let key = vrm_humanoid_bone_node_key(bone_name);
 
