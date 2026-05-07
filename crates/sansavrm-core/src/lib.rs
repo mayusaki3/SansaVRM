@@ -5,11 +5,18 @@
 //! 役割:
 //! - SansaVRM の内部メタモデルを提供する。
 //! - Model / Module / Slot / State / Property / Diagnostics の基本構造を定義する。
+//! - JSON Schema が定義する型・制約・参照構造の前提となる公開データ構造を提供する。
 //!
 //! 注意:
 //! - Core crate は SansaVRM メタモデルと Core API の公開境界を提供する。
+//! - JSON Schema 実体は schemas 配下に配置されるが、trace_check の実装参照対象外であるため、
+//!   Core crate の公開境界に代表参照を置く。
 //!
 //! @hldocs.ref doc-20260504-000201Z-SV0A#sec_a8k3m2q1
+//! @hldocs.ref doc-20260504-000204Z-SV0E#sec_b7n4p9r2
+//! @hldocs.ref doc-20260504-000204Z-SV0E#sec_d0c8f3u8
+//! @hldocs.ref doc-20260504-000204Z-SV0E#sec_d5w6x7u4
+//! @hldocs.ref doc-20260504-000204Z-SV0E#sec_f3a8b5w6
 //! @hldocs.ref doc-20260504-000206Z-SV0G#sec_k8j2m1a0
 
 pub mod diagnostics;
