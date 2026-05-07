@@ -16,6 +16,7 @@ fn mujoco_adapter_001_import_returns_not_implemented() {
 
 /// Joint接続モデルがMJCFへexportできることを検証する。
 /// @hldocs.ref doc-20260504-000405Z-SV0S#sec_w7v5y0m1
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_v8u6x1l1
 #[test]
 fn mujoco_adapter_002_export_joint_model_should_create_mjcf() {
     let mut model = Model::with_id("test_model");
@@ -40,6 +41,7 @@ fn mujoco_adapter_002_export_joint_model_should_create_mjcf() {
 
 /// 非Joint接続モデルのexportが失敗することを検証する。
 /// @hldocs.ref doc-20260504-000405Z-SV0S#sec_w7v5y0m1
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_v8u6x1l1
 #[test]
 fn mujoco_adapter_003_export_non_joint_model_should_fail_before_export() {
     let mut model = Model::new();
@@ -76,6 +78,8 @@ fn mujoco_adapter_004_export_empty_model_should_create_empty_mjcf() {
 
 /// PhysicsプロパティがGeomへ分類されることを検証する。
 /// @hldocs.ref doc-20260504-000405Z-SV0S#sec_w7v5y0m1
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_v8u6x1l2
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_v8u6x1l3
 #[test]
 fn mujoco_adapter_005_physics_property_should_map_to_geom() {
     let property = Property::from_typed_value(
@@ -93,6 +97,8 @@ fn mujoco_adapter_005_physics_property_should_map_to_geom() {
 
 /// ActuatorプロパティがActuatorへ分類されることを検証する。
 /// @hldocs.ref doc-20260504-000405Z-SV0S#sec_w7v5y0m1
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_v8u6x1l2
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_y5x3a8p4
 #[test]
 fn mujoco_adapter_006_actuator_property_should_map_to_actuator() {
     let property = Property::from_typed_value(
@@ -110,6 +116,7 @@ fn mujoco_adapter_006_actuator_property_should_map_to_actuator() {
 
 /// SensorプロパティがSensorへ分類されることを検証する。
 /// @hldocs.ref doc-20260504-000405Z-SV0S#sec_w7v5y0m1
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_v8u6x1l2
 #[test]
 fn mujoco_adapter_007_sensor_property_should_map_to_sensor() {
     let property = Property::from_typed_value(
@@ -127,6 +134,7 @@ fn mujoco_adapter_007_sensor_property_should_map_to_sensor() {
 
 /// Metadataプロパティが無視されることを検証する。
 /// @hldocs.ref doc-20260504-000405Z-SV0S#sec_w7v5y0m1
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_v8u6x1l2
 #[test]
 fn mujoco_adapter_008_metadata_property_should_ignore() {
     let property = Property::from_typed_value(
