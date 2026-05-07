@@ -15,8 +15,8 @@ use crate::ValidatorResult;
 /// - 汎用 validate には含めない。
 /// - MuJoCo は body がツリー構造であるため、Connection 制約は変換前検証として分離する。
 ///
-/// TODO(trace): MuJoCo連携仕様 / Connectionタイプ制約
-/// TODO(trace): Validator実装仕様 / MuJoCo変換前提整合性
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_w7v5y0m1
+/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_n4s1u6v0
 pub fn validate_mujoco_ready(model: &Model) -> ValidatorResult {
     let mut diagnostics = Vec::new();
 
@@ -30,6 +30,9 @@ pub fn validate_mujoco_ready(model: &Model) -> ValidatorResult {
 }
 
 /// MuJoCo対象 Connection type を検証する。
+///
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_w7v5y0m1
+/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_n4s1u6v0
 fn validate_mujoco_connection_types(
     model: &Model,
     diagnostics: &mut Vec<ValidationDiagnostic>,
@@ -51,6 +54,8 @@ fn validate_mujoco_connection_types(
 }
 
 /// diagnostics の出力順を安定化する。
+///
+/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_p3t0w5x9
 fn sort_diagnostics(diagnostics: &mut [ValidationDiagnostic]) {
     diagnostics.sort_by(|a, b| {
         diagnostic_sort_key(a).cmp(&diagnostic_sort_key(b))
@@ -58,6 +63,8 @@ fn sort_diagnostics(diagnostics: &mut [ValidationDiagnostic]) {
 }
 
 /// diagnostics ソートキーを生成する。
+///
+/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_p3t0w5x9
 fn diagnostic_sort_key(diagnostic: &ValidationDiagnostic) -> String {
     format!(
         "{:?}|{:?}|{}|{}",
