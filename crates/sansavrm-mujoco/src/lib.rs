@@ -1,5 +1,15 @@
 //! SansaVRM MuJoCo adapter.
 //!
+//! 役割:
+//! - SansaVRM Model を MuJoCo / MJCF 連携用の文書へ変換する。
+//! - SansaVRM Property を MuJoCo 出力対象へ分類する。
+//! - MuJoCo 変換前提の検証は `sansavrm-validator` に委譲する。
+//!
+//! 注意点:
+//! - SansaVRM 本体は MuJoCo 実行ランタイムに依存しない。
+//! - 本 crate は現段階では最小 MJCF export と Property 分類のみを提供する。
+//! - MJCF 直接入出力可否は、将来的に custom parameter schema の io_scope / mjcf_mapping / adapter_artifact により判定する。
+//!
 //! @hldocs.ref doc-20260504-000405Z-SV0S#sec_w7v5y0m1
 //! @hldocs.ref doc-20260504-000405Z-SV0S#sec_v8u6x1l1
 //! @hldocs.ref doc-20260504-000405Z-SV0S#sec_v8u6x1l2
@@ -46,10 +56,10 @@ pub enum MujocoPropertyTarget {
 /// - MuJoCo 出力対象外の Property を Ignore に分類する。
 ///
 /// 引数:
-/// - `property`: 分類対象の Property
+/// - `property`: 分類対象の Property。
 ///
 /// 戻り値:
-/// - `MujocoPropertyTarget`: MuJoCo 出力対象分類
+/// - `MujocoPropertyTarget`: MuJoCo 出力対象分類。
 ///
 /// 注意点:
 /// - property_type を最優先する。
@@ -87,6 +97,18 @@ pub fn classify_mujoco_property(property: &Property) -> MujocoPropertyTarget {
 
 /// MuJoCo / MJCF を SansaVRM Model へ import する。
 ///
+/// 役割:
+/// - MJCF 文書を SansaVRM Model へ変換する入口を提供する。
+///
+/// 引数:
+/// - `_document`: import 対象の MJCF 文書。
+///
+/// 戻り値:
+/// - `CoreResult<Model>`: 成功時は変換後 Model、失敗時はエラー情報。
+///
+/// 注意点:
+/// - 現段階では未実装のため、常に失敗結果を返す。
+///
 /// @hldocs.ref doc-20260504-000405Z-SV0S#sec_w7v5y0m1
 pub fn import_mujoco(_document: MjcfDocument) -> CoreResult<Model> {
     CoreResult::fail(SansaVrmError::InvalidInput(
@@ -95,6 +117,16 @@ pub fn import_mujoco(_document: MjcfDocument) -> CoreResult<Model> {
 }
 
 /// SansaVRM Model を MuJoCo / MJCF へ export する。
+///
+/// 役割:
+/// - SansaVRM Model から最小 MJCF 文書を生成する。
+/// - export 前に MuJoCo 変換前提検証を実行する。
+///
+/// 引数:
+/// - `model`: export 対象の SansaVRM Model。
+///
+/// 戻り値:
+/// - `CoreResult<MjcfDocument>`: 成功時は MJCF 文書、失敗時はエラー情報。
 ///
 /// 注意点:
 /// - 初期実装では Joint Connection を MJCF joint として出力する。
