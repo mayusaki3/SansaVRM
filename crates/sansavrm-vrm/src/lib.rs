@@ -1,4 +1,6 @@
 //! SansaVRM VRM adapter.
+//!
+//! @hldocs.ref doc-20260504-000405Z-SV0S#sec_y5x3a8p3
 
 mod common;
 mod vrm1;
@@ -18,7 +20,7 @@ use common::detect_vrm_version;
 /// - 初期実装では VRM を glTF JSON として読み込み、glTF import に委譲する。
 /// - VRM 0.x / 1.0 固有メタデータの解釈は後続実装。
 ///
-/// TODO(trace): 変換仕様 / VRM Import
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_y5x3a8p3
 pub fn import_vrm(document: VrmDocument) -> CoreResult<Model> {
     let version = detect_vrm_version(&document);
 
@@ -56,7 +58,7 @@ pub fn import_vrm(document: VrmDocument) -> CoreResult<Model> {
 /// - `version` は出力対象の VRM 系列を明示する。
 /// - `options` は後続実装で使用する。
 ///
-/// TODO(trace): 変換仕様 / VRM Export
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_y5x3a8p3
 pub fn export_vrm(
     model: &Model,
     version: VrmVersion,
@@ -110,6 +112,8 @@ pub fn export_vrm(
 /// Note:
 /// - This function writes only the minimal version marker.
 /// - Full VRM metadata, humanoid, expressions, and constraints are added in later steps.
+///
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_y5x3a8p3
 fn apply_vrm_extension(value: &mut Value, version: VrmVersion) {
     if value.get("extensions").is_none() {
         value["extensions"] = json!({});
