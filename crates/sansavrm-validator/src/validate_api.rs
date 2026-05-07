@@ -14,7 +14,7 @@ use crate::{validate_model_with_diagnostics, ValidatorResult};
 /// - 初期実装では strict のみ定義する。
 /// - JSON Schema 検証や warnings 制御は後続実装で追加する。
 ///
-/// TODO(trace): CoreAPI仕様 / validate
+/// @hldocs.ref doc-20260504-000204Z-SV0E#sec_e9d7g2v9
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ValidateOptions {
     pub strict: bool,
@@ -37,7 +37,7 @@ impl Default for ValidateOptions {
 /// - 実処理は既存の `validate_model` に委譲する。
 /// - options は初期実装では保持のみで、挙動差分は後続実装で追加する。
 ///
-/// TODO(trace): CoreAPI仕様 / validate
+/// @hldocs.ref doc-20260504-000204Z-SV0E#sec_e9d7g2v9
 pub fn validate(model: &Model, _options: ValidateOptions) -> CoreResult<()> {
     validate_model(model)
 }
@@ -47,7 +47,8 @@ pub fn validate(model: &Model, _options: ValidateOptions) -> CoreResult<()> {
 /// 役割:
 /// - diagnostics を取得するための公開API。
 ///
-/// TODO(trace): Validator実装仕様 / diagnostics出力
+/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_p3t0w5x9
+/// @hldocs.ref doc-20260504-000403Z-SV0Q#sec_b2a0d5s6
 pub fn validate_diagnostics(model: &Model, _options: ValidateOptions) -> ValidatorResult {
     validate_model_with_diagnostics(model)
 }
