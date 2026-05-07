@@ -53,6 +53,7 @@ pub(crate) fn import_vrm1_humanoid(model: &mut Model, document: &str, version: O
 
 /// SansaVRM: VRM 1.0 humanoid Export
 /// @hldocs.ref doc-20260504-000405Z-SV0S#sec_z4y2b7q4
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_a3z1c6r5
 pub(crate) fn apply_vrm1_humanoid(value: &mut Value, model: &Model, version: VrmVersion) {
     if version != VrmVersion::V1_0 {
         return;
@@ -97,6 +98,7 @@ pub(crate) fn import_vrm1_meta(model: &mut Model, value: &Value) {
 
 /// SansaVRM: VRM 1.0 meta Export
 /// @hldocs.ref doc-20260504-000405Z-SV0S#sec_z4y2b7q4
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_a3z1c6r5
 pub(crate) fn apply_vrm1_meta(value: &mut Value, model: &Model) {
     value["extensions"]["VRMC_vrm"]["meta"]["name"] =
         json!(get_model_property(model, "vrm.meta.name").unwrap_or_default());
