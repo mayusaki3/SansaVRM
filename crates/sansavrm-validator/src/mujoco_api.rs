@@ -10,12 +10,18 @@ use crate::ValidatorResult;
 ///
 /// 役割:
 /// - MuJoCo / MJCF 変換に入る前に、SansaVRM Model が MuJoCo 変換可能な前提を満たすか検証する。
+/// - MuJoCo Adapter が参照する前提条件を検証する。
+/// - 将来の custom parameter schema では io_scope / mjcf_mapping / adapter_artifact の整合性検証を追加する。
 ///
 /// 注意点:
 /// - 汎用 validate には含めない。
 /// - MuJoCo は body がツリー構造であるため、Connection 制約は変換前検証として分離する。
+/// - MJCF 直接入出力可否は、実装側の推測ではなく登録スキーマで判定する。
 ///
 /// @hldocs.ref doc-20260504-000405Z-SV0S#sec_w7v5y0m1
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_w7v5y0m2
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_w7v5y0m3
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_w7v5y0m4
 /// @hldocs.ref doc-20260504-000205Z-SV0F#sec_n4s1u6v0
 pub fn validate_mujoco_ready(model: &Model) -> ValidatorResult {
     let mut diagnostics = Vec::new();
