@@ -10,7 +10,7 @@ const VRM_HUMANOID_BONE_NODE_SUFFIX: &str = ".node";
 /// - 現段階では crate 間依存を増やさないため重複を許容する。
 /// - 将来、VRM仕様定義専用 crate を作成する場合は共通化する。
 ///
-/// TODO(trace): Validator実装仕様 / VRM Humanoid Required Bones
+/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_r2q8t5g6
 const VRM_REQUIRED_HUMANOID_BONES: &[&str] = &[
     "hips",
     "spine",
@@ -44,7 +44,8 @@ fn vrm_humanoid_bone_node_key(bone_name: &str) -> String {
 }
 
 /// VRM humanoid 最小検証
-/// TODO(trace): Validator実装仕様 / VRM Humanoid Validation
+///
+/// @hldocs.ref doc-20260504-000205Z-SV0F#sec_r2q8t5g6
 pub(crate) fn validate_vrm_humanoid(model: &Model, errors: &mut Vec<SansaVrmError>) {
     let humanoid_properties = model
         .properties
