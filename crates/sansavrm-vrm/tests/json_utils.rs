@@ -1,7 +1,7 @@
 use serde_json::Value;
 
 /// JSON正規化（キー順・不要値削除）
-/// TODO(trace): RoundTrip仕様 / JSON normalization
+/// @hldocs.ref doc-20260504-000405Z-SV0S#sec_e4y7z6v5
 pub fn normalize_json(value: &Value) -> Value {
     match value {
         Value::Object(map) => {
