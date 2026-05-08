@@ -57,7 +57,7 @@ fn validate_required_mappings(
 ) {
     if schema.io_scope.requires_mjcf_mapping() && schema.mjcf_mapping.is_none() {
         diagnostics.push(ValidationDiagnostic {
-            code: DiagnosticCode::PropertyValueInvalid,
+            code: DiagnosticCode::CustomParameterMappingInvalid,
             severity: DiagnosticSeverity::Error,
             message: format!(
                 "custom parameter {}.{} requires mjcf_mapping",
@@ -69,7 +69,7 @@ fn validate_required_mappings(
 
     if schema.io_scope.requires_adapter_artifact() && schema.adapter_artifact.is_none() {
         diagnostics.push(ValidationDiagnostic {
-            code: DiagnosticCode::PropertyValueInvalid,
+            code: DiagnosticCode::CustomParameterMappingInvalid,
             severity: DiagnosticSeverity::Error,
             message: format!(
                 "custom parameter {}.{} requires adapter_artifact",
@@ -97,7 +97,7 @@ fn validate_non_output_scopes(
 ) {
     match schema.io_scope {
         CustomParameterIoScope::Unsupported => diagnostics.push(ValidationDiagnostic {
-            code: DiagnosticCode::PropertyValueInvalid,
+            code: DiagnosticCode::CustomParameterUnsupported,
             severity: DiagnosticSeverity::Warning,
             message: format!(
                 "custom parameter {}.{} is registered but unsupported",
@@ -107,7 +107,7 @@ fn validate_non_output_scopes(
         }),
         CustomParameterIoScope::PreserveOnly | CustomParameterIoScope::SourceRaw => {
             diagnostics.push(ValidationDiagnostic {
-                code: DiagnosticCode::PropertyValueInvalid,
+                code: DiagnosticCode::CustomParameterPreserved,
                 severity: DiagnosticSeverity::Info,
                 message: format!(
                     "custom parameter {}.{} is preserved without direct output",
