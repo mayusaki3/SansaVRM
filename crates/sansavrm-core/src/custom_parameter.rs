@@ -1,5 +1,17 @@
 // crates/sansavrm-core/src/custom_parameter.rs
 
+//! custom parameter 登録・保持用の共通型定義。
+//!
+//! 役割:
+//! - namespace 付き custom parameter の登録スキーマを表現する。
+//! - MJCF 直接入出力、Adapter 側補助成果物、保持のみ、未対応、source_raw の分類を表現する。
+//! - MuJoCo 固有または将来追加されるパラメータを、完全自由な key-value ではなく検証可能な構造として保持する。
+//!
+//! 注意点:
+//! - 本モジュールは型定義と軽量な整合性判定のみを担当する。
+//! - 実際の version 比較、値範囲検証、Adapter 固有解釈は Validator または Adapter 側で行う。
+//! - MJCF への直接入出力可否は実装側の推測ではなく、`io_scope`、`mjcf_mapping`、`adapter_artifact` に基づいて判定する。
+
 use crate::PropertyValue;
 use serde::{Deserialize, Serialize};
 
@@ -16,11 +28,17 @@ use serde::{Deserialize, Serialize};
 /// @hldocs.ref doc-20260504-000209Z-SV0J#sec_w7v5y0m3
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum CustomParameterIoScope {
+    /// MJCF へ直接入出力する。
     Mjcf,
+    /// Adapter 側補助成果物へ出力する。
     AdapterArtifact,
+    /// MJCF と Adapter 側補助成果物の両方へ出力する。
     Both,
+    /// SansaVRM 内に保持するが外部成果物へは出力しない。
     PreserveOnly,
+    /// 登録はされているが現時点では未対応として扱う。
     Unsupported,
+    /// 解釈せず元情報として保持する。
     SourceRaw,
 }
 
@@ -55,8 +73,11 @@ impl CustomParameterIoScope {
 /// @hldocs.ref doc-20260504-000209Z-SV0J#sec_w7v5y0m2
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum CustomParameterValueType {
+    /// 文字列値。
     String,
+    /// 数値。
     Number,
+    /// 真偽値。
     Bool,
 }
 
@@ -68,10 +89,15 @@ pub enum CustomParameterValueType {
 /// @hldocs.ref doc-20260504-000209Z-SV0J#sec_w7v5y0m4
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum CustomParameterFallbackBehavior {
+    /// 登録スキーマの既定値を使用する。
     UseDefault,
+    /// 出力せず SansaVRM 内に保持する。
     PreserveOnly,
+    /// 警告として diagnostics または conversion report に記録する。
     Warn,
+    /// エラーとして扱う。
     Error,
+    /// 無視する。
     Ignore,
 }
 
@@ -86,7 +112,9 @@ pub enum CustomParameterFallbackBehavior {
 /// @hldocs.ref doc-20260504-000209Z-SV0J#sec_w7v5y0m4
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct VersionRange {
+    /// 対応する最小 version。未指定の場合は下限なし。
     pub min: Option<String>,
+    /// 対応する最大 version。未指定の場合は上限なし。
     pub max: Option<String>,
 }
 
@@ -101,11 +129,17 @@ pub struct VersionRange {
 /// @hldocs.ref doc-20260504-000209Z-SV0J#sec_w7v5y0m3
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct MjcfMapping {
+    /// 対応する MJCF 要素名。
     pub element: String,
+    /// 対応する MJCF 属性名。
     pub attribute: String,
+    /// MJCF 内の論理パス。
     pub path: String,
+    /// 入出力方向。例: `import`、`export`、`import_export`。
     pub direction: String,
+    /// 値変換ルール。未指定の場合は変換なし。
     pub value_conversion: Option<String>,
+    /// 必要な MuJoCo version 範囲。
     pub required_mujoco_version: VersionRange,
 }
 
@@ -121,10 +155,15 @@ pub struct MjcfMapping {
 /// @hldocs.ref doc-20260504-000209Z-SV0J#sec_y5x3a8p4
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct AdapterArtifactMapping {
+    /// 補助成果物の種別。例: `controller_config`。
     pub artifact_type: String,
+    /// 補助成果物内の論理パス。
     pub path: String,
+    /// 入出力方向。例: `import`、`export`、`import_export`。
     pub direction: String,
+    /// 値変換ルール。未指定の場合は変換なし。
     pub value_conversion: Option<String>,
+    /// 必要な Adapter version 範囲。
     pub required_adapter_version: VersionRange,
 }
 
@@ -136,7 +175,9 @@ pub struct AdapterArtifactMapping {
 /// @hldocs.ref doc-20260504-000209Z-SV0J#sec_w7v5y0m4
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct CustomParameterFallback {
+    /// fallback の動作種別。
     pub behavior: CustomParameterFallbackBehavior,
+    /// fallback 時に使用する代替値。不要な場合は `None`。
     pub value: Option<PropertyValue>,
 }
 
@@ -155,24 +196,43 @@ pub struct CustomParameterFallback {
 /// @hldocs.ref doc-20260504-000209Z-SV0J#sec_w7v5y0m4
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct CustomParameterSchema {
+    /// パラメータの namespace。
     pub namespace: String,
+    /// namespace 内のパラメータ名。
     pub name: String,
+    /// 適用対象種別。例: `model`、`joint`、`actuator`。
     pub target_type: String,
+    /// 値型。
     pub value_type: CustomParameterValueType,
+    /// 単位。不要な場合は `None`。
     pub unit: Option<String>,
+    /// 必須パラメータかどうか。
     pub required: bool,
+    /// 既定値。未指定の場合は `None`。
     pub default: Option<PropertyValue>,
+    /// 数値最小値。不要な場合は `None`。
     pub min: Option<f64>,
+    /// 数値最大値。不要な場合は `None`。
     pub max: Option<f64>,
+    /// 許可値一覧。不要な場合は `None`。
     pub allowed_values: Option<Vec<PropertyValue>>,
+    /// 人間向け説明。
     pub description: Option<String>,
+    /// 対応 Adapter 名または対応状態の一覧。
     pub adapter_support: Vec<String>,
+    /// fallback 方針。
     pub fallback: CustomParameterFallback,
+    /// 入出力範囲。
     pub io_scope: CustomParameterIoScope,
+    /// MJCF mapping。不要または未対応の場合は `None`。
     pub mjcf_mapping: Option<MjcfMapping>,
+    /// Adapter 側補助成果物 mapping。不要または未対応の場合は `None`。
     pub adapter_artifact: Option<AdapterArtifactMapping>,
+    /// 対象 MuJoCo version 範囲。
     pub mujoco_version: Option<VersionRange>,
+    /// 対応開始 version。
     pub supported_since: Option<String>,
+    /// 非推奨化 version。
     pub deprecated_since: Option<String>,
 }
 
@@ -209,11 +269,18 @@ impl CustomParameterSchema {
 /// @hldocs.ref doc-20260504-000209Z-SV0J#sec_w7v5y0m2
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct CustomParameterValue {
+    /// パラメータの namespace。
     pub namespace: String,
+    /// namespace 内のパラメータ名。
     pub name: String,
+    /// 適用対象種別。
     pub target_type: String,
+    /// 適用対象 ID。
     pub target_id: String,
+    /// パラメータ値。
     pub value: PropertyValue,
+    /// 値の由来。不要な場合は `None`。
     pub source: Option<String>,
+    /// 値に関連する diagnostics。
     pub diagnostics: Vec<String>,
 }
