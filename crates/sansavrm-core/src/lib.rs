@@ -7,6 +7,7 @@
 //! - Model / Module / Slot / State / Property / Diagnostics の基本構造を定義する。
 //! - JSON Schema が定義する型・制約・参照構造の前提となる公開データ構造を提供する。
 //! - conversion report や generated artifact metadata 等の共通変換情報を提供する。
+//! - custom parameter schema や io_scope 等の変換拡張情報を提供する。
 //!
 //! 注意:
 //! - Core crate は SansaVRM メタモデルと Core API の公開境界を提供する。
@@ -20,8 +21,10 @@
 //! @hldocs.ref doc-20260504-000204Z-SV0E#sec_f3a8b5w6
 //! @hldocs.ref doc-20260504-000206Z-SV0G#sec_k8j2m1a0
 //! @hldocs.ref doc-20260504-000405Z-SV0S#sec_y5x3a8p4
+//! @hldocs.ref doc-20260504-000209Z-SV0J#sec_w7v5y0m2
 
 pub mod conversion_report;
+pub mod custom_parameter;
 pub mod diagnostics;
 pub mod error;
 pub mod id;
@@ -41,6 +44,7 @@ pub mod slot_api;
 pub mod transaction_api;
 
 pub use conversion_report::*;
+pub use custom_parameter::*;
 pub use diagnostics::*;
 pub use error::*;
 pub use id::*;
