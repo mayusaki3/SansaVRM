@@ -25,6 +25,7 @@
 
 pub mod conversion_report;
 pub mod custom_parameter;
+pub mod custom_parameter_registry;
 pub mod diagnostics;
 pub mod error;
 pub mod id;
@@ -45,6 +46,7 @@ pub mod transaction_api;
 
 pub use conversion_report::*;
 pub use custom_parameter::*;
+pub use custom_parameter_registry::*;
 pub use diagnostics::*;
 pub use error::*;
 pub use id::*;
