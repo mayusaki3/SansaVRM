@@ -41,9 +41,13 @@ use sansavrm_validator::validate_mujoco_ready;
 /// @hldocs.ref doc-20260504-000203Z-SV0D#sec_c6t5v8s3
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum MujocoPropertyTarget {
+    /// geom 要素へ反映する Property。
     Geom,
+    /// actuator 要素へ反映する Property。
     Actuator,
+    /// sensor 要素へ反映する Property。
     Sensor,
+    /// MuJoCo 出力対象外として無視する Property。
     Ignore,
 }
 
