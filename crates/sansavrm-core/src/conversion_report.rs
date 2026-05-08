@@ -1,5 +1,17 @@
 // crates/sansavrm-core/src/conversion_report.rs
 
+//! 変換レポートおよび補助成果物メタデータ定義。
+//!
+//! 役割:
+//! - Import / Export / RoundTrip 等の変換方向を表現する。
+//! - diagnostics、非可逆変換情報、生成成果物メタデータを保持する。
+//! - Adapter 側補助成果物への分離結果を共通形式で記録する。
+//!
+//! 注意点:
+//! - 本モジュールは SansaVRM Core 側の共通保持形式のみを定義する。
+//! - MJCF 生成アルゴリズムや controller_config の詳細仕様は保持しない。
+//! - Adapter 固有の詳細レポート形式は Adapter 側仕様で定義する。
+
 use crate::DiagnosticItem;
 use serde::{Deserialize, Serialize};
 
@@ -15,9 +27,13 @@ use serde::{Deserialize, Serialize};
 /// @hldocs.ref doc-20260504-000405Z-SV0S#sec_y5x3a8p4
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum ConversionDirection {
+    /// 外部形式から SansaVRM への変換。
     Import,
+    /// SansaVRM から外部形式への変換。
     Export,
+    /// Import → Export を含む往復変換。
     RoundTrip,
+    /// 独自定義の変換方向。
     Custom,
 }
 
@@ -33,8 +49,11 @@ pub enum ConversionDirection {
 /// @hldocs.ref doc-20260504-000405Z-SV0S#sec_y5x3a8p4
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct GeneratedArtifactMetadata {
+    /// 成果物種別。例: `mjcf`、`controller_config`。
     pub artifact_type: String,
+    /// 成果物パス。未出力の場合は `None`。
     pub path: Option<String>,
+    /// 人間向け説明。
     pub description: Option<String>,
 }
 
@@ -49,8 +68,11 @@ pub struct GeneratedArtifactMetadata {
 /// @hldocs.ref doc-20260504-000405Z-SV0S#sec_y5x3a8p4
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct NonReversibleConversionInfo {
+    /// 元情報の論理パス。
     pub source_path: Option<String>,
+    /// 非可逆となった理由。
     pub reason: String,
+    /// fallback 内容。不要な場合は `None`。
     pub fallback: Option<String>,
 }
 
@@ -68,11 +90,17 @@ pub struct NonReversibleConversionInfo {
 /// @hldocs.ref doc-20260504-000405Z-SV0S#sec_y5x3a8p4
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ConversionReport {
+    /// 変換方向。
     pub direction: ConversionDirection,
+    /// 入力形式名。
     pub source_format: String,
+    /// 出力形式名。
     pub target_format: String,
+    /// 変換時 diagnostics。
     pub diagnostics: Vec<DiagnosticItem>,
+    /// 非可逆変換情報一覧。
     pub non_reversible: Vec<NonReversibleConversionInfo>,
+    /// 生成成果物メタデータ一覧。
     pub generated_artifacts: Vec<GeneratedArtifactMetadata>,
 }
 
