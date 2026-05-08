@@ -22,8 +22,8 @@ fn core_custom_registry_001_schema_lookup_should_find_registered_schema() {
         default: None,
         min: None,
         max: None,
-        enum_values: vec![],
-        description: "joint armature".to_string(),
+        allowed_values: None,
+        description: Some("joint armature".to_string()),
         adapter_support: Default::default(),
         fallback: CustomParameterFallback {
             behavior: CustomParameterFallbackBehavior::UseDefault,
