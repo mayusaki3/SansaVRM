@@ -63,6 +63,9 @@ pub enum DiagnosticCode {
     CustomParameterMappingInvalid,
     CustomParameterUnsupported,
     CustomParameterPreserved,
+    CustomParameterValueInvalid,
+    CustomParameterVersionInvalid,
+    CustomParameterFallbackInvalid,
 }
 
 /// SansaVRM diagnostics item。
