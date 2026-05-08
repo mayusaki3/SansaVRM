@@ -19,6 +19,18 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
+      # 役割:
+      # - Rust ワークスペース全体のテストを実行する。
+      # - scripts/test_report.ps1 によりテスト結果の概要を出力する。
       - name: Run SansaVRM test report
         shell: pwsh
         run: .\scripts\test_report.ps1
+
+      # 役割:
+      # - HLDocS の spec / testspec / code / test の trace 参照整合性を検査する。
+      # - strict モードにより trace TODO や未実装 sec_id を CI 上で検出する。
+      # 注意点:
+      # - cargo test の成否とは独立した step として実行し、失敗箇所を分離しやすくする。
+      - name: Run HLDocS strict trace check
+        shell: pwsh
+        run: python tools/trace_check/trace_check.py --mode strict
