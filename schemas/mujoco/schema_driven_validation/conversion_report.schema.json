@@ -1,0 +1,292 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mayusaki3.github.io/SansaVRM/schemas/mujoco/schema_driven_validation/conversion_report.schema.json",
+  "title": "MuJoCo Conversion Report",
+  "type": "object",
+  "required": [
+    "report_schema_version",
+    "source_format",
+    "target_format",
+    "mode",
+    "strict",
+    "adapter",
+    "schema_registry",
+    "adapter_capability",
+    "parameter_results",
+    "fallback_results",
+    "preserved_results",
+    "lossy_results",
+    "diagnostics_summary",
+    "diagnostics",
+    "output_allowed",
+    "ci_exit_code"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "report_schema_version": {
+      "type": "string"
+    },
+    "source_format": {
+      "type": "string"
+    },
+    "target_format": {
+      "type": "string"
+    },
+    "mode": {
+      "enum": ["import", "export", "roundtrip"]
+    },
+    "strict": {
+      "type": "boolean"
+    },
+    "adapter": {
+      "$ref": "#/$defs/adapter_info"
+    },
+    "schema_registry": {
+      "$ref": "#/$defs/schema_registry_info"
+    },
+    "adapter_capability": {
+      "$ref": "#/$defs/adapter_capability_info"
+    },
+    "parameter_results": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/parameter_result"
+      }
+    },
+    "fallback_results": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "preserved_results": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/preserved_result"
+      }
+    },
+    "lossy_results": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/lossy_result"
+      }
+    },
+    "diagnostics_summary": {
+      "$ref": "#/$defs/diagnostics_summary"
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/diagnostic"
+      }
+    },
+    "output_allowed": {
+      "type": "boolean"
+    },
+    "ci_exit_code": {
+      "type": "integer",
+      "minimum": 0
+    }
+  },
+  "$defs": {
+    "adapter_info": {
+      "type": "object",
+      "required": [
+        "adapter_id",
+        "adapter_version",
+        "runtime"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "adapter_id": {
+          "type": "string"
+        },
+        "adapter_version": {
+          "type": "string"
+        },
+        "runtime": {
+          "type": "string"
+        }
+      }
+    },
+    "schema_registry_info": {
+      "type": "object",
+      "required": [
+        "schema_id",
+        "schema_version",
+        "runtime"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "schema_id": {
+          "type": "string"
+        },
+        "schema_version": {
+          "type": "string"
+        },
+        "runtime": {
+          "type": "string"
+        }
+      }
+    },
+    "adapter_capability_info": {
+      "type": "object",
+      "required": [
+        "capability_id",
+        "capability_version",
+        "adapter_id",
+        "adapter_version"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "capability_id": {
+          "type": "string"
+        },
+        "capability_version": {
+          "type": "string"
+        },
+        "adapter_id": {
+          "type": "string"
+        },
+        "adapter_version": {
+          "type": "string"
+        }
+      }
+    },
+    "parameter_result": {
+      "type": "object",
+      "required": [
+        "entry_key",
+        "result",
+        "io_scope"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "entry_key": {
+          "type": "string"
+        },
+        "result": {
+          "type": "string"
+        },
+        "io_scope": {
+          "type": "string"
+        }
+      }
+    },
+    "preserved_result": {
+      "type": "object",
+      "required": [
+        "entry_key",
+        "target_type",
+        "preserve_type",
+        "diagnostic_id",
+        "code"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "entry_key": {
+          "type": "string"
+        },
+        "target_type": {
+          "type": "string"
+        },
+        "preserve_type": {
+          "type": "string"
+        },
+        "diagnostic_id": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        }
+      }
+    },
+    "lossy_result": {
+      "type": "object",
+      "required": [
+        "entry_key",
+        "target_type",
+        "loss_type",
+        "diagnostic_id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "entry_key": {
+          "type": "string"
+        },
+        "target_type": {
+          "type": "string"
+        },
+        "loss_type": {
+          "type": "string"
+        },
+        "diagnostic_id": {
+          "type": "string"
+        }
+      }
+    },
+    "diagnostics_summary": {
+      "type": "object",
+      "required": [
+        "info_count",
+        "warning_count",
+        "error_count",
+        "blocked_count",
+        "strict_block_count",
+        "fallback_count",
+        "lossy_count",
+        "preserved_count",
+        "severity_counts",
+        "category_counts"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "info_count": {
+          "type": "integer"
+        },
+        "warning_count": {
+          "type": "integer"
+        },
+        "error_count": {
+          "type": "integer"
+        }
+      }
+    },
+    "diagnostic": {
+      "type": "object",
+      "required": [
+        "diagnostic_id",
+        "code",
+        "severity",
+        "message",
+        "trace_id",
+        "strict_block",
+        "output_action"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "diagnostic_id": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        },
+        "severity": {
+          "enum": ["info", "warning", "error"]
+        },
+        "message": {
+          "type": "string"
+        },
+        "trace_id": {
+          "type": "string"
+        },
+        "strict_block": {
+          "type": "boolean"
+        },
+        "output_action": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
