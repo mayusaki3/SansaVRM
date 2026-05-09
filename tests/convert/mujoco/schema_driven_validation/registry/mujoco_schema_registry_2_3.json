@@ -1,0 +1,47 @@
+{
+  "schema_id": "schema-mujoco-2.3",
+  "schema_version": "0.1.0",
+  "runtime": "mujoco",
+  "runtime_version_range": {
+    "min": "2.3.0",
+    "max": null
+  },
+  "diagnostics_policy": {
+    "unknown_entry_is_warning": true
+  },
+  "entries": [
+    {
+      "namespace": "mujoco",
+      "name": "armature",
+      "target_type": "joint",
+      "io_scope": "mjcf",
+      "mjcf_mapping": {
+        "element": "joint",
+        "path": "joint.armature",
+        "direction": "import_export",
+        "required_mujoco_version": "2.3.0"
+      },
+      "fallback": {
+        "behavior": "warn"
+      }
+    },
+    {
+      "namespace": "mujoco",
+      "name": "controller_blob",
+      "target_type": "actuator",
+      "io_scope": "adapter_artifact",
+      "adapter_artifact": {
+        "artifact_type": "controller_config",
+        "path": "controllers/actuator.json",
+        "direction": "export",
+        "required_adapter_version": "0.1.0"
+      }
+    },
+    {
+      "namespace": "mujoco",
+      "name": "legacy_raw_data",
+      "target_type": "body",
+      "io_scope": "source_raw"
+    }
+  ]
+}
