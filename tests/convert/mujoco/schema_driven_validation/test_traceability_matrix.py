@@ -1,7 +1,7 @@
 """Tests for traceability matrix generator.
 
 役割:
-    traceability matrix generator が trace_id を収集できることを検証する。
+    traceability matrix generator と coverage analyzer を検証する。
 """
 
 from __future__ import annotations
@@ -39,6 +39,7 @@ class TraceabilityMatrixGeneratorTest(unittest.TestCase):
                 str(ROOT_DIR / "tools"),
                 "--output",
                 str(output_path),
+                "--fail-on-coverage-error",
             ]
 
             result = subprocess.run(
@@ -65,6 +66,19 @@ class TraceabilityMatrixGeneratorTest(unittest.TestCase):
 
             self.assertEqual(matrix.get("matrix_schema_version"), "0.1.0")
             self.assertGreater(matrix.get("entry_count", 0), 0)
+
+            coverage = matrix.get("coverage", {})
+
+            self.assertTrue(coverage.get("coverage_ok"))
+            self.assertEqual(coverage.get("duplicate_trace_ids"), [])
+            self.assertEqual(
+                coverage.get("entries_without_responsibility"),
+                [],
+            )
+            self.assertEqual(
+                coverage.get("entries_without_symbol"),
+                [],
+            )
 
             entries = matrix.get("entries", [])
             trace_ids = {entry.get("trace_id") for entry in entries}
