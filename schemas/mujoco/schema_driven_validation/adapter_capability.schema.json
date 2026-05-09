@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mayusaki3.github.io/SansaVRM/schemas/mujoco/schema_driven_validation/adapter_capability.schema.json",
+  "title": "MuJoCo Adapter Capability Package",
+  "type": "object",
+  "required": [
+    "capability_id",
+    "capability_version",
+    "adapter_id",
+    "adapter_version",
+    "runtime",
+    "runtime_version_range",
+    "supported_namespaces",
+    "supported_targets",
+    "supported_io_scopes"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "capability_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "capability_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "adapter_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "adapter_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "runtime": {
+      "const": "mujoco"
+    },
+    "runtime_version_range": {
+      "$ref": "#/$defs/version_range"
+    },
+    "supported_namespaces": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "supported_targets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "supported_io_scopes": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "mjcf",
+          "adapter_artifact",
+          "both",
+          "preserve_only",
+          "unsupported",
+          "source_raw"
+        ]
+      }
+    },
+    "supported_mappings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "supported_artifacts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "supported_value_conversions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "unsupported_entries": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/unsupported_entry"
+      }
+    }
+  },
+  "$defs": {
+    "version_range": {
+      "type": "object",
+      "required": ["min", "max"],
+      "additionalProperties": false,
+      "properties": {
+        "min": {
+          "type": ["string", "null"]
+        },
+        "max": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "unsupported_entry": {
+      "type": "object",
+      "required": [
+        "namespace",
+        "name",
+        "target_type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "namespace": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "target_type": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
