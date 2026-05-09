@@ -6,12 +6,14 @@ on:
       - 'tools/mujoco_schema_validator/**'
       - 'tools/mujoco_poc_adapter/**'
       - 'tests/convert/mujoco/schema_driven_validation/**'
+      - 'schemas/mujoco/schema_driven_validation/**'
       - '.github/workflows/mujoco-schema-driven-validation.yml'
   pull_request:
     paths:
       - 'tools/mujoco_schema_validator/**'
       - 'tools/mujoco_poc_adapter/**'
       - 'tests/convert/mujoco/schema_driven_validation/**'
+      - 'schemas/mujoco/schema_driven_validation/**'
       - '.github/workflows/mujoco-schema-driven-validation.yml'
 
 jobs:
@@ -45,3 +47,9 @@ jobs:
           PYTHONPATH: tools
         run: |
           python -m unittest tests.convert.mujoco.schema_driven_validation.test_traceability_matrix
+
+      - name: Run JSON Schema validation tests
+        env:
+          PYTHONPATH: tools
+        run: |
+          python -m unittest tests.convert.mujoco.schema_driven_validation.test_json_schema_validation
