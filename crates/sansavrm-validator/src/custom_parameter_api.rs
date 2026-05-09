@@ -1,7 +1,18 @@
 // crates/sansavrm-validator/src/custom_parameter_api.rs
 
+//! custom parameter schema 検証 API。
+//!
+//! 役割:
+//! - custom parameter schema の io_scope / mjcf_mapping / adapter_artifact 整合性を検証する。
+//! - unsupported / preserve_only / source_raw を diagnostics として表現する。
+//! - registry に登録された schema 一覧をまとめて検証する。
+//!
+//! 注意点:
+//! - 本モジュールは schema 構造と registry 整合性の検証を担当する。
+//! - 実際の値検証、MuJoCo version 比較、Adapter version 比較は後続実装で扱う。
+
 use sansavrm_core::{
-    CustomParameterIoScope, CustomParameterSchema, DiagnosticCode,
+    CustomParameterIoScope, CustomParameterRegistry, CustomParameterSchema, DiagnosticCode,
     DiagnosticSeverity, ValidationDiagnostic,
 };
 
@@ -37,6 +48,91 @@ pub fn validate_custom_parameter_schema(schema: &CustomParameterSchema) -> Valid
             .iter()
             .all(|diagnostic| diagnostic.severity != DiagnosticSeverity::Error),
         diagnostics,
+    }
+}
+
+/// custom parameter registry を検証する。
+///
+/// 役割:
+/// - registry に登録された全 schema を検証する。
+/// - registry を利用する Adapter / Validator が schema-driven に判定できる状態か確認する。
+///
+/// 引数:
+/// - `registry`: 検証対象の custom parameter registry。
+///
+/// 戻り値:
+/// - `ValidatorResult`: 全 schema の検証成功可否と diagnostics。
+///
+/// 注意点:
+/// - registry が空の場合は成功扱いとする。
+/// - 同一キー重複の検出は後続実装とする。
+///
+/// @hldocs.ref doc-20260504-000209Z-SV0J#sec_w7v5y0m2
+/// @hldocs.ref doc-20260504-000209Z-SV0J#sec_w7v5y0m3
+/// @hldocs.ref doc-20260504-000209Z-SV0J#sec_w7v5y0m4
+pub fn validate_custom_parameter_registry(
+    registry: &CustomParameterRegistry,
+) -> ValidatorResult {
+    let mut diagnostics = Vec::new();
+
+    for schema in registry.schemas() {
+        let result = validate_custom_parameter_schema(schema);
+        diagnostics.extend(result.diagnostics);
+    }
+
+    ValidatorResult {
+        success: diagnostics
+            .iter()
+            .all(|diagnostic| diagnostic.severity != DiagnosticSeverity::Error),
+        diagnostics,
+    }
+}
+
+/// registry から schema を解決できることを検証する。
+///
+/// 役割:
+/// - namespace / name / target_type に対応する schema が registry に登録済みか確認する。
+/// - 未登録 parameter を diagnostics として返す。
+///
+/// 引数:
+/// - `registry`: 検索対象 registry。
+/// - `namespace`: 検索対象 namespace。
+/// - `name`: 検索対象 parameter 名。
+/// - `target_type`: 検索対象 target_type。
+///
+/// 戻り値:
+/// - `ValidatorResult`: schema が存在する場合は成功、存在しない場合は diagnostics 付き失敗。
+///
+/// @hldocs.ref doc-20260504-000209Z-SV0J#sec_w7v5y0m2
+pub fn validate_custom_parameter_registered(
+    registry: &CustomParameterRegistry,
+    namespace: &str,
+    name: &str,
+    target_type: &str,
+) -> ValidatorResult {
+    let target = format!("{}.{}:{}", namespace, name, target_type);
+
+    if registry
+        .resolve_custom_parameter_schema(namespace, name, target_type)
+        .is_some()
+    {
+        return ValidatorResult {
+            success: true,
+            diagnostics: Vec::new(),
+        };
+    }
+
+    ValidatorResult {
+        success: false,
+        diagnostics: vec![ValidationDiagnostic {
+            code: DiagnosticCode::CustomParameterUnsupported,
+            severity: DiagnosticSeverity::Error,
+            message: format!(
+                "custom parameter schema is not registered: {}",
+                target
+            ),
+            target: Some(target),
+        }],
     }
 }
 
