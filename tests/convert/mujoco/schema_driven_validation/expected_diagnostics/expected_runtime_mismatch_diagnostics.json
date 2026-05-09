@@ -1,0 +1,8 @@
+[
+  {
+    "code": "SCHEMA_VERSION_OUT_OF_RANGE"
+  },
+  {
+    "code": "VERSION_RUNTIME_MISMATCH"
+  }
+]
