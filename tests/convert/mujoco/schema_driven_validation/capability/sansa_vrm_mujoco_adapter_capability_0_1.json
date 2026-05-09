@@ -1,0 +1,38 @@
+{
+  "capability_id": "capability-sansa-vrm-mujoco-adapter-0.1.0",
+  "capability_version": "0.1.0",
+  "adapter_id": "sansa-vrm-mujoco-adapter",
+  "adapter_version": "0.1.0",
+  "runtime": "mujoco",
+  "runtime_version_range": {
+    "min": "2.3.0",
+    "max": null
+  },
+  "supported_namespaces": [
+    "mujoco"
+  ],
+  "supported_targets": [
+    "joint",
+    "actuator",
+    "body"
+  ],
+  "supported_io_scopes": [
+    "mjcf",
+    "adapter_artifact",
+    "source_raw"
+  ],
+  "supported_mappings": [
+    "joint.armature"
+  ],
+  "supported_artifacts": [
+    "controller_config"
+  ],
+  "supported_value_conversions": [
+    "float_to_float"
+  ],
+  "unsupported_entries": [],
+  "diagnostics_policy": {
+    "unsupported_is_error_in_strict": true,
+    "fallback_is_warning": true
+  }
+}
