@@ -1,0 +1,7 @@
+{
+  "output_allowed": false,
+  "ci_exit_code": 5,
+  "diagnostics_summary": {
+    "error_count": 2
+  }
+}
