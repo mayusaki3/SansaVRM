@@ -1,0 +1,12 @@
+{
+  "report_schema_version": "0.1.0",
+  "source_format": "sansa_vrm",
+  "target_format": "mujoco_mjcf",
+  "strict": true,
+  "output_allowed": true,
+  "diagnostics_summary": {
+    "info_count": 2,
+    "warning_count": 0,
+    "error_count": 0
+  }
+}
