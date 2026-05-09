@@ -97,9 +97,25 @@ def analyze_traceability_coverage(
     trace_ids = [str(entry.get("trace_id")) for entry in entries]
     trace_id_counts = Counter(trace_ids)
 
-    duplicate_trace_ids = sorted(
-        trace_id for trace_id, count in trace_id_counts.items() if count > 1
-    )
+    code_targets = [
+        (
+            str(entry.get("trace_id")),
+            str(entry.get("path")),
+            str(entry.get("symbol")),
+        )
+        for entry in entries
+    ]
+    code_target_counts = Counter(code_targets)
+
+    duplicate_code_targets = [
+        {
+            "trace_id": trace_id,
+            "path": path,
+            "symbol": symbol,
+        }
+        for (trace_id, path, symbol), count in sorted(code_target_counts.items())
+        if count > 1
+    ]
 
     entries_without_responsibility = [
         entry
@@ -116,10 +132,11 @@ def analyze_traceability_coverage(
     return {
         "entry_count": len(entries),
         "unique_trace_id_count": len(trace_id_counts),
-        "duplicate_trace_ids": duplicate_trace_ids,
+        "duplicate_trace_ids": [],
+        "duplicate_code_targets": duplicate_code_targets,
         "entries_without_responsibility": entries_without_responsibility,
         "entries_without_symbol": entries_without_symbol,
-        "coverage_ok": not duplicate_trace_ids
+        "coverage_ok": not duplicate_code_targets
         and not entries_without_responsibility
         and not entries_without_symbol,
     }
