@@ -7,8 +7,8 @@
 
 注意点:
     - MuJoCo runtime は実行しない
-    - skeleton のため実ロジックは未実装部分を含む
     - traceability unit ごとに責務分離する
+    - Validation Error Code catalog を参照して diagnostics consistency を維持する
 """
 
 from __future__ import annotations
@@ -18,15 +18,17 @@ import json
 from pathlib import Path
 from typing import Any
 
-from mujoco_schema_validator.schema_loader import load_json_file
 from mujoco_schema_validator.capability_loader import load_capability_package
 from mujoco_schema_validator.diagnostics import DiagnosticEmitter
 from mujoco_schema_validator.report_writer import build_conversion_report
-from mujoco_schema_validator.rules.registry_rules import validate_registry_structure
-from mujoco_schema_validator.rules.io_scope_rules import validate_io_scope_consistency
 from mujoco_schema_validator.rules.capability_rules import check_adapter_capability
+from mujoco_schema_validator.rules.error_code_rules import (
+    validate_error_code_consistency,
+)
 from mujoco_schema_validator.rules.fallback_rules import evaluate_fallback
-from mujoco_schema_validator.rules.error_code_rules import validate_error_code_consistency
+from mujoco_schema_validator.rules.io_scope_rules import validate_io_scope_consistency
+from mujoco_schema_validator.rules.registry_rules import validate_registry_structure
+from mujoco_schema_validator.schema_loader import load_json_file
 
 
 # trace_id: trace_mujoco_sdv_execution_001
@@ -52,6 +54,7 @@ def determine_output_allowed(diagnostics: list[dict[str, Any]], strict: bool) ->
     for diagnostic in diagnostics:
         severity = diagnostic.get("severity")
         output_action = diagnostic.get("output_action")
+        strict_block = diagnostic.get("strict_block", False)
 
         if severity == "error":
             return False
@@ -59,10 +62,15 @@ def determine_output_allowed(diagnostics: list[dict[str, Any]], strict: bool) ->
         if output_action == "block_output":
             return False
 
+        if strict_block:
+            return False
+
     return True
 
 
 def parse_args() -> argparse.Namespace:
+    """CLI 引数を解析する。"""
+
     parser = argparse.ArgumentParser(
         description="MuJoCo schema-driven validation PoC validator"
     )
@@ -79,6 +87,8 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> int:
+    """PoC validator CLI entry point."""
+
     args = parse_args()
 
     execution_config = load_json_file(args.config)
@@ -87,7 +97,9 @@ def main() -> int:
     error_code_catalog = load_json_file(args.error_codes)
     sansa_input = load_json_file(args.input)
 
-    diagnostics_emitter = DiagnosticEmitter()
+    diagnostics_emitter = DiagnosticEmitter(
+        error_code_catalog=error_code_catalog,
+    )
 
     validate_registry_structure(
         registry_package=registry_package,
@@ -132,6 +144,7 @@ def main() -> int:
                     f"{entry.get('target_type')}"
                 ),
                 "result": "validated",
+                "io_scope": entry.get("io_scope"),
             }
         )
 
