@@ -10,6 +10,7 @@
     - traceability unit ごとに責務分離する
     - Validation Error Code catalog を参照して diagnostics consistency を維持する
     - strict / permissive mode を execution rules として扱う
+    - runtime / adapter version compatibility を検証する
 """
 
 from __future__ import annotations
@@ -32,6 +33,11 @@ from mujoco_schema_validator.rules.execution_mode_rules import (
 from mujoco_schema_validator.rules.fallback_rules import evaluate_fallback
 from mujoco_schema_validator.rules.io_scope_rules import validate_io_scope_consistency
 from mujoco_schema_validator.rules.registry_rules import validate_registry_structure
+from mujoco_schema_validator.rules.version_rules import (
+    validate_capability_runtime_version,
+    validate_entry_required_versions,
+    validate_registry_runtime_version,
+)
 from mujoco_schema_validator.schema_loader import load_json_file
 
 
@@ -92,6 +98,18 @@ def main() -> int:
         diagnostics_emitter=diagnostics_emitter,
     )
 
+    validate_registry_runtime_version(
+        execution_config=execution_config,
+        registry_package=registry_package,
+        diagnostics_emitter=diagnostics_emitter,
+    )
+
+    validate_capability_runtime_version(
+        execution_config=execution_config,
+        capability_package=capability_package,
+        diagnostics_emitter=diagnostics_emitter,
+    )
+
     parameter_results: list[dict[str, Any]] = []
     fallback_results: list[dict[str, Any]] = []
 
@@ -100,6 +118,13 @@ def main() -> int:
     for entry in entries:
         validate_io_scope_consistency(
             entry=entry,
+            diagnostics_emitter=diagnostics_emitter,
+        )
+
+        validate_entry_required_versions(
+            execution_config=execution_config,
+            entry=entry,
+            capability_package=capability_package,
             diagnostics_emitter=diagnostics_emitter,
         )
 
