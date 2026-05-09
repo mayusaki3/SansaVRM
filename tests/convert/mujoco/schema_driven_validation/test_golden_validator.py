@@ -26,16 +26,7 @@ VALIDATOR = ROOT_DIR / "tools" / "mujoco_schema_validator" / "validate.py"
 
 
 def load_json(path: Path) -> Any:
-    """JSON ファイルを読み込む。
-
-    Args:
-        path:
-            JSON ファイルパス。
-
-    Returns:
-        Any:
-            JSON データ。
-    """
+    """JSON ファイルを読み込む。"""
 
     return json.loads(path.read_text(encoding="utf-8"))
 
@@ -45,16 +36,7 @@ def assert_json_subset(
     expected: Any,
     actual: Any,
 ) -> None:
-    """expected が actual に部分一致することを検証する。
-
-    Args:
-        testcase:
-            unittest.TestCase インスタンス。
-        expected:
-            期待値。
-        actual:
-            実値。
-    """
+    """expected が actual に部分一致することを検証する。"""
 
     if isinstance(expected, dict):
         testcase.assertIsInstance(actual, dict)
@@ -73,6 +55,71 @@ def assert_json_subset(
     testcase.assertEqual(expected, actual)
 
 
+def run_validator(
+    *,
+    testcase: unittest.TestCase,
+    config_name: str,
+) -> tuple[list[dict[str, Any]], dict[str, Any], int]:
+    """validator を実行する。"""
+
+    with tempfile.TemporaryDirectory() as temp_dir:
+        temp_path = Path(temp_dir)
+        diagnostics_path = temp_path / "diagnostics.json"
+        report_path = temp_path / "conversion_report.json"
+
+        command = [
+            sys.executable,
+            str(VALIDATOR),
+            "--input",
+            str(FIXTURE_DIR / "inputs" / "sample_sansavrm.json"),
+            "--registry",
+            str(FIXTURE_DIR / "registry" / "mujoco_schema_registry_2_3.json"),
+            "--capability",
+            str(
+                FIXTURE_DIR
+                / "capability"
+                / "sansa_vrm_mujoco_adapter_capability_0_1.json"
+            ),
+            "--error-codes",
+            str(FIXTURE_DIR / "registry" / "validation_error_codes_0_1.json"),
+            "--config",
+            str(FIXTURE_DIR / "inputs" / config_name),
+            "--diagnostics",
+            str(diagnostics_path),
+            "--report",
+            str(report_path),
+        ]
+
+        env = {
+            "PYTHONPATH": str(ROOT_DIR / "tools"),
+        }
+
+        result = subprocess.run(
+            command,
+            cwd=str(ROOT_DIR),
+            env=env,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+
+        testcase.assertTrue(
+            diagnostics_path.exists(),
+            msg=f"diagnostics not generated\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+        )
+
+        testcase.assertTrue(
+            report_path.exists(),
+            msg=f"report not generated\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+        )
+
+        return (
+            load_json(diagnostics_path),
+            load_json(report_path),
+            result.returncode,
+        )
+
+
 class MuJoCoSchemaDrivenValidationGoldenTest(unittest.TestCase):
     """MuJoCo schema-driven validation golden tests."""
 
@@ -82,71 +129,51 @@ class MuJoCoSchemaDrivenValidationGoldenTest(unittest.TestCase):
     def test_success_fixture_matches_golden_data(self) -> None:
         """正常系 fixture の Diagnostics / Report が golden data と一致すること。"""
 
-        with tempfile.TemporaryDirectory() as temp_dir:
-            temp_path = Path(temp_dir)
-            diagnostics_path = temp_path / "diagnostics.json"
-            report_path = temp_path / "conversion_report.json"
+        actual_diagnostics, actual_report, return_code = run_validator(
+            testcase=self,
+            config_name="export_strict_config.json",
+        )
 
-            command = [
-                sys.executable,
-                str(VALIDATOR),
-                "--input",
-                str(FIXTURE_DIR / "inputs" / "sample_sansavrm.json"),
-                "--registry",
-                str(FIXTURE_DIR / "registry" / "mujoco_schema_registry_2_3.json"),
-                "--capability",
-                str(
-                    FIXTURE_DIR
-                    / "capability"
-                    / "sansa_vrm_mujoco_adapter_capability_0_1.json"
-                ),
-                "--error-codes",
-                str(FIXTURE_DIR / "registry" / "validation_error_codes_0_1.json"),
-                "--config",
-                str(FIXTURE_DIR / "inputs" / "export_strict_config.json"),
-                "--diagnostics",
-                str(diagnostics_path),
-                "--report",
-                str(report_path),
-            ]
+        self.assertEqual(return_code, 0)
 
-            env = {
-                "PYTHONPATH": str(ROOT_DIR / "tools"),
-            }
+        expected_diagnostics = load_json(
+            FIXTURE_DIR
+            / "expected_diagnostics"
+            / "expected_success_diagnostics.json"
+        )
+        expected_report = load_json(
+            FIXTURE_DIR / "expected_reports" / "expected_success_report.json"
+        )
 
-            result = subprocess.run(
-                command,
-                cwd=str(ROOT_DIR),
-                env=env,
-                text=True,
-                capture_output=True,
-                check=False,
-            )
+        assert_json_subset(self, expected_diagnostics, actual_diagnostics)
+        assert_json_subset(self, expected_report, actual_report)
 
-            self.assertEqual(
-                result.returncode,
-                0,
-                msg=(
-                    "validator failed\n"
-                    f"stdout:\n{result.stdout}\n"
-                    f"stderr:\n{result.stderr}"
-                ),
-            )
+    # trace_id: trace_mujoco_sdv_capability_001
+    # trace_id: trace_mujoco_sdv_registry_001
+    # responsibility: Validate runtime mismatch behavior.
+    def test_runtime_mismatch_fixture_matches_golden_data(self) -> None:
+        """runtime mismatch fixture が golden data と一致すること。"""
 
-            actual_diagnostics = load_json(diagnostics_path)
-            actual_report = load_json(report_path)
+        actual_diagnostics, actual_report, return_code = run_validator(
+            testcase=self,
+            config_name="export_runtime_mismatch_config.json",
+        )
 
-            expected_diagnostics = load_json(
-                FIXTURE_DIR
-                / "expected_diagnostics"
-                / "expected_success_diagnostics.json"
-            )
-            expected_report = load_json(
-                FIXTURE_DIR / "expected_reports" / "expected_success_report.json"
-            )
+        self.assertEqual(return_code, 5)
 
-            assert_json_subset(self, expected_diagnostics, actual_diagnostics)
-            assert_json_subset(self, expected_report, actual_report)
+        expected_diagnostics = load_json(
+            FIXTURE_DIR
+            / "expected_diagnostics"
+            / "expected_runtime_mismatch_diagnostics.json"
+        )
+        expected_report = load_json(
+            FIXTURE_DIR
+            / "expected_reports"
+            / "expected_runtime_mismatch_report.json"
+        )
+
+        assert_json_subset(self, expected_diagnostics, actual_diagnostics)
+        assert_json_subset(self, expected_report, actual_report)
 
 
 if __name__ == "__main__":
