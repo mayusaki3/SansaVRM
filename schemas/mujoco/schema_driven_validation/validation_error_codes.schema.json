@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mayusaki3.github.io/SansaVRM/schemas/mujoco/schema_driven_validation/validation_error_codes.schema.json",
+  "title": "Validation Error Code Catalog",
+  "type": "object",
+  "required": [
+    "catalog_id",
+    "catalog_version",
+    "codes"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "catalog_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "catalog_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "codes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/error_code"
+      }
+    }
+  },
+  "$defs": {
+    "error_code": {
+      "type": "object",
+      "required": [
+        "code",
+        "category",
+        "severity",
+        "strict_block",
+        "ci_exit_code",
+        "recoverable",
+        "fallback_possible",
+        "lossy",
+        "requires_manual_review"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "type": "string",
+          "pattern": "^[A-Z0-9_]+$"
+        },
+        "category": {
+          "enum": [
+            "SCHEMA",
+            "ADAPTER_CAPABILITY",
+            "VERSION",
+            "FALLBACK",
+            "LOSSY",
+            "UNSUPPORTED",
+            "SOURCE_RAW",
+            "ARTIFACT",
+            "VALIDATION",
+            "TRACEABILITY",
+            "INTERNAL"
+          ]
+        },
+        "severity": {
+          "enum": ["info", "warning", "error"]
+        },
+        "strict_block": {
+          "type": "boolean"
+        },
+        "ci_exit_code": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recoverable": {
+          "type": "boolean"
+        },
+        "fallback_possible": {
+          "type": "boolean"
+        },
+        "lossy": {
+          "type": "boolean"
+        },
+        "requires_manual_review": {
+          "type": "boolean"
+        },
+        "description": {
+          "type": "string"
+        },
+        "deprecated_since": {
+          "type": ["string", "null"]
+        },
+        "replacement_code": {
+          "type": ["string", "null"]
+        }
+      }
+    }
+  }
+}
