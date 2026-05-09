@@ -1,0 +1,10 @@
+[
+  {
+    "code": "FALLBACK_DEFAULT_APPLIED",
+    "severity": "info"
+  },
+  {
+    "code": "SOURCE_RAW_STORED",
+    "severity": "info"
+  }
+]
