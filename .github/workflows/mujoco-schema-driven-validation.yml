@@ -1,0 +1,41 @@
+name: MuJoCo Schema-Driven Validation
+
+on:
+  push:
+    paths:
+      - 'tools/mujoco_schema_validator/**'
+      - 'tools/mujoco_poc_adapter/**'
+      - 'tests/convert/mujoco/schema_driven_validation/**'
+      - '.github/workflows/mujoco-schema-driven-validation.yml'
+  pull_request:
+    paths:
+      - 'tools/mujoco_schema_validator/**'
+      - 'tools/mujoco_poc_adapter/**'
+      - 'tests/convert/mujoco/schema_driven_validation/**'
+      - '.github/workflows/mujoco-schema-driven-validation.yml'
+
+jobs:
+  golden-tests:
+    name: Golden tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run validator golden tests
+        env:
+          PYTHONPATH: tools
+        run: |
+          python -m unittest tests.convert.mujoco.schema_driven_validation.test_golden_validator
+
+      - name: Run adapter export integration tests
+        env:
+          PYTHONPATH: tools
+        run: |
+          python -m unittest tests.convert.mujoco.schema_driven_validation.test_adapter_export
