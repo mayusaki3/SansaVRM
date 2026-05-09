@@ -9,6 +9,7 @@
     - MuJoCo runtime は実行しない
     - traceability unit ごとに責務分離する
     - Validation Error Code catalog を参照して diagnostics consistency を維持する
+    - strict / permissive mode を execution rules として扱う
 """
 
 from __future__ import annotations
@@ -25,47 +26,13 @@ from mujoco_schema_validator.rules.capability_rules import check_adapter_capabil
 from mujoco_schema_validator.rules.error_code_rules import (
     validate_error_code_consistency,
 )
+from mujoco_schema_validator.rules.execution_mode_rules import (
+    determine_output_allowed,
+)
 from mujoco_schema_validator.rules.fallback_rules import evaluate_fallback
 from mujoco_schema_validator.rules.io_scope_rules import validate_io_scope_consistency
 from mujoco_schema_validator.rules.registry_rules import validate_registry_structure
 from mujoco_schema_validator.schema_loader import load_json_file
-
-
-# trace_id: trace_mujoco_sdv_execution_001
-# trace_id: trace_mujoco_sdv_execution_002
-# responsibility: Determine output_allowed and orchestrate validation flow.
-def determine_output_allowed(diagnostics: list[dict[str, Any]], strict: bool) -> bool:
-    """Diagnostics から output_allowed を判定する。
-
-    Args:
-        diagnostics:
-            diagnostics 配列。
-        strict:
-            strict mode の有無。
-
-    Returns:
-        bool:
-            成果物出力可能なら True。
-    """
-
-    if not strict:
-        return True
-
-    for diagnostic in diagnostics:
-        severity = diagnostic.get("severity")
-        output_action = diagnostic.get("output_action")
-        strict_block = diagnostic.get("strict_block", False)
-
-        if severity == "error":
-            return False
-
-        if output_action == "block_output":
-            return False
-
-        if strict_block:
-            return False
-
-    return True
 
 
 def parse_args() -> argparse.Namespace:
@@ -84,6 +51,20 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--diagnostics", required=True)
 
     return parser.parse_args()
+
+
+def _build_parameter_result(entry: dict[str, Any]) -> dict[str, Any]:
+    """registry entry から parameter_result を生成する。"""
+
+    namespace = entry.get("namespace")
+    name = entry.get("name")
+    target_type = entry.get("target_type")
+
+    return {
+        "entry_key": f"{namespace}.{name}.{target_type}",
+        "result": "validated",
+        "io_scope": entry.get("io_scope"),
+    }
 
 
 def main() -> int:
@@ -136,17 +117,7 @@ def main() -> int:
         if fallback_result is not None:
             fallback_results.append(fallback_result)
 
-        parameter_results.append(
-            {
-                "entry_key": (
-                    f"{entry.get('namespace')}."
-                    f"{entry.get('name')}."
-                    f"{entry.get('target_type')}"
-                ),
-                "result": "validated",
-                "io_scope": entry.get("io_scope"),
-            }
-        )
+        parameter_results.append(_build_parameter_result(entry))
 
     diagnostics = diagnostics_emitter.to_list()
 
@@ -177,7 +148,7 @@ def main() -> int:
 
     _ = sansa_input
 
-    return 0 if output_allowed else 2
+    return report.get("ci_exit_code", 0)
 
 
 if __name__ == "__main__":
