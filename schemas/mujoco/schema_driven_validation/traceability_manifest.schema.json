@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mayusaki3.github.io/SansaVRM/schemas/mujoco/schema_driven_validation/traceability_manifest.schema.json",
+  "title": "MuJoCo Schema-Driven Validation Traceability Manifest",
+  "type": "object",
+  "required": [
+    "manifest_schema_version",
+    "manifest_id",
+    "entries"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "manifest_schema_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "manifest_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/traceability_entry"
+      }
+    }
+  },
+  "$defs": {
+    "traceability_entry": {
+      "type": "object",
+      "required": [
+        "trace_id",
+        "validation_scope",
+        "spec_ref",
+        "test_ref",
+        "code_target",
+        "diagnostic_codes",
+        "report_fields"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "trace_id": {
+          "type": "string",
+          "pattern": "^trace_mujoco_sdv_[a-z0-9_]+$"
+        },
+        "validation_scope": {
+          "enum": [
+            "registry_structure",
+            "io_scope",
+            "mjcf_mapping",
+            "adapter_artifact",
+            "adapter_capability",
+            "fallback",
+            "diagnostics",
+            "conversion_report",
+            "error_code",
+            "execution_mode",
+            "artifact_output",
+            "schema_validation",
+            "schema_compatibility",
+            "traceability"
+          ]
+        },
+        "spec_ref": {
+          "$ref": "#/$defs/spec_ref"
+        },
+        "test_ref": {
+          "$ref": "#/$defs/test_ref"
+        },
+        "code_target": {
+          "$ref": "#/$defs/code_target"
+        },
+        "diagnostic_codes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "report_fields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "spec_ref": {
+      "type": "object",
+      "required": ["path", "section"],
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "section": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "test_ref": {
+      "type": "object",
+      "required": ["path", "test_id"],
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "test_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "code_target": {
+      "type": "object",
+      "required": ["path", "symbol"],
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "symbol": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}
