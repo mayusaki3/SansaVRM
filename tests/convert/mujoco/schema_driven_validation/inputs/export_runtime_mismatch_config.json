@@ -1,0 +1,9 @@
+{
+  "mode": "export",
+  "strict": true,
+  "source_format": "sansa_vrm",
+  "target_format": "mujoco_mjcf",
+  "runtime": "mujoco",
+  "runtime_version": "1.5.0",
+  "output_dir": "out/mujoco"
+}
