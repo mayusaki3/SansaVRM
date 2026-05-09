@@ -1,0 +1,177 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mayusaki3.github.io/SansaVRM/schemas/mujoco/schema_driven_validation/registry.schema.json",
+  "title": "MuJoCo Schema Registry Package",
+  "type": "object",
+  "required": [
+    "schema_id",
+    "schema_version",
+    "runtime",
+    "runtime_version_range",
+    "entries",
+    "diagnostics_policy"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "schema_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "runtime": {
+      "const": "mujoco"
+    },
+    "runtime_version_range": {
+      "$ref": "#/$defs/version_range"
+    },
+    "diagnostics_policy": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/registry_entry"
+      }
+    }
+  },
+  "$defs": {
+    "version_range": {
+      "type": "object",
+      "required": ["min", "max"],
+      "additionalProperties": false,
+      "properties": {
+        "min": {
+          "type": ["string", "null"]
+        },
+        "max": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "registry_entry": {
+      "type": "object",
+      "required": [
+        "namespace",
+        "name",
+        "target_type",
+        "io_scope"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "namespace": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "target_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "io_scope": {
+          "enum": [
+            "mjcf",
+            "adapter_artifact",
+            "both",
+            "preserve_only",
+            "unsupported",
+            "source_raw"
+          ]
+        },
+        "mjcf_mapping": {
+          "$ref": "#/$defs/mjcf_mapping"
+        },
+        "adapter_artifact": {
+          "$ref": "#/$defs/adapter_artifact"
+        },
+        "fallback": {
+          "$ref": "#/$defs/fallback"
+        }
+      }
+    },
+    "mjcf_mapping": {
+      "type": "object",
+      "required": [
+        "element",
+        "path",
+        "direction",
+        "required_mujoco_version"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "element": {
+          "type": "string",
+          "minLength": 1
+        },
+        "attribute": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "direction": {
+          "enum": ["import", "export", "import_export"]
+        },
+        "required_mujoco_version": {
+          "oneOf": [
+            {"type": "string"},
+            {"$ref": "#/$defs/version_range"}
+          ]
+        },
+        "value_conversion": {
+          "type": ["object", "string", "null"]
+        }
+      }
+    },
+    "adapter_artifact": {
+      "type": "object",
+      "required": [
+        "artifact_type",
+        "path",
+        "direction",
+        "required_adapter_version"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "artifact_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "direction": {
+          "enum": ["import", "export", "import_export"]
+        },
+        "required_adapter_version": {
+          "oneOf": [
+            {"type": "string"},
+            {"$ref": "#/$defs/version_range"}
+          ]
+        },
+        "value_conversion": {
+          "type": ["object", "string", "null"]
+        }
+      }
+    },
+    "fallback": {
+      "type": "object",
+      "required": ["behavior"],
+      "additionalProperties": true,
+      "properties": {
+        "behavior": {
+          "enum": ["use_default", "preserve_only", "warn", "error", "ignore"]
+        },
+        "value": true
+      }
+    }
+  }
+}
