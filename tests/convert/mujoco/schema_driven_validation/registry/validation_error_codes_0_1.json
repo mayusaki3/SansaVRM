@@ -1,0 +1,61 @@
+{
+  "catalog_id": "validation-error-codes-0.1.0",
+  "catalog_version": "0.1.0",
+  "codes": [
+    {
+      "code": "SCHEMA_MISSING_REQUIRED_FIELD",
+      "category": "SCHEMA",
+      "severity": "error",
+      "strict_block": true,
+      "ci_exit_code": 5,
+      "recoverable": false,
+      "fallback_possible": false,
+      "lossy": false,
+      "requires_manual_review": false
+    },
+    {
+      "code": "SCHEMA_INVALID_IO_SCOPE",
+      "category": "SCHEMA",
+      "severity": "error",
+      "strict_block": true,
+      "ci_exit_code": 5,
+      "recoverable": false,
+      "fallback_possible": false,
+      "lossy": false,
+      "requires_manual_review": false
+    },
+    {
+      "code": "SOURCE_RAW_STORED",
+      "category": "SOURCE_RAW",
+      "severity": "info",
+      "strict_block": false,
+      "ci_exit_code": 1,
+      "recoverable": true,
+      "fallback_possible": false,
+      "lossy": false,
+      "requires_manual_review": false
+    },
+    {
+      "code": "FALLBACK_DEFAULT_APPLIED",
+      "category": "FALLBACK",
+      "severity": "info",
+      "strict_block": false,
+      "ci_exit_code": 1,
+      "recoverable": true,
+      "fallback_possible": true,
+      "lossy": false,
+      "requires_manual_review": false
+    },
+    {
+      "code": "ADAPTER_CAPABILITY_UNSUPPORTED_NAMESPACE",
+      "category": "ADAPTER_CAPABILITY",
+      "severity": "warning",
+      "strict_block": false,
+      "ci_exit_code": 6,
+      "recoverable": true,
+      "fallback_possible": true,
+      "lossy": false,
+      "requires_manual_review": true
+    }
+  ]
+}
