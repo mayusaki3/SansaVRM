@@ -53,3 +53,9 @@ jobs:
           PYTHONPATH: tools
         run: |
           python -m unittest tests.convert.mujoco.schema_driven_validation.test_json_schema_validation
+
+      - name: Run schema compatibility tests
+        env:
+          PYTHONPATH: tools
+        run: |
+          python -m unittest tests.convert.mujoco.schema_driven_validation.test_schema_compatibility
