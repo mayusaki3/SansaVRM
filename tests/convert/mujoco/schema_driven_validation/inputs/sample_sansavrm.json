@@ -1,0 +1,36 @@
+{
+  "format": "sansa_vrm",
+  "version": "0.1.0",
+  "nodes": [
+    {
+      "id": "joint_001",
+      "type": "joint",
+      "extensions": {
+        "mujoco": {
+          "armature": 0.1
+        }
+      }
+    },
+    {
+      "id": "actuator_001",
+      "type": "actuator",
+      "extensions": {
+        "mujoco": {
+          "controller_blob": {
+            "controller": "pid",
+            "kp": 10.0
+          }
+        }
+      }
+    },
+    {
+      "id": "body_001",
+      "type": "body",
+      "extensions": {
+        "mujoco": {
+          "legacy_raw_data": "raw_runtime_blob"
+        }
+      }
+    }
+  ]
+}
