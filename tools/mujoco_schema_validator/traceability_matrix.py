@@ -4,6 +4,7 @@
 役割:
     PoC 実装ファイル内の trace_id コメントを収集し、
     traceability matrix として JSON 出力する。
+    併せて traceability coverage を検証する。
 
 注意点:
     - 標準ライブラリのみを使用する
@@ -16,6 +17,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
@@ -78,6 +80,51 @@ def collect_traceability_entries(root_dir: Path) -> list[dict[str, Any]]:
     return entries
 
 
+def analyze_traceability_coverage(
+    entries: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """traceability coverage を分析する。
+
+    Args:
+        entries:
+            traceability entry 配列。
+
+    Returns:
+        dict[str, Any]:
+            coverage analysis。
+    """
+
+    trace_ids = [str(entry.get("trace_id")) for entry in entries]
+    trace_id_counts = Counter(trace_ids)
+
+    duplicate_trace_ids = sorted(
+        trace_id for trace_id, count in trace_id_counts.items() if count > 1
+    )
+
+    entries_without_responsibility = [
+        entry
+        for entry in entries
+        if not entry.get("responsibility")
+    ]
+
+    entries_without_symbol = [
+        entry
+        for entry in entries
+        if not entry.get("symbol")
+    ]
+
+    return {
+        "entry_count": len(entries),
+        "unique_trace_id_count": len(trace_id_counts),
+        "duplicate_trace_ids": duplicate_trace_ids,
+        "entries_without_responsibility": entries_without_responsibility,
+        "entries_without_symbol": entries_without_symbol,
+        "coverage_ok": not duplicate_trace_ids
+        and not entries_without_responsibility
+        and not entries_without_symbol,
+    }
+
+
 def parse_args() -> argparse.Namespace:
     """CLI 引数を解析する。"""
 
@@ -94,6 +141,11 @@ def parse_args() -> argparse.Namespace:
         required=True,
         help="Output JSON path.",
     )
+    parser.add_argument(
+        "--fail-on-coverage-error",
+        action="store_true",
+        help="Exit with non-zero status when coverage analysis fails.",
+    )
 
     return parser.parse_args()
 
@@ -104,10 +156,12 @@ def main() -> int:
     args = parse_args()
     root_dir = Path(args.root)
     entries = collect_traceability_entries(root_dir)
+    coverage = analyze_traceability_coverage(entries)
 
     output = {
         "matrix_schema_version": "0.1.0",
         "entry_count": len(entries),
+        "coverage": coverage,
         "entries": entries,
     }
 
@@ -117,6 +171,9 @@ def main() -> int:
         json.dumps(output, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
+
+    if args.fail_on_coverage_error and not coverage.get("coverage_ok"):
+        return 1
 
     return 0
 
