@@ -1,0 +1,229 @@
+{
+  "manifest_version": "1.0",
+  "migration_id": "migration-20260510-001-dry-run",
+  "migration_type": "layer_refactor",
+  "source_revision": "develop-before-layer-refactor",
+  "target_revision": "develop-layer-refactor-dry-run",
+  "entries": [
+    {
+      "entry_id": "entry-0001",
+      "migration_type": "path_relocation",
+      "old": {
+        "doc_id": "doc-20260510-000003Z-SV02",
+        "path": "docs/ja-JP/02_仕様/01_共通/10_Core Semantic Definition.md",
+        "canonical_title": "Core Semantic Definition",
+        "layer_id": "legacy-common-spec",
+        "document_type": "spec"
+      },
+      "new": {
+        "doc_id": "dry-doc-1001-core-semantic-definition",
+        "path": "docs/ja-JP/02_仕様/10_Core Semantic Layer/1001_Core Semantic Definition.md",
+        "canonical_title": "Core Semantic Definition",
+        "layer_id": "10-core-semantic-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": true,
+      "mapping_status": "pending",
+      "reason": "layer_refactor",
+      "sec_mappings": []
+    },
+    {
+      "entry_id": "entry-0002",
+      "migration_type": "path_relocation",
+      "old": {
+        "doc_id": "doc-20260510-000004Z-SV02",
+        "path": "docs/ja-JP/02_仕様/01_共通/11_Semantic Preservation Matrix.md",
+        "canonical_title": "Semantic Preservation Matrix",
+        "layer_id": "legacy-common-spec",
+        "document_type": "spec"
+      },
+      "new": {
+        "doc_id": "dry-doc-1002-semantic-preservation-matrix",
+        "path": "docs/ja-JP/02_仕様/10_Core Semantic Layer/1002_Semantic Preservation Matrix.md",
+        "canonical_title": "Semantic Preservation Matrix",
+        "layer_id": "10-core-semantic-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": true,
+      "mapping_status": "pending",
+      "reason": "layer_refactor",
+      "sec_mappings": []
+    },
+    {
+      "entry_id": "entry-0003",
+      "migration_type": "path_relocation",
+      "old": {
+        "doc_id": "doc-20260510-000005Z-SV02",
+        "path": "docs/ja-JP/02_仕様/01_共通/12_RoundTrip Semantic Criteria.md",
+        "canonical_title": "RoundTrip Semantic Criteria",
+        "layer_id": "legacy-common-spec",
+        "document_type": "spec"
+      },
+      "new": {
+        "doc_id": "dry-doc-1003-roundtrip-semantic-criteria",
+        "path": "docs/ja-JP/02_仕様/10_Core Semantic Layer/1003_RoundTrip Semantic Criteria.md",
+        "canonical_title": "RoundTrip Semantic Criteria",
+        "layer_id": "10-core-semantic-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": true,
+      "mapping_status": "pending",
+      "reason": "layer_refactor",
+      "sec_mappings": []
+    },
+    {
+      "entry_id": "entry-0004",
+      "migration_type": "path_relocation",
+      "old": {
+        "doc_id": "doc-20260510-000006Z-SV02",
+        "path": "docs/ja-JP/02_仕様/01_共通/13_Adapter Extension Property Specification.md",
+        "canonical_title": "Adapter Extension Property Specification",
+        "layer_id": "legacy-common-spec",
+        "document_type": "spec"
+      },
+      "new": {
+        "doc_id": "dry-doc-2001-adapter-extension-property-specification",
+        "path": "docs/ja-JP/02_仕様/20_Preservation Compatibility Layer/2001_Adapter Extension Property Specification.md",
+        "canonical_title": "Adapter Extension Property Specification",
+        "layer_id": "20-preservation-compatibility-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": true,
+      "mapping_status": "pending",
+      "reason": "layer_refactor",
+      "sec_mappings": []
+    },
+    {
+      "entry_id": "entry-0005",
+      "migration_type": "path_relocation",
+      "old": {
+        "doc_id": "doc-20260510-000007Z-SV02",
+        "path": "docs/ja-JP/02_仕様/01_共通/14_Format Compatibility Preservation Specification.md",
+        "canonical_title": "Format Compatibility Preservation Specification",
+        "layer_id": "legacy-common-spec",
+        "document_type": "spec"
+      },
+      "new": {
+        "doc_id": "dry-doc-2002-format-compatibility-preservation-specification",
+        "path": "docs/ja-JP/02_仕様/20_Preservation Compatibility Layer/2002_Format Compatibility Preservation Specification.md",
+        "canonical_title": "Format Compatibility Preservation Specification",
+        "layer_id": "20-preservation-compatibility-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": true,
+      "mapping_status": "pending",
+      "reason": "layer_refactor",
+      "sec_mappings": []
+    },
+    {
+      "entry_id": "entry-0006",
+      "migration_type": "path_relocation",
+      "old": {
+        "doc_id": "doc-20260510-000012Z-SV02",
+        "path": "docs/ja-JP/02_仕様/01_共通/19_Conversion Profile Specification.md",
+        "canonical_title": "Conversion Profile Specification",
+        "layer_id": "legacy-common-spec",
+        "document_type": "spec"
+      },
+      "new": {
+        "doc_id": "dry-doc-2003-conversion-profile-specification",
+        "path": "docs/ja-JP/02_仕様/20_Preservation Compatibility Layer/2003_Conversion Profile Specification.md",
+        "canonical_title": "Conversion Profile Specification",
+        "layer_id": "20-preservation-compatibility-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": true,
+      "mapping_status": "pending",
+      "reason": "layer_refactor",
+      "sec_mappings": []
+    },
+    {
+      "entry_id": "entry-0007",
+      "migration_type": "path_relocation",
+      "old": {
+        "doc_id": "doc-20260510-000008Z-SV02",
+        "path": "docs/ja-JP/02_仕様/01_共通/15_Geometry Rig Skinning Extension Specification.md",
+        "canonical_title": "Geometry Rig Skinning Extension Specification",
+        "layer_id": "legacy-common-spec",
+        "document_type": "spec"
+      },
+      "new": {
+        "doc_id": "dry-doc-3001-geometry-rig-skinning-extension-specification",
+        "path": "docs/ja-JP/02_仕様/30_Data Model Layer/3001_Geometry Rig Skinning Extension Specification.md",
+        "canonical_title": "Geometry Rig Skinning Extension Specification",
+        "layer_id": "30-data-model-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": true,
+      "mapping_status": "pending",
+      "reason": "layer_refactor",
+      "sec_mappings": []
+    },
+    {
+      "entry_id": "entry-0008",
+      "migration_type": "path_relocation",
+      "old": {
+        "doc_id": "doc-20260510-000009Z-SV02",
+        "path": "docs/ja-JP/02_仕様/01_共通/16_Morph Extension Specification.md",
+        "canonical_title": "Morph Extension Specification",
+        "layer_id": "legacy-common-spec",
+        "document_type": "spec"
+      },
+      "new": {
+        "doc_id": "dry-doc-3002-morph-extension-specification",
+        "path": "docs/ja-JP/02_仕様/30_Data Model Layer/3002_Morph Extension Specification.md",
+        "canonical_title": "Morph Extension Specification",
+        "layer_id": "30-data-model-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": true,
+      "mapping_status": "pending",
+      "reason": "layer_refactor",
+      "sec_mappings": []
+    },
+    {
+      "entry_id": "entry-0009",
+      "migration_type": "path_relocation",
+      "old": {
+        "doc_id": "doc-20260510-000010Z-SV02",
+        "path": "docs/ja-JP/02_仕様/01_共通/17_Animation Extension Specification.md",
+        "canonical_title": "Animation Extension Specification",
+        "layer_id": "legacy-common-spec",
+        "document_type": "spec"
+      },
+      "new": {
+        "doc_id": "dry-doc-3003-animation-extension-specification",
+        "path": "docs/ja-JP/02_仕様/30_Data Model Layer/3003_Animation Extension Specification.md",
+        "canonical_title": "Animation Extension Specification",
+        "layer_id": "30-data-model-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": true,
+      "mapping_status": "pending",
+      "reason": "layer_refactor",
+      "sec_mappings": []
+    },
+    {
+      "entry_id": "entry-0010",
+      "migration_type": "path_relocation",
+      "old": {
+        "doc_id": "doc-20260510-000011Z-SV02",
+        "path": "docs/ja-JP/02_仕様/01_共通/18_Physics Extension Specification.md",
+        "canonical_title": "Physics Extension Specification",
+        "layer_id": "legacy-common-spec",
+        "document_type": "spec"
+      },
+      "new": {
+        "doc_id": "dry-doc-3004-physics-extension-specification",
+        "path": "docs/ja-JP/02_仕様/30_Data Model Layer/3004_Physics Extension Specification.md",
+        "canonical_title": "Physics Extension Specification",
+        "layer_id": "30-data-model-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": true,
+      "mapping_status": "pending",
+      "reason": "layer_refactor",
+      "sec_mappings": []
+    }
+  ]
+}
