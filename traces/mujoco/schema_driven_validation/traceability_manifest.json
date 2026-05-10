@@ -1,0 +1,463 @@
+{
+  "manifest_schema_version": "0.1.0",
+  "manifest_id": "traceability-manifest-mujoco-schema-driven-validation-0.1.0",
+  "entries": [
+    {
+      "trace_id": "trace_mujoco_sdv_registry_001",
+      "validation_scope": "registry_structure",
+      "spec_ref": {
+        "path": "docs/ja-JP/02_仕様/01_共通/10_MuJoCo Schema Registry仕様.md",
+        "section": "4. Registry構成"
+      },
+      "test_ref": {
+        "path": "docs/ja-JP/03_テスト仕様/01_共通/07_MuJoCo Schema-Driven Validationテスト仕様.md",
+        "test_id": "MUJOCO-SDV-001"
+      },
+      "code_target": {
+        "path": "tools/mujoco_schema_validator/rules/registry_rules.py",
+        "symbol": "validate_registry_structure"
+      },
+      "diagnostic_codes": [
+        "SCHEMA_MISSING_REQUIRED_FIELD",
+        "SCHEMA_VERSION_OUT_OF_RANGE"
+      ],
+      "report_fields": [
+        "diagnostics",
+        "diagnostics_summary",
+        "output_allowed",
+        "ci_exit_code"
+      ]
+    },
+    {
+      "trace_id": "trace_mujoco_sdv_registry_002",
+      "validation_scope": "registry_structure",
+      "spec_ref": {
+        "path": "docs/ja-JP/02_仕様/01_共通/10_MuJoCo Schema Registry仕様.md",
+        "section": "5. Registry Entry構造"
+      },
+      "test_ref": {
+        "path": "docs/ja-JP/03_テスト仕様/01_共通/07_MuJoCo Schema-Driven Validationテスト仕様.md",
+        "test_id": "MUJOCO-SDV-002"
+      },
+      "code_target": {
+        "path": "tools/mujoco_schema_validator/rules/registry_rules.py",
+        "symbol": "validate_registry_structure"
+      },
+      "diagnostic_codes": [
+        "SCHEMA_MISSING_REQUIRED_FIELD",
+        "SCHEMA_INVALID_VALUE_TYPE"
+      ],
+      "report_fields": [
+        "diagnostics",
+        "output_allowed",
+        "ci_exit_code"
+      ]
+    },
+    {
+      "trace_id": "trace_mujoco_sdv_io_scope_001",
+      "validation_scope": "io_scope",
+      "spec_ref": {
+        "path": "docs/ja-JP/02_仕様/01_共通/10_MuJoCo Schema Registry仕様.md",
+        "section": "8. io_scope"
+      },
+      "test_ref": {
+        "path": "docs/ja-JP/03_テスト仕様/01_共通/07_MuJoCo Schema-Driven Validationテスト仕様.md",
+        "test_id": "MUJOCO-SDV-003"
+      },
+      "code_target": {
+        "path": "tools/mujoco_schema_validator/rules/io_scope_rules.py",
+        "symbol": "validate_io_scope_consistency"
+      },
+      "diagnostic_codes": [
+        "SCHEMA_INVALID_IO_SCOPE"
+      ],
+      "report_fields": [
+        "parameter_results",
+        "diagnostics"
+      ]
+    },
+    {
+      "trace_id": "trace_mujoco_sdv_io_scope_002",
+      "validation_scope": "io_scope",
+      "spec_ref": {
+        "path": "docs/ja-JP/02_仕様/01_共通/10_MuJoCo Schema Registry仕様.md",
+        "section": "9. io_scope整合条件"
+      },
+      "test_ref": {
+        "path": "docs/ja-JP/03_テスト仕様/01_共通/07_MuJoCo Schema-Driven Validationテスト仕様.md",
+        "test_id": "MUJOCO-SDV-004"
+      },
+      "code_target": {
+        "path": "tools/mujoco_schema_validator/rules/io_scope_rules.py",
+        "symbol": "validate_io_scope_consistency"
+      },
+      "diagnostic_codes": [
+        "SCHEMA_INVALID_MAPPING",
+        "SCHEMA_INVALID_IO_SCOPE"
+      ],
+      "report_fields": [
+        "diagnostics",
+        "output_allowed",
+        "ci_exit_code"
+      ]
+    },
+    {
+      "trace_id": "trace_mujoco_sdv_io_scope_003",
+      "validation_scope": "adapter_artifact",
+      "spec_ref": {
+        "path": "docs/ja-JP/02_仕様/01_共通/10_MuJoCo Schema Registry仕様.md",
+        "section": "11. adapter_artifact"
+      },
+      "test_ref": {
+        "path": "docs/ja-JP/03_テスト仕様/01_共通/07_MuJoCo Schema-Driven Validationテスト仕様.md",
+        "test_id": "MUJOCO-SDV-005"
+      },
+      "code_target": {
+        "path": "tools/mujoco_schema_validator/rules/io_scope_rules.py",
+        "symbol": "validate_io_scope_consistency"
+      },
+      "diagnostic_codes": [
+        "SCHEMA_INVALID_ARTIFACT_RULE"
+      ],
+      "report_fields": [
+        "parameter_results",
+        "output_artifacts",
+        "diagnostics"
+      ]
+    },
+    {
+      "trace_id": "trace_mujoco_sdv_io_scope_004",
+      "validation_scope": "io_scope",
+      "spec_ref": {
+        "path": "docs/ja-JP/02_仕様/01_共通/10_MuJoCo Schema Registry仕様.md",
+        "section": "9. io_scope整合条件"
+      },
+      "test_ref": {
+        "path": "docs/ja-JP/03_テスト仕様/01_共通/07_MuJoCo Schema-Driven Validationテスト仕様.md",
+        "test_id": "MUJOCO-SDV-006"
+      },
+      "code_target": {
+        "path": "tools/mujoco_schema_validator/rules/io_scope_rules.py",
+        "symbol": "validate_io_scope_consistency"
+      },
+      "diagnostic_codes": [
+        "SCHEMA_INVALID_MAPPING",
+        "SCHEMA_INVALID_ARTIFACT_RULE"
+      ],
+      "report_fields": [
+        "parameter_results",
+        "output_artifacts",
+        "diagnostics"
+      ]
+    },
+    {
+      "trace_id": "trace_mujoco_sdv_io_scope_005",
+      "validation_scope": "io_scope",
+      "spec_ref": {
+        "path": "docs/ja-JP/02_仕様/01_共通/10_MuJoCo Schema Registry仕様.md",
+        "section": "8. io_scope"
+      },
+      "test_ref": {
+        "path": "docs/ja-JP/03_テスト仕様/01_共通/07_MuJoCo Schema-Driven Validationテスト仕様.md",
+        "test_id": "MUJOCO-SDV-007"
+      },
+      "code_target": {
+        "path": "tools/mujoco_schema_validator/rules/io_scope_rules.py",
+        "symbol": "validate_io_scope_consistency"
+      },
+      "diagnostic_codes": [
+        "SCHEMA_INVALID_IO_SCOPE"
+      ],
+      "report_fields": [
+        "preserved_results",
+        "diagnostics"
+      ]
+    },
+    {
+      "trace_id": "trace_mujoco_sdv_io_scope_006",
+      "validation_scope": "io_scope",
+      "spec_ref": {
+        "path": "docs/ja-JP/02_仕様/01_共通/10_MuJoCo Schema Registry仕様.md",
+        "section": "8. io_scope"
+      },
+      "test_ref": {
+        "path": "docs/ja-JP/03_テスト仕様/01_共通/07_MuJoCo Schema-Driven Validationテスト仕様.md",
+        "test_id": "MUJOCO-SDV-008"
+      },
+      "code_target": {
+        "path": "tools/mujoco_schema_validator/rules/io_scope_rules.py",
+        "symbol": "validate_io_scope_consistency"
+      },
+      "diagnostic_codes": [
+        "UNSUPPORTED_PARAMETER"
+      ],
+      "report_fields": [
+        "parameter_results",
+        "preserved_results",
+        "diagnostics"
+      ]
+    },
+    {
+      "trace_id": "trace_mujoco_sdv_io_scope_007",
+      "validation_scope": "io_scope",
+      "spec_ref": {
+        "path": "docs/ja-JP/02_仕様/01_共通/10_MuJoCo Schema Registry仕様.md",
+        "section": "8. io_scope"
+      },
+      "test_ref": {
+        "path": "docs/ja-JP/03_テスト仕様/01_共通/07_MuJoCo Schema-Driven Validationテスト仕様.md",
+        "test_id": "MUJOCO-SDV-009"
+      },
+      "code_target": {
+        "path": "tools/mujoco_schema_validator/rules/io_scope_rules.py",
+        "symbol": "validate_io_scope_consistency"
+      },
+      "diagnostic_codes": [
+        "SOURCE_RAW_STORED"
+      ],
+      "report_fields": [
+        "preserved_results",
+        "diagnostics"
+      ]
+    },
+    {
+      "trace_id": "trace_mujoco_sdv_capability_001",
+      "validation_scope": "adapter_capability",
+      "spec_ref": {
+        "path": "docs/ja-JP/02_仕様/01_共通/11_Adapter Capability仕様.md",
+        "section": "14. 照合順序"
+      },
+      "test_ref": {
+        "path": "docs/ja-JP/03_テスト仕様/01_共通/07_MuJoCo Schema-Driven Validationテスト仕様.md",
+        "test_id": "MUJOCO-SDV-010"
+      },
+      "code_target": {
+        "path": "tools/mujoco_schema_validator/rules/capability_rules.py",
+        "symbol": "check_adapter_capability"
+      },
+      "diagnostic_codes": [
+        "ADAPTER_CAPABILITY_UNSUPPORTED_NAMESPACE",
+        "ADAPTER_CAPABILITY_UNSUPPORTED_TARGET",
+        "ADAPTER_CAPABILITY_UNSUPPORTED_IO_SCOPE",
+        "ADAPTER_CAPABILITY_UNSUPPORTED_MAPPING",
+        "ADAPTER_CAPABILITY_UNSUPPORTED_ARTIFACT",
+        "ADAPTER_CAPABILITY_UNSUPPORTED_VALUE_CONVERSION",
+        "ADAPTER_CAPABILITY_VERSION_MISMATCH",
+        "VERSION_RUNTIME_MISMATCH"
+      ],
+      "report_fields": [
+        "diagnostics",
+        "fallback_results",
+        "ci_exit_code"
+      ]
+    },
+    {
+      "trace_id": "trace_mujoco_sdv_capability_002",
+      "validation_scope": "adapter_capability",
+      "spec_ref": {
+        "path": "docs/ja-JP/02_仕様/01_共通/11_Adapter Capability仕様.md",
+        "section": "13. unsupported_entries"
+      },
+      "test_ref": {
+        "path": "docs/ja-JP/03_テスト仕様/01_共通/07_MuJoCo Schema-Driven Validationテスト仕様.md",
+        "test_id": "MUJOCO-SDV-011"
+      },
+      "code_target": {
+        "path": "tools/mujoco_schema_validator/rules/capability_rules.py",
+        "symbol": "check_adapter_capability"
+      },
+      "diagnostic_codes": [
+        "ADAPTER_CAPABILITY_EXPLICIT_UNSUPPORTED_ENTRY"
+      ],
+      "report_fields": [
+        "diagnostics",
+        "parameter_results"
+      ]
+    },
+    {
+      "trace_id": "trace_mujoco_sdv_fallback_001",
+      "validation_scope": "fallback",
+      "spec_ref": {
+        "path": "docs/ja-JP/02_仕様/01_共通/10_MuJoCo Schema Registry仕様.md",
+        "section": "14. fallback判定"
+      },
+      "test_ref": {
+        "path": "docs/ja-JP/03_テスト仕様/01_共通/07_MuJoCo Schema-Driven Validationテスト仕様.md",
+        "test_id": "MUJOCO-SDV-012"
+      },
+      "code_target": {
+        "path": "tools/mujoco_schema_validator/rules/fallback_rules.py",
+        "symbol": "evaluate_fallback"
+      },
+      "diagnostic_codes": [
+        "FALLBACK_DEFAULT_APPLIED"
+      ],
+      "report_fields": [
+        "fallback_results",
+        "diagnostics_summary"
+      ]
+    },
+    {
+      "trace_id": "trace_mujoco_sdv_fallback_002",
+      "validation_scope": "fallback",
+      "spec_ref": {
+        "path": "docs/ja-JP/02_仕様/01_共通/10_MuJoCo Schema Registry仕様.md",
+        "section": "14. fallback判定"
+      },
+      "test_ref": {
+        "path": "docs/ja-JP/03_テスト仕様/01_共通/07_MuJoCo Schema-Driven Validationテスト仕様.md",
+        "test_id": "MUJOCO-SDV-013"
+      },
+      "code_target": {
+        "path": "tools/mujoco_schema_validator/rules/fallback_rules.py",
+        "symbol": "evaluate_fallback"
+      },
+      "diagnostic_codes": [
+        "FALLBACK_NOT_AVAILABLE"
+      ],
+      "report_fields": [
+        "fallback_results",
+        "output_allowed",
+        "ci_exit_code"
+      ]
+    },
+    {
+      "trace_id": "trace_mujoco_sdv_diagnostics_001",
+      "validation_scope": "diagnostics",
+      "spec_ref": {
+        "path": "docs/ja-JP/02_仕様/01_共通/12_Conversion Report Diagnostics Schema仕様.md",
+        "section": "17. Diagnostics構造"
+      },
+      "test_ref": {
+        "path": "docs/ja-JP/03_テスト仕様/01_共通/07_MuJoCo Schema-Driven Validationテスト仕様.md",
+        "test_id": "MUJOCO-SDV-014"
+      },
+      "code_target": {
+        "path": "tools/mujoco_schema_validator/diagnostics.py",
+        "symbol": "emit"
+      },
+      "diagnostic_codes": [
+        "SCHEMA_INVALID_IO_SCOPE",
+        "ADAPTER_CAPABILITY_UNSUPPORTED_MAPPING"
+      ],
+      "report_fields": [
+        "diagnostics"
+      ]
+    },
+    {
+      "trace_id": "trace_mujoco_sdv_report_001",
+      "validation_scope": "conversion_report",
+      "spec_ref": {
+        "path": "docs/ja-JP/02_仕様/01_共通/12_Conversion Report Diagnostics Schema仕様.md",
+        "section": "4. Conversion Report構造"
+      },
+      "test_ref": {
+        "path": "docs/ja-JP/03_テスト仕様/01_共通/07_MuJoCo Schema-Driven Validationテスト仕様.md",
+        "test_id": "MUJOCO-SDV-015"
+      },
+      "code_target": {
+        "path": "tools/mujoco_schema_validator/report_writer.py",
+        "symbol": "build_conversion_report"
+      },
+      "diagnostic_codes": [
+        "FALLBACK_DEFAULT_APPLIED",
+        "LOSSY_SEMANTIC_LOSS"
+      ],
+      "report_fields": [
+        "diagnostics_summary",
+        "fallback_results",
+        "lossy_results",
+        "preserved_results"
+      ]
+    },
+    {
+      "trace_id": "trace_mujoco_sdv_error_code_001",
+      "validation_scope": "error_code",
+      "spec_ref": {
+        "path": "docs/ja-JP/02_仕様/01_共通/13_Validation Error Code体系仕様.md",
+        "section": "9. CI exit code"
+      },
+      "test_ref": {
+        "path": "docs/ja-JP/03_テスト仕様/01_共通/07_MuJoCo Schema-Driven Validationテスト仕様.md",
+        "test_id": "MUJOCO-SDV-016"
+      },
+      "code_target": {
+        "path": "tools/mujoco_schema_validator/rules/error_code_rules.py",
+        "symbol": "validate_error_code_consistency"
+      },
+      "diagnostic_codes": [
+        "SCHEMA_INVALID_VALUE_TYPE"
+      ],
+      "report_fields": [
+        "diagnostics_summary",
+        "ci_exit_code"
+      ]
+    },
+    {
+      "trace_id": "trace_mujoco_sdv_execution_001",
+      "validation_scope": "execution_mode",
+      "spec_ref": {
+        "path": "docs/ja-JP/02_仕様/01_共通/12_Conversion Report Diagnostics Schema仕様.md",
+        "section": "25. output_allowed判定"
+      },
+      "test_ref": {
+        "path": "docs/ja-JP/03_テスト仕様/01_共通/07_MuJoCo Schema-Driven Validationテスト仕様.md",
+        "test_id": "MUJOCO-SDV-017"
+      },
+      "code_target": {
+        "path": "tools/mujoco_schema_validator/rules/execution_mode_rules.py",
+        "symbol": "determine_output_allowed"
+      },
+      "diagnostic_codes": [
+        "ADAPTER_CAPABILITY_UNSUPPORTED_MAPPING"
+      ],
+      "report_fields": [
+        "output_allowed",
+        "ci_exit_code"
+      ]
+    },
+    {
+      "trace_id": "trace_mujoco_sdv_execution_002",
+      "validation_scope": "execution_mode",
+      "spec_ref": {
+        "path": "docs/ja-JP/02_仕様/01_共通/12_Conversion Report Diagnostics Schema仕様.md",
+        "section": "25. output_allowed判定"
+      },
+      "test_ref": {
+        "path": "docs/ja-JP/03_テスト仕様/01_共通/07_MuJoCo Schema-Driven Validationテスト仕様.md",
+        "test_id": "MUJOCO-SDV-018"
+      },
+      "code_target": {
+        "path": "tools/mujoco_schema_validator/rules/execution_mode_rules.py",
+        "symbol": "determine_output_allowed"
+      },
+      "diagnostic_codes": [
+        "SCHEMA_INVALID_IO_SCOPE"
+      ],
+      "report_fields": [
+        "output_allowed",
+        "ci_exit_code"
+      ]
+    },
+    {
+      "trace_id": "trace_mujoco_sdv_traceability_001",
+      "validation_scope": "traceability",
+      "spec_ref": {
+        "path": "docs/ja-JP/02_仕様/01_共通/15_MuJoCo Schema-Driven Validation Traceability仕様.md",
+        "section": "16. traceability matrix"
+      },
+      "test_ref": {
+        "path": "tests/convert/mujoco/schema_driven_validation/test_traceability_matrix.py",
+        "test_id": "test_traceability_matrix_generation"
+      },
+      "code_target": {
+        "path": "tools/mujoco_schema_validator/traceability_manifest_validator.py",
+        "symbol": "validate_traceability_manifest"
+      },
+      "diagnostic_codes": [],
+      "report_fields": [
+        "traceability_validation_report"
+      ]
+    }
+  ]
+}
