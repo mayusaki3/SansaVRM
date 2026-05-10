@@ -1,0 +1,34 @@
+name: Traceability Migration Validation
+
+on:
+  push:
+    paths:
+      - 'traces/spec_migration/**'
+      - 'schemas/traceability/**'
+      - 'tools/traceability/**'
+      - '.github/workflows/traceability-migration-validation.yml'
+  pull_request:
+    paths:
+      - 'traces/spec_migration/**'
+      - 'schemas/traceability/**'
+      - 'tools/traceability/**'
+      - '.github/workflows/traceability-migration-validation.yml'
+
+jobs:
+  validate-migration-manifest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Validate dry-run migration manifest
+        run: |
+          python tools/traceability/migration_manifest_validator.py \
+            --schema schemas/traceability/migration_manifest.schema.json \
+            --input traces/spec_migration/migration_manifest.dry-run.json
