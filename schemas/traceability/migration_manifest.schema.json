@@ -1,0 +1,180 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sansa-vrm.dev/schemas/traceability/migration_manifest.schema.json",
+  "title": "SansaVRM Migration Manifest Schema",
+  "type": "object",
+  "required": [
+    "manifest_version",
+    "migration_id",
+    "migration_type",
+    "entries"
+  ],
+  "properties": {
+    "manifest_version": {
+      "type": "string"
+    },
+    "migration_id": {
+      "type": "string"
+    },
+    "migration_type": {
+      "$ref": "#/$defs/migrationType"
+    },
+    "source_revision": {
+      "type": "string"
+    },
+    "target_revision": {
+      "type": "string"
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/entry"
+      }
+    }
+  },
+  "$defs": {
+    "migrationType": {
+      "type": "string",
+      "enum": [
+        "layer_refactor",
+        "file_renumbering",
+        "doc_split",
+        "doc_merge",
+        "sec_split",
+        "sec_merge",
+        "path_relocation",
+        "validator_refactor",
+        "runtime_separation",
+        "compatibility_separation"
+      ]
+    },
+    "mappingType": {
+      "type": "string",
+      "enum": [
+        "equivalent",
+        "split",
+        "merge",
+        "renamed",
+        "moved",
+        "removed",
+        "new",
+        "preserved",
+        "superseded"
+      ]
+    },
+    "mappingStatus": {
+      "type": "string",
+      "enum": [
+        "complete",
+        "partial",
+        "pending",
+        "rejected",
+        "obsolete"
+      ]
+    },
+    "docRef": {
+      "type": "object",
+      "required": [
+        "doc_id"
+      ],
+      "properties": {
+        "doc_id": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "canonical_title": {
+          "type": "string"
+        },
+        "layer_id": {
+          "type": "string"
+        },
+        "document_type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "docRefOrArray": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/docRef"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/docRef"
+          },
+          "minItems": 1
+        }
+      ]
+    },
+    "secMapping": {
+      "type": "object",
+      "required": [
+        "mapping_type"
+      ],
+      "properties": {
+        "old_sec_id": {
+          "type": "string"
+        },
+        "new_sec_id": {
+          "type": "string"
+        },
+        "mapping_type": {
+          "$ref": "#/$defs/mappingType"
+        },
+        "semantic_equivalent": {
+          "type": "boolean"
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "entry": {
+      "type": "object",
+      "required": [
+        "entry_id",
+        "migration_type",
+        "old",
+        "new",
+        "semantic_equivalent",
+        "mapping_status"
+      ],
+      "properties": {
+        "entry_id": {
+          "type": "string"
+        },
+        "migration_type": {
+          "$ref": "#/$defs/migrationType"
+        },
+        "old": {
+          "$ref": "#/$defs/docRefOrArray"
+        },
+        "new": {
+          "$ref": "#/$defs/docRefOrArray"
+        },
+        "semantic_equivalent": {
+          "type": "boolean"
+        },
+        "mapping_status": {
+          "$ref": "#/$defs/mappingStatus"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "sec_mappings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/secMapping"
+          }
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}
