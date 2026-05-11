@@ -224,6 +224,50 @@
       "mapping_status": "pending",
       "reason": "layer_refactor",
       "sec_mappings": []
+    },
+    {
+      "entry_id": "entry-0011",
+      "migration_type": "path_relocation",
+      "old": {
+        "doc_id": "doc-20260504-000208Z-SV0I",
+        "path": "docs/ja-JP/02_仕様/01_共通/08_物理・制御メタモデル仕様.md",
+        "canonical_title": "物理・制御メタモデル仕様",
+        "layer_id": "legacy-common-spec",
+        "document_type": "spec"
+      },
+      "new": {
+        "doc_id": "dry-doc-4001-physics-control-metamodel",
+        "path": "docs/ja-JP/02_仕様/40_Runtime Integration Layer/4001_物理・制御メタモデル仕様.md",
+        "canonical_title": "物理・制御メタモデル仕様",
+        "layer_id": "40-runtime-integration-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": true,
+      "mapping_status": "complete",
+      "reason": "already_migrated_parallel_structure",
+      "sec_mappings": []
+    },
+    {
+      "entry_id": "entry-0012",
+      "migration_type": "path_relocation",
+      "old": {
+        "doc_id": "doc-20260504-000209Z-SV0J",
+        "path": "docs/ja-JP/02_仕様/01_共通/09_MuJoCo連携仕様.md",
+        "canonical_title": "MuJoCo連携仕様",
+        "layer_id": "legacy-common-spec",
+        "document_type": "spec"
+      },
+      "new": {
+        "doc_id": "dry-doc-4002-mujoco-integration-specification",
+        "path": "docs/ja-JP/02_仕様/40_Runtime Integration Layer/4002_MuJoCo連携仕様.md",
+        "canonical_title": "MuJoCo連携仕様",
+        "layer_id": "40-runtime-integration-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": true,
+      "mapping_status": "pending",
+      "reason": "layer_refactor_pending_full_copy",
+      "sec_mappings": []
     }
   ]
 }
