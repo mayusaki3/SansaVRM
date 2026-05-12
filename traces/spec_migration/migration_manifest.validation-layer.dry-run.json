@@ -1,0 +1,217 @@
+{
+  "manifest_version": "1.0",
+  "migration_id": "migration-20260510-001-validation-layer-dry-run",
+  "migration_type": "layer_refactor",
+  "source_revision": "develop-before-validation-layer-refactor",
+  "target_revision": "develop-validation-layer-dry-run",
+  "entries": [
+    {
+      "entry_id": "validation-entry-0001",
+      "migration_type": "new_document",
+      "old": null,
+      "new": {
+        "doc_id": "dry-doc-5000-validation-layer-index",
+        "path": "docs/ja-JP/02_仕様/50_Validation Layer/5000_Validation Layer Index.md",
+        "canonical_title": "Validation Layer Index",
+        "layer_id": "50-validation-layer",
+        "document_type": "index"
+      },
+      "semantic_equivalent": true,
+      "mapping_status": "complete",
+      "reason": "new_layer_index",
+      "sec_mappings": []
+    },
+    {
+      "entry_id": "validation-entry-0002",
+      "migration_type": "path_relocation",
+      "old": {
+        "doc_id": "doc-20260504-000204Z-SV0E",
+        "path": "docs/ja-JP/02_仕様/01_共通/04_JSONスキーマ仕様.md",
+        "canonical_title": "JSONスキーマ仕様",
+        "layer_id": "legacy-common-spec",
+        "document_type": "spec"
+      },
+      "new": {
+        "doc_id": "dry-doc-5001-json-schema-specification",
+        "path": "docs/ja-JP/02_仕様/50_Validation Layer/5001_JSONスキーマ仕様.md",
+        "canonical_title": "JSONスキーマ仕様",
+        "layer_id": "50-validation-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": "unknown",
+      "mapping_status": "partial",
+      "reason": "placeholder_relocation_pending_full_copy",
+      "sec_mappings": []
+    },
+    {
+      "entry_id": "validation-entry-0003",
+      "migration_type": "path_relocation",
+      "old": {
+        "doc_id": "doc-20260504-000205Z-SV0F",
+        "path": "docs/ja-JP/02_仕様/01_共通/05_Validator実装仕様.md",
+        "canonical_title": "Validator実装仕様",
+        "layer_id": "legacy-common-spec",
+        "document_type": "spec"
+      },
+      "new": {
+        "doc_id": "dry-doc-5002-validator-implementation-specification",
+        "path": "docs/ja-JP/02_仕様/50_Validation Layer/5002_Validator実装仕様.md",
+        "canonical_title": "Validator実装仕様",
+        "layer_id": "50-validation-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": true,
+      "mapping_status": "complete",
+      "reason": "layer_refactor_full_copy",
+      "sec_mappings": [
+        {"old_sec_id": "sec_f7a2d9m4", "new_sec_id": "sec_f7a2d9m4", "semantic_equivalent": true, "mapping_reason": "preserved"},
+        {"old_sec_id": "sec_g2c9d4x7", "new_sec_id": "sec_g2c9d4x7", "semantic_equivalent": true, "mapping_reason": "preserved"},
+        {"old_sec_id": "sec_h1e0f3y8", "new_sec_id": "sec_h1e0f3y8", "semantic_equivalent": true, "mapping_reason": "preserved"},
+        {"old_sec_id": "sec_j9g1h2z9", "new_sec_id": "sec_j9g1h2z9", "semantic_equivalent": true, "mapping_reason": "preserved"},
+        {"old_sec_id": "sec_k8m4q2r7", "new_sec_id": "sec_k8m4q2r7", "semantic_equivalent": true, "mapping_reason": "preserved"},
+        {"old_sec_id": "sec_l6n3p8s2", "new_sec_id": "sec_l6n3p8s2", "semantic_equivalent": true, "mapping_reason": "preserved"},
+        {"old_sec_id": "sec_m5q2r7t1", "new_sec_id": "sec_m5q2r7t1", "semantic_equivalent": true, "mapping_reason": "preserved"},
+        {"old_sec_id": "sec_n4s1u6v0", "new_sec_id": "sec_n4s1u6v0", "semantic_equivalent": true, "mapping_reason": "preserved"},
+        {"old_sec_id": "sec_p3t0w5x9", "new_sec_id": "sec_p3t0w5x9", "semantic_equivalent": true, "mapping_reason": "preserved"}
+      ]
+    },
+    {
+      "entry_id": "validation-entry-0004",
+      "migration_type": "path_relocation",
+      "old": {
+        "doc_id": "doc-20260504-000207Z-SV0H",
+        "path": "docs/ja-JP/02_仕様/01_共通/07_変換仕様.md",
+        "canonical_title": "変換仕様",
+        "layer_id": "legacy-common-spec",
+        "document_type": "spec"
+      },
+      "new": {
+        "doc_id": "dry-doc-5003-conversion-specification",
+        "path": "docs/ja-JP/02_仕様/50_Validation Layer/5003_変換仕様.md",
+        "canonical_title": "変換仕様",
+        "layer_id": "50-validation-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": true,
+      "mapping_status": "complete",
+      "reason": "layer_refactor_full_copy",
+      "sec_mappings": [
+        {"old_sec_id": "sec_v8u6x1l0", "new_sec_id": "sec_v8u6x1l0", "semantic_equivalent": true, "mapping_reason": "preserved"},
+        {"old_sec_id": "sec_v8u6x1l1", "new_sec_id": "sec_v8u6x1l1", "semantic_equivalent": true, "mapping_reason": "preserved"},
+        {"old_sec_id": "sec_v8u6x1l2", "new_sec_id": "sec_v8u6x1l2", "semantic_equivalent": true, "mapping_reason": "preserved"},
+        {"old_sec_id": "sec_v8u6x1l3", "new_sec_id": "sec_v8u6x1l3", "semantic_equivalent": true, "mapping_reason": "preserved"},
+        {"old_sec_id": "sec_w7v5y0m1", "new_sec_id": "sec_w7v5y0m1", "semantic_equivalent": true, "mapping_reason": "preserved"},
+        {"old_sec_id": "sec_w7v5y0m2", "new_sec_id": "sec_w7v5y0m2", "semantic_equivalent": true, "mapping_reason": "preserved"},
+        {"old_sec_id": "sec_w7v5y0m3", "new_sec_id": "sec_w7v5y0m3", "semantic_equivalent": true, "mapping_reason": "preserved"},
+        {"old_sec_id": "sec_w7v5y0m4", "new_sec_id": "sec_w7v5y0m4", "semantic_equivalent": true, "mapping_reason": "preserved"},
+        {"old_sec_id": "sec_x6w4z9n2", "new_sec_id": "sec_x6w4z9n2", "semantic_equivalent": true, "mapping_reason": "preserved"},
+        {"old_sec_id": "sec_x6w4z9n3", "new_sec_id": "sec_x6w4z9n3", "semantic_equivalent": true, "mapping_reason": "preserved"},
+        {"old_sec_id": "sec_x6w4z9n4", "new_sec_id": "sec_x6w4z9n4", "semantic_equivalent": true, "mapping_reason": "preserved"},
+        {"old_sec_id": "sec_y5x3a8p3", "new_sec_id": "sec_y5x3a8p3", "semantic_equivalent": true, "mapping_reason": "preserved"},
+        {"old_sec_id": "sec_y5x3a8p4", "new_sec_id": "sec_y5x3a8p4", "semantic_equivalent": true, "mapping_reason": "preserved"},
+        {"old_sec_id": "sec_z4y2b7q4", "new_sec_id": "sec_z4y2b7q4", "semantic_equivalent": true, "mapping_reason": "preserved"},
+        {"old_sec_id": "sec_a3z1c6r5", "new_sec_id": "sec_a3z1c6r5", "semantic_equivalent": true, "mapping_reason": "preserved"},
+        {"old_sec_id": "sec_b2a0d5s6", "new_sec_id": "sec_b2a0d5s6", "semantic_equivalent": true, "mapping_reason": "preserved"},
+        {"old_sec_id": "sec_c1b9e4t7", "new_sec_id": "sec_c1b9e4t7", "semantic_equivalent": true, "mapping_reason": "preserved"},
+        {"old_sec_id": "sec_d0c8f3u8", "new_sec_id": "sec_d0c8f3u8", "semantic_equivalent": true, "mapping_reason": "preserved"},
+        {"old_sec_id": "sec_e9d7g2v9", "new_sec_id": "sec_e9d7g2v9", "semantic_equivalent": true, "mapping_reason": "preserved"}
+      ]
+    },
+    {
+      "entry_id": "validation-entry-0005",
+      "migration_type": "new_document",
+      "old": null,
+      "new": {
+        "doc_id": "dry-doc-5004-diagnostics-specification",
+        "path": "docs/ja-JP/02_仕様/50_Validation Layer/5004_Diagnostics仕様.md",
+        "canonical_title": "Diagnostics仕様",
+        "layer_id": "50-validation-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": true,
+      "mapping_status": "complete",
+      "reason": "new_validation_observability_specification",
+      "sec_mappings": []
+    },
+    {
+      "entry_id": "validation-entry-0006",
+      "migration_type": "new_document",
+      "old": null,
+      "new": {
+        "doc_id": "dry-doc-5005-traceability-migration-specification",
+        "path": "docs/ja-JP/02_仕様/50_Validation Layer/5005_Traceability Migration仕様.md",
+        "canonical_title": "Traceability Migration仕様",
+        "layer_id": "50-validation-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": true,
+      "mapping_status": "complete",
+      "reason": "new_validation_observability_specification",
+      "sec_mappings": []
+    },
+    {
+      "entry_id": "validation-entry-0007",
+      "migration_type": "new_document",
+      "old": null,
+      "new": {
+        "doc_id": "dry-doc-5006-coverage-analysis-specification",
+        "path": "docs/ja-JP/02_仕様/50_Validation Layer/5006_Coverage Analysis仕様.md",
+        "canonical_title": "Coverage Analysis仕様",
+        "layer_id": "50-validation-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": true,
+      "mapping_status": "complete",
+      "reason": "new_validation_observability_specification",
+      "sec_mappings": []
+    },
+    {
+      "entry_id": "validation-entry-0008",
+      "migration_type": "new_document",
+      "old": null,
+      "new": {
+        "doc_id": "dry-doc-5007-loss-report-specification",
+        "path": "docs/ja-JP/02_仕様/50_Validation Layer/5007_Loss Report仕様.md",
+        "canonical_title": "Loss Report仕様",
+        "layer_id": "50-validation-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": true,
+      "mapping_status": "complete",
+      "reason": "new_validation_observability_specification",
+      "sec_mappings": []
+    },
+    {
+      "entry_id": "validation-entry-0009",
+      "migration_type": "new_document",
+      "old": null,
+      "new": {
+        "doc_id": "dry-doc-5008-compatibility-analysis-specification",
+        "path": "docs/ja-JP/02_仕様/50_Validation Layer/5008_Compatibility Analysis仕様.md",
+        "canonical_title": "Compatibility Analysis仕様",
+        "layer_id": "50-validation-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": true,
+      "mapping_status": "complete",
+      "reason": "new_validation_observability_specification",
+      "sec_mappings": []
+    },
+    {
+      "entry_id": "validation-entry-0010",
+      "migration_type": "new_document",
+      "old": null,
+      "new": {
+        "doc_id": "dry-doc-5009-roundtrip-verification-specification",
+        "path": "docs/ja-JP/02_仕様/50_Validation Layer/5009_RoundTrip Verification仕様.md",
+        "canonical_title": "RoundTrip Verification仕様",
+        "layer_id": "50-validation-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": true,
+      "mapping_status": "complete",
+      "reason": "new_validation_observability_specification",
+      "sec_mappings": []
+    }
+  ]
+}
