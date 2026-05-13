@@ -1,0 +1,166 @@
+{
+  "manifest_version": "1.0",
+  "migration_id": "migration-20260510-003-roadmap-layer-dry-run",
+  "migration_type": "layer_refactor",
+  "ordering_note": "Layer numbering is filesystem ordering only. Dependency is defined by Layer Index, dependency diagram, migration manifest, and document body.",
+  "source_revision": "develop-before-roadmap-layer-refactor",
+  "target_revision": "develop-roadmap-layer-dry-run",
+  "entries": [
+    {
+      "entry_id": "roadmap-entry-0001",
+      "migration_type": "new_document",
+      "old": null,
+      "new": {
+        "doc_id": "dry-doc-7000-roadmap-layer-index",
+        "path": "docs/ja-JP/04_実装計画/70_Roadmap Layer/7000_Roadmap Layer Index.md",
+        "canonical_title": "Roadmap Layer Index",
+        "layer_id": "roadmap-layer",
+        "document_type": "index"
+      },
+      "semantic_equivalent": true,
+      "mapping_status": "complete",
+      "reason": "new_layer_index",
+      "sec_mappings": []
+    },
+    {
+      "entry_id": "roadmap-entry-0002",
+      "migration_type": "planned_relocation",
+      "old": {
+        "path": "docs/ja-JP/04_実装計画/01_共通/01_初版実装ロードマップ.md",
+        "canonical_title": "初版実装ロードマップ",
+        "layer_id": "legacy-common-implementation-plan",
+        "document_type": "spec"
+      },
+      "new": {
+        "path": "docs/ja-JP/04_実装計画/70_Roadmap Layer/7001_初版実装ロードマップ.md",
+        "canonical_title": "初版実装ロードマップ",
+        "layer_id": "roadmap-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": "unknown",
+      "mapping_status": "pending",
+      "reason": "planned_dry_run_relocation",
+      "sec_mappings": []
+    },
+    {
+      "entry_id": "roadmap-entry-0003",
+      "migration_type": "planned_relocation",
+      "old": {
+        "path": "docs/ja-JP/04_実装計画/01_共通/02_ロードマップ再整理.md",
+        "canonical_title": "ロードマップ再整理",
+        "layer_id": "legacy-common-implementation-plan",
+        "document_type": "spec"
+      },
+      "new": {
+        "path": "docs/ja-JP/04_実装計画/70_Roadmap Layer/7002_ロードマップ再整理.md",
+        "canonical_title": "ロードマップ再整理",
+        "layer_id": "roadmap-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": "unknown",
+      "mapping_status": "pending",
+      "reason": "planned_dry_run_relocation",
+      "sec_mappings": []
+    },
+    {
+      "entry_id": "roadmap-entry-0004",
+      "migration_type": "planned_relocation",
+      "old": {
+        "path": "docs/ja-JP/04_実装計画/01_共通/03_仕様依存マップ.md",
+        "canonical_title": "仕様依存マップ",
+        "layer_id": "legacy-common-implementation-plan",
+        "document_type": "spec"
+      },
+      "new": {
+        "path": "docs/ja-JP/04_実装計画/70_Roadmap Layer/7003_仕様依存マップ.md",
+        "canonical_title": "仕様依存マップ",
+        "layer_id": "roadmap-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": "unknown",
+      "mapping_status": "pending",
+      "reason": "planned_dry_run_relocation",
+      "sec_mappings": []
+    },
+    {
+      "entry_id": "roadmap-entry-0005",
+      "migration_type": "planned_relocation",
+      "old": {
+        "path": "docs/ja-JP/04_実装計画/01_共通/04_仕様再配置計画.md",
+        "canonical_title": "仕様再配置計画",
+        "layer_id": "legacy-common-implementation-plan",
+        "document_type": "spec"
+      },
+      "new": {
+        "path": "docs/ja-JP/04_実装計画/70_Roadmap Layer/7004_仕様再配置計画.md",
+        "canonical_title": "仕様再配置計画",
+        "layer_id": "roadmap-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": "unknown",
+      "mapping_status": "pending",
+      "reason": "planned_dry_run_relocation",
+      "sec_mappings": []
+    },
+    {
+      "entry_id": "roadmap-entry-0006",
+      "migration_type": "planned_relocation",
+      "old": {
+        "path": "docs/ja-JP/04_実装計画/01_共通/05_仕様再配置dry-run計画.md",
+        "canonical_title": "仕様再配置dry-run計画",
+        "layer_id": "legacy-common-implementation-plan",
+        "document_type": "spec"
+      },
+      "new": {
+        "path": "docs/ja-JP/04_実装計画/70_Roadmap Layer/7005_仕様再配置dry-run計画.md",
+        "canonical_title": "仕様再配置dry-run計画",
+        "layer_id": "roadmap-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": "unknown",
+      "mapping_status": "pending",
+      "reason": "planned_dry_run_relocation",
+      "sec_mappings": []
+    },
+    {
+      "entry_id": "roadmap-entry-0007",
+      "migration_type": "planned_relocation",
+      "old": {
+        "path": "docs/ja-JP/04_実装計画/01_共通/06_旧path_cleanup計画.md",
+        "canonical_title": "旧path cleanup計画",
+        "layer_id": "legacy-common-implementation-plan",
+        "document_type": "spec"
+      },
+      "new": {
+        "path": "docs/ja-JP/04_実装計画/70_Roadmap Layer/7006_旧path_cleanup計画.md",
+        "canonical_title": "旧path cleanup計画",
+        "layer_id": "roadmap-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": "unknown",
+      "mapping_status": "pending",
+      "reason": "planned_dry_run_relocation",
+      "sec_mappings": []
+    },
+    {
+      "entry_id": "roadmap-entry-0008",
+      "migration_type": "planned_relocation",
+      "old": {
+        "path": "docs/ja-JP/04_実装計画/01_共通/07_Layer_reorder最終計画.md",
+        "canonical_title": "Layer reorder最終計画",
+        "layer_id": "legacy-common-implementation-plan",
+        "document_type": "spec"
+      },
+      "new": {
+        "path": "docs/ja-JP/04_実装計画/70_Roadmap Layer/7007_Layer reorder最終計画.md",
+        "canonical_title": "Layer reorder最終計画",
+        "layer_id": "roadmap-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": "unknown",
+      "mapping_status": "pending",
+      "reason": "planned_dry_run_relocation",
+      "sec_mappings": []
+    }
+  ]
+}
