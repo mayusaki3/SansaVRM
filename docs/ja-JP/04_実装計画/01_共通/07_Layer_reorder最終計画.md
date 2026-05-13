@@ -23,16 +23,20 @@ canonical_document: true
 
 Layer reorder は単なるファイル名変更ではなく、semantic dependency ordering として扱う。
 
+ただし、Layer番号自体は意味論を持たず、ファイルシステム上の並び順制御として扱う。
+
+Layer の責務と dependency は、Layer Index、dependency diagram、migration manifest、および本文定義によって定義する。
+
 以下を原則とする。
 
 ```text
-1. Core semantic を最上流に置く
-2. Preservation / Compatibility を Core の後段に置く
-3. 実データモデルを Compatibility の後段に置く
-4. Runtime integration を Data Model の後段に置く
-5. Validation を cross-layer observer として後段に置く
-6. Import / Export を Validation 利用側として後段に置く
-7. Roadmap を future architecture layer として最後段に置く
+1. Core semantic を上流に置く
+2. Preservation / Compatibility を Core の依存先として配置する
+3. 実データモデルを Compatibility の依存先として配置する
+4. Runtime integration を Data Model の依存先として配置する
+5. Validation を cross-layer observer として配置する
+6. Import / Export を Validation 利用側として配置する
+7. Roadmap を future architecture layer として最後段へ配置する
 ```
 
 ---
@@ -51,29 +55,33 @@ Layer reorder は単なるファイル名変更ではなく、semantic dependenc
 
 10刻みを採用し、将来的な中間 Layer 挿入余地を残す。
 
+なお、上記番号は dependency 意味論ではなく、並び順制御目的である。
+
 ---
 
 ## 4. Layer dependency diagram
 
 ```text
-10_Core Semantic Layer
+Core Semantic Layer
   ↓
-20_Preservation Compatibility Layer
+Preservation Compatibility Layer
   ↓
-30_Data Model Layer
+Data Model Layer
   ↓
-40_Runtime Integration Layer
+Runtime Integration Layer
   ↓
-50_Validation Layer
+Validation Layer
   ↓
-60_Import Export Layer
+Import Export Layer
   ↓
-70_Roadmap Layer
+Roadmap Layer
 ```
+
+dependency は上記 diagram により定義する。
 
 ---
 
-## 5. 10_Core Semantic Layer
+## 5. Core Semantic Layer
 
 ### 責務
 
@@ -86,14 +94,14 @@ Layer reorder は単なるファイル名変更ではなく、semantic dependenc
 ### 現在の主文書
 
 ```text
-1001_Core Semantic Definition
-1002_Semantic Preservation Matrix
-1003_RoundTrip Semantic Criteria
+Core Semantic Definition
+Semantic Preservation Matrix
+RoundTrip Semantic Criteria
 ```
 
 ---
 
-## 6. 20_Preservation Compatibility Layer
+## 6. Preservation Compatibility Layer
 
 ### 責務
 
@@ -107,14 +115,14 @@ Layer reorder は単なるファイル名変更ではなく、semantic dependenc
 ### 現在の主文書
 
 ```text
-2001_Adapter Extension Property Specification
-2002_Format Compatibility Preservation Specification
-2003_Conversion Profile Specification
+Adapter Extension Property Specification
+Format Compatibility Preservation Specification
+Conversion Profile Specification
 ```
 
 ---
 
-## 7. 30_Data Model Layer
+## 7. Data Model Layer
 
 ### 責務
 
@@ -130,15 +138,15 @@ Layer reorder は単なるファイル名変更ではなく、semantic dependenc
 ### 現在の主文書
 
 ```text
-3001_Geometry Rig Skinning Extension Specification
-3002_Morph Extension Specification
-3003_Animation Extension Specification
-3004_Physics Extension Specification
+Geometry Rig Skinning Extension Specification
+Morph Extension Specification
+Animation Extension Specification
+Physics Extension Specification
 ```
 
 ---
 
-## 8. 40_Runtime Integration Layer
+## 8. Runtime Integration Layer
 
 ### 責務
 
@@ -152,17 +160,17 @@ Layer reorder は単なるファイル名変更ではなく、semantic dependenc
 ### 現在の主文書
 
 ```text
-4001_物理・制御メタモデル仕様
-4002_MuJoCo連携仕様
+物理・制御メタモデル仕様
+MuJoCo連携仕様
 ```
 
 ### 注意
 
-`4002_MuJoCo連携仕様` は placeholder relocation 状態であり、全文移行完了まで旧path削除禁止とする。
+`MuJoCo連携仕様` は placeholder relocation 状態であり、全文移行完了まで旧path削除禁止とする。
 
 ---
 
-## 9. 50_Validation Layer
+## 9. Validation Layer
 
 ### 責務
 
@@ -181,25 +189,25 @@ Layer reorder は単なるファイル名変更ではなく、semantic dependenc
 ### 現在の主文書
 
 ```text
-5000_Validation Layer Index
-5001_JSONスキーマ仕様
-5002_Validator実装仕様
-5003_変換仕様
-5004_Diagnostics仕様
-5005_Traceability Migration仕様
-5006_Coverage Analysis仕様
-5007_Loss Report仕様
-5008_Compatibility Analysis仕様
-5009_RoundTrip Verification仕様
+Validation Layer Index
+JSONスキーマ仕様
+Validator実装仕様
+変換仕様
+Diagnostics仕様
+Traceability Migration仕様
+Coverage Analysis仕様
+Loss Report仕様
+Compatibility Analysis仕様
+RoundTrip Verification仕様
 ```
 
 ### 注意
 
-`5001_JSONスキーマ仕様` は placeholder relocation 状態であり、全文移行完了まで旧path削除禁止とする。
+`JSONスキーマ仕様` は placeholder relocation 状態であり、全文移行完了まで旧path削除禁止とする。
 
 ---
 
-## 10. 60_Import Export Layer
+## 10. Import Export Layer
 
 ### 責務
 
@@ -216,10 +224,10 @@ Layer reorder は単なるファイル名変更ではなく、semantic dependenc
 ### 移行候補
 
 ```text
-docs/ja-JP/02_仕様/02_VRM入出力/01_VRM 0.x 1.0 差分整理.md
-docs/ja-JP/02_仕様/02_VRM入出力/02_humanoid Property設計.md
-docs/ja-JP/02_仕様/02_VRM入出力/03_VRM 0.x import詳細設計.md
-docs/ja-JP/02_仕様/02_VRM入出力/04_VRM 1.0 import詳細設計.md
+VRM 0.x 1.0 差分整理
+humanoid Property設計
+VRM 0.x import詳細設計
+VRM 1.0 import詳細設計
 ```
 
 ### 方針
@@ -228,7 +236,7 @@ docs/ja-JP/02_仕様/02_VRM入出力/04_VRM 1.0 import詳細設計.md
 
 ---
 
-## 11. 70_Roadmap Layer
+## 11. Roadmap Layer
 
 ### 責務
 
@@ -243,12 +251,12 @@ docs/ja-JP/02_仕様/02_VRM入出力/04_VRM 1.0 import詳細設計.md
 ### 移行候補
 
 ```text
-docs/ja-JP/04_実装計画/01_共通/01_初版実装ロードマップ.md
-docs/ja-JP/04_実装計画/01_共通/02_ロードマップ再整理.md
-docs/ja-JP/04_実装計画/01_共通/03_仕様依存マップ.md
-docs/ja-JP/04_実装計画/01_共通/04_仕様再配置計画.md
-docs/ja-JP/04_実装計画/01_共通/05_仕様再配置dry-run計画.md
-docs/ja-JP/04_実装計画/01_共通/06_旧path_cleanup計画.md
+初版実装ロードマップ
+ロードマップ再整理
+仕様依存マップ
+仕様再配置計画
+仕様再配置dry-run計画
+旧path_cleanup計画
 ```
 
 ### 方針
@@ -304,8 +312,8 @@ cleanup は以下を満たすまで実施しない。
 
 ```text
 Layer reorder計画: 完了
-60_Import Export Layer移行: 次フェーズ
-70_Roadmap Layer移行: 次フェーズ
+Import Export Layer移行: 次フェーズ
+Roadmap Layer移行: 次フェーズ
 cleanup: 未実施
 旧path削除: 禁止
 ```
@@ -322,6 +330,7 @@ cleanup: 未実施
 - Roadmap は future architecture layer として扱える
 - Import Export は Compatibility とは別Layerにすべき
 - Validation は cross-layer observer として扱える
+- Layer番号は dependency 意味論ではなく並び順制御として扱うべき
 ```
 
 ---
@@ -330,7 +339,9 @@ cleanup: 未実施
 
 SansaVRM の Layer reorder は、仕様ファイルの並び替えではなく、semantic dependency graph の正規化である。
 
-本計画では、10〜70 の Layer 構造により、Core semantic から Roadmap までの依存方向を明示する。
+Layer dependency は Layer Index、dependency diagram、および migration manifest によって定義する。
+
+Layer番号は並び順制御用であり、dependency 意味論そのものではない。
 
 ---
 
