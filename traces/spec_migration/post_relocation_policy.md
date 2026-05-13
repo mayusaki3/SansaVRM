@@ -31,6 +31,10 @@
 6. cleanup は verified 後の別フェーズとする
 ```
 
+Layer番号は dependency 意味論ではなく、ファイルシステム上の並び順制御として扱う。
+
+Layer dependency は、Layer Index、dependency diagram、migration manifest、および本文定義によって定義する。
+
 ---
 
 ## 3. legacy alias policy
@@ -170,7 +174,7 @@ manifest federation を採用する場合、以下を満たす。
 
 reorder は dependency ordering として扱う。
 
-現在の Layer 番号方針は以下とする。
+現在の Layer番号は、dependency 意味論ではなく並び順制御として扱う。
 
 ```text
 10_Core Semantic Layer
@@ -182,7 +186,9 @@ reorder は dependency ordering として扱う。
 70_Roadmap Layer
 ```
 
-10刻みを採用し、将来挿入余地を残す。
+Layer dependency は番号ではなく、dependency diagram および Layer Index により定義する。
+
+10刻みは、将来の中間 Layer 挿入余地を残すための filesystem ordering である。
 
 ---
 
@@ -221,5 +227,6 @@ cleanup: 不可
 - dry-run doc_id と canonical doc_id を分けるべき
 - manifest federation が必要
 - reorder は dependency ordering として扱うべき
+- Layer番号は dependency 意味論ではなく並び順制御として扱うべき
 - cleanup は migration verification 後の別フェーズにすべき
 ```
