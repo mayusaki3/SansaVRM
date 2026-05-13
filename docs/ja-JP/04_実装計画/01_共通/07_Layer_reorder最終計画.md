@@ -81,7 +81,97 @@ dependency は上記 diagram により定義する。
 
 ---
 
-## 5. Core Semantic Layer
+## 5. relocation / canonicalization lifecycle
+
+大規模再構成では、dry-run relocation と canonicalization を分離する。
+
+```text
+planned_relocation
+  ↓
+dry-doc assigned
+  ↓
+relocation / split / merge
+  ↓
+semantic verification
+  ↓
+document fate decision
+  ├ maintain original doc_id
+  ├ issue new doc_id
+  ├ merge into other document
+  ├ split into multiple documents
+  ├ obsolete
+  └ drop
+  ↓
+canonicalization
+  ↓
+legacy alias phase
+  ↓
+cleanup_ready
+```
+
+`dry-doc-*` は canonical doc_id ではなく、migration workspace identifier として扱う。
+
+---
+
+## 6. document fate decision
+
+canonicalization 前に、各 dry-doc の最終状態を決定する。
+
+### maintain original doc_id
+
+以下の場合は旧 doc_id を維持できる。
+
+```text
+- semantic_equivalent = true
+- split / merge が発生していない
+- traceability continuity が維持できる
+```
+
+### issue new doc_id
+
+以下の場合は新規 doc_id を発行する。
+
+```text
+- semantic responsibility が変更される
+- split / merge 後の新責務になる
+- 旧 doc_id continuity が不自然
+```
+
+### merge / split / obsolete / drop
+
+以下を relocation unresolved state として扱う。
+
+```text
+- 他文書へ統合される
+- 複数文書へ分割される
+- obsolete 化される
+- 最終的に削除される
+```
+
+これらは canonicalization 前に解決する必要がある。
+
+---
+
+## 7. canonicalization 方針
+
+filesystem ordering と canonical identity は分離する。
+
+```text
+filesystem ordering:
+5000 / 6000 / 7000
+
+migration identity:
+dry-doc-xxxx
+
+canonical identity:
+stable canonical doc_id
+```
+
+Layer番号や dry-doc 番号は dependency 意味論を持たない。
+
+---
+
+## 8. Core Semantic Layer
 
 ### 責務
 
@@ -101,7 +191,7 @@ RoundTrip Semantic Criteria
 
 ---
 
-## 6. Preservation Compatibility Layer
+## 9. Preservation Compatibility Layer
 
 ### 責務
 
@@ -122,7 +212,7 @@ Conversion Profile Specification
 
 ---
 
-## 7. Data Model Layer
+## 10. Data Model Layer
 
 ### 責務
 
@@ -146,7 +236,7 @@ Physics Extension Specification
 
 ---
 
-## 8. Runtime Integration Layer
+## 11. Runtime Integration Layer
 
 ### 責務
 
@@ -170,7 +260,7 @@ MuJoCo連携仕様
 
 ---
 
-## 9. Validation Layer
+## 12. Validation Layer
 
 ### 責務
 
@@ -207,7 +297,7 @@ RoundTrip Verification仕様
 
 ---
 
-## 10. Import Export Layer
+## 13. Import Export Layer
 
 ### 責務
 
@@ -236,7 +326,7 @@ VRM 1.0 import詳細設計
 
 ---
 
-## 11. Roadmap Layer
+## 14. Roadmap Layer
 
 ### 責務
 
@@ -265,7 +355,7 @@ Roadmap は単なる TODO ではなく future architecture dependency specificat
 
 ---
 
-## 12. reorder と cleanup の分離
+## 15. reorder と cleanup の分離
 
 reorder と cleanup は別フェーズとする。
 
@@ -279,7 +369,7 @@ migration verification 後の旧path整理
 
 ---
 
-## 13. reorder 実施条件
+## 16. reorder 実施条件
 
 reorder は以下を満たす場合に実施できる。
 
@@ -293,13 +383,14 @@ reorder は以下を満たす場合に実施できる。
 
 ---
 
-## 14. cleanup 実施条件
+## 17. cleanup 実施条件
 
 cleanup は以下を満たすまで実施しない。
 
 ```text
 - placeholder relocation 解消済み
 - semantic_equivalent verified
+- canonicalization 完了済み
 - sec_id continuity 確認済み
 - legacy alias policy 適用済み
 - manifest federation validator 整備済み
@@ -308,19 +399,20 @@ cleanup は以下を満たすまで実施しない。
 
 ---
 
-## 15. 現時点判定
+## 18. 現時点判定
 
 ```text
 Layer reorder計画: 完了
-Import Export Layer移行: 次フェーズ
-Roadmap Layer移行: 次フェーズ
+Import Export Layer移行: 進行中
+Roadmap Layer移行: planned_relocation
+canonicalization: 未開始
 cleanup: 未実施
 旧path削除: 禁止
 ```
 
 ---
 
-## 16. HLDocS feedback
+## 19. HLDocS feedback
 
 本計画で得られた知見：
 
@@ -331,17 +423,22 @@ cleanup: 未実施
 - Import Export は Compatibility とは別Layerにすべき
 - Validation は cross-layer observer として扱える
 - Layer番号は dependency 意味論ではなく並び順制御として扱うべき
+- dry-doc と canonical doc_id を分離すべき
+- document fate decision を canonicalization 前に定義すべき
+- cleanup_ready 前に canonicalization verification が必要
 ```
 
 ---
 
-## 17. 結論
+## 20. 結論
 
 SansaVRM の Layer reorder は、仕様ファイルの並び替えではなく、semantic dependency graph の正規化である。
 
 Layer dependency は Layer Index、dependency diagram、および migration manifest によって定義する。
 
 Layer番号は並び順制御用であり、dependency 意味論そのものではない。
+
+また、dry-run relocation と canonicalization を分離し、document fate decision 後に canonical doc_id を確定する。
 
 ---
 
