@@ -1,0 +1,110 @@
+{
+  "manifest_version": "1.0",
+  "migration_id": "migration-20260510-002-import-export-layer-dry-run",
+  "migration_type": "layer_refactor",
+  "ordering_note": "Layer numbering is filesystem ordering only. Dependency is defined by Layer Index, dependency diagram, migration manifest, and document body.",
+  "source_revision": "develop-before-import-export-layer-refactor",
+  "target_revision": "develop-import-export-layer-dry-run",
+  "entries": [
+    {
+      "entry_id": "import-export-entry-0001",
+      "migration_type": "new_document",
+      "old": null,
+      "new": {
+        "doc_id": "dry-doc-6000-import-export-layer-index",
+        "path": "docs/ja-JP/02_仕様/60_Import Export Layer/6000_Import Export Layer Index.md",
+        "canonical_title": "Import Export Layer Index",
+        "layer_id": "import-export-layer",
+        "document_type": "index"
+      },
+      "semantic_equivalent": true,
+      "mapping_status": "complete",
+      "reason": "new_layer_index",
+      "sec_mappings": []
+    },
+    {
+      "entry_id": "import-export-entry-0002",
+      "migration_type": "full_copy_relocation",
+      "old": {
+        "path": "docs/ja-JP/02_仕様/02_VRM入出力/01_VRM 0.x 1.0 差分整理.md",
+        "canonical_title": "VRM 0.x / 1.0 差分整理",
+        "layer_id": "legacy-vrm-io-spec",
+        "document_type": "spec"
+      },
+      "new": {
+        "doc_id": "dry-doc-6001-vrm-0x-10-difference-summary",
+        "path": "docs/ja-JP/02_仕様/60_Import Export Layer/6001_VRM 0.x 1.0 差分整理.md",
+        "canonical_title": "VRM 0.x / 1.0 差分整理",
+        "layer_id": "import-export-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": true,
+      "mapping_status": "complete",
+      "reason": "dry_run_full_copy_relocation",
+      "sec_mappings": []
+    },
+    {
+      "entry_id": "import-export-entry-0003",
+      "migration_type": "full_copy_relocation",
+      "old": {
+        "path": "docs/ja-JP/02_仕様/02_VRM入出力/02_humanoid Property設計.md",
+        "canonical_title": "humanoid Property設計",
+        "layer_id": "legacy-vrm-io-spec",
+        "document_type": "spec"
+      },
+      "new": {
+        "doc_id": "dry-doc-6002-humanoid-property-design",
+        "path": "docs/ja-JP/02_仕様/60_Import Export Layer/6002_humanoid Property設計.md",
+        "canonical_title": "humanoid Property設計",
+        "layer_id": "import-export-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": true,
+      "mapping_status": "complete",
+      "reason": "dry_run_full_copy_relocation",
+      "sec_mappings": []
+    },
+    {
+      "entry_id": "import-export-entry-0004",
+      "migration_type": "full_copy_relocation",
+      "old": {
+        "path": "docs/ja-JP/02_仕様/02_VRM入出力/03_VRM 0.x import詳細設計.md",
+        "canonical_title": "VRM 0.x import詳細設計",
+        "layer_id": "legacy-vrm-io-spec",
+        "document_type": "spec"
+      },
+      "new": {
+        "doc_id": "dry-doc-6003-vrm0-import-design",
+        "path": "docs/ja-JP/02_仕様/60_Import Export Layer/6003_VRM 0.x import詳細設計.md",
+        "canonical_title": "VRM 0.x import詳細設計",
+        "layer_id": "import-export-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": true,
+      "mapping_status": "complete",
+      "reason": "dry_run_full_copy_relocation",
+      "sec_mappings": []
+    },
+    {
+      "entry_id": "import-export-entry-0005",
+      "migration_type": "full_copy_relocation",
+      "old": {
+        "path": "docs/ja-JP/02_仕様/02_VRM入出力/04_VRM 1.0 import詳細設計.md",
+        "canonical_title": "VRM 1.0 import詳細設計",
+        "layer_id": "legacy-vrm-io-spec",
+        "document_type": "spec"
+      },
+      "new": {
+        "doc_id": "dry-doc-6004-vrm1-import-design",
+        "path": "docs/ja-JP/02_仕様/60_Import Export Layer/6004_VRM 1.0 import詳細設計.md",
+        "canonical_title": "VRM 1.0 import詳細設計",
+        "layer_id": "import-export-layer",
+        "document_type": "spec"
+      },
+      "semantic_equivalent": true,
+      "mapping_status": "complete",
+      "reason": "dry_run_full_copy_relocation",
+      "sec_mappings": []
+    }
+  ]
+}
